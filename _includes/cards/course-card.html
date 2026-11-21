@@ -1,0 +1,92 @@
+{% assign course = include.course %}
+
+{% assign is_deprecated = false %}
+{% if course.deprecated == true or course.status == "deprecated" %}
+  {% assign is_deprecated = true %}
+{% endif %}
+
+{% assign is_inactive = false %}
+{% if is_deprecated or course.inactive == true or course.status == "inactive" %}
+  {% assign is_inactive = true %}
+{% endif %}
+
+{% assign is_featured = false %}
+{% if course.featured == true and is_deprecated == false %}
+  {% assign is_featured = true %}
+{% endif %}
+
+{% if include.filterable %}
+  {% capture search_blob %}
+    {{ course.course_code }} {{ course.title }} {{ course.school }} {{ course.term }} {{ course.summary }} {{ course.tags | join: " " }}
+  {% endcapture %}
+  {% assign tag_list = course.tags | join: "|" | downcase %}
+{% endif %}
+
+<div
+  class="col{% if include.filterable %} course-item{% endif %}"
+  {% if include.filterable %}
+    data-status="{% if is_inactive %}inactive{% else %}active{% endif %}"
+    data-featured="{{ is_featured }}"
+    data-tags="{{ tag_list | escape }}"
+    data-search="{{ search_blob | strip_newlines | downcase | escape }}"
+  {% endif %}
+>
+  <div class="card h-100 {% if is_inactive %}border-danger border-opacity-75{% endif %}">
+    <div class="card-body d-flex flex-column">
+      <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-2">
+        <div class="d-flex flex-wrap align-items-center gap-1">
+          {% if course.course_code %}
+            <span class="badge {% if is_inactive %}text-bg-secondary{% else %}text-bg-primary{% endif %}">
+              {{ course.course_code }}
+            </span>
+          {% endif %}
+          {% if is_featured %}
+            <span class="badge text-bg-light border">Featured</span>
+          {% endif %}
+        </div>
+
+        {% if is_inactive %}
+          <span
+            class="badge rounded-pill text-bg-danger-subtle text-danger-emphasis border border-danger-subtle"
+            title="Not actively updated—content may still be useful for reference."
+          >
+            {% if is_deprecated %}Deprecated{% else %}Inactive{% endif %}
+          </span>
+        {% elsif course.term %}
+          <span class="small text-body-secondary">{{ course.term }}</span>
+        {% endif %}
+      </div>
+
+      <h3 class="h5 fw-bold mb-2">
+        <a href="{{ course.url | relative_url }}" class="stretched-link text-decoration-none text-reset">
+          {{ course.title }}
+        </a>
+      </h3>
+
+      {% if course.summary %}
+        <p class="card-text small text-body-secondary mb-3">{{ course.summary }}</p>
+      {% endif %}
+
+      <div class="mt-auto pt-2">
+        {% if is_inactive %}
+          <p class="small text-danger-emphasis mb-2">
+            {{ course.deprecation_note | default: "Hasn’t been updated recently—still solid for reference, just double-check current syllabus details." }}
+          </p>
+        {% endif %}
+
+        {% if course.tags.size > 0 or course.school %}
+          <div class="d-flex flex-wrap align-items-center gap-1">
+            {% if course.school %}
+              <span class="badge rounded-pill text-bg-light border fw-normal">{{ course.school }}</span>
+            {% endif %}
+            {% for tag in course.tags %}
+              <span class="badge rounded-pill text-bg-secondary-subtle text-secondary-emphasis border fw-normal">
+                {{ tag }}
+              </span>
+            {% endfor %}
+          </div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>

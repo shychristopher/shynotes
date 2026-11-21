@@ -1,0 +1,25 @@
+title: Shy Notes
+description: Study notes and course resources.
+
+repo:
+  owner: shychristopher
+  name: shynotes
+  url: https://github.com/shychristopher/shynotes
+
+exclude:
+  - docs
+  - docs/
+
+cdn_url: https://cdn.shynotes.org
+
+collections:
+  courses:
+    output: true
+    permalink: /courses/:path/
+
+defaults:
+  - scope:
+      path: ""
+      type: courses
+    values:
+      layout: default

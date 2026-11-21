@@ -1,0 +1,60 @@
+<nav class="navbar navbar-expand-sm sticky-top bg-body-tertiary border-bottom">
+  <div class="container">
+    <a class="navbar-brand d-inline-flex align-items-center gap-2 fw-semibold" href="{{ '/' | relative_url }}">
+      <img
+        src="{{ '/assets/img/logo.jpg' | relative_url }}"
+        alt="{{ site.title }}"
+        width="26"
+        height="26"
+        class="rounded-circle border object-fit-cover"
+      >
+      <span>{{ site.title }}</span>
+    </a>
+
+    <button
+      class="navbar-toggler border-0"
+      type="button"
+      data-bs-toggle="collapse"
+      data-bs-target="#primaryNav"
+      aria-controls="primaryNav"
+      aria-expanded="false"
+      aria-label="Toggle navigation"
+    >
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="primaryNav">
+      <ul class="navbar-nav ms-auto align-items-sm-center gap-sm-1 mt-2 mt-sm-0">
+        <li class="nav-item">
+          <a
+            class="nav-link px-2 {% if page.url == '/' %}active fw-semibold{% endif %}"
+            {% if page.url == '/' %}aria-current="page"{% endif %}
+            href="{{ '/' | relative_url }}"
+          >
+            Home
+          </a>
+        </li>
+        <li class="nav-item">
+          <a
+            class="nav-link px-2 {% if page.url contains '/courses' or page.collection == 'courses' %}active fw-semibold{% endif %}"
+            {% if page.url contains '/courses' or page.collection == 'courses' %}aria-current="page"{% endif %}
+            href="{{ '/courses/' | relative_url }}"
+          >
+            Courses
+          </a>
+        </li>
+        <li class="nav-item ms-sm-2 mt-2 mt-sm-0">
+          <a
+            class="btn btn-sm btn-outline-secondary d-inline-flex align-items-center gap-1"
+            href="{{ site.repo.url }}"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <span>GitHub</span>
+            <span aria-hidden="true">↗</span>
+          </a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
