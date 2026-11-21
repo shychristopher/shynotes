@@ -1,0 +1,36 @@
+# Jekyll build output & caches
+_site/
+.sass-cache/
+.jekyll-cache/
+.jekyll-metadata
+
+# Ruby / Bundler
+vendor/
+.bundle/
+*.gem
+*.rbc
+
+# macOS Finder & AppleDouble metadata
+.DS_Store
+.AppleDouble
+.LSOverride
+Icon
+._*
+
+# Windows & Linux thumbnails/temp files
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+*~
+
+# VS Code (keep .vscode/extensions.json or settings.json if shared, ignore local state)
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+*.code-workspace
+
+# Environment / local secrets
+.env
+.env.*
