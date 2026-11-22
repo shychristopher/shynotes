@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    {% include head/meta.html %}
+    {% include head/links.html %}
+    <style>
+        @media (min-width: 992px) {
+            .dashboard-sidebar {
+                flex: 0 0 280px !important;
+                width: 280px !important;
+                position: sticky !important;
+                top: 57px;
+                height: calc(100vh - 57px) !important;
+                overflow-y: auto;
+                background-color: var(--bs-tertiary-bg) !important;
+                border-right: var(--bs-border-width) solid var(--bs-border-color) !important;
+            }
+            .dashboard-sidebar .offcanvas-body {
+                width: 100%;
+                flex-grow: 1;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    {% include components/navigation/navbar.html sidebar_id="coursesSidebar" %}
+
+    <div class="d-lg-flex">
+        {% include components/navigation/courses-sidebar.html %}
+
+        <main class="flex-grow-1 p-4">
+            <div class="container-fluid">
+                {{ content }}
+            </div>
+        </main>
+    </div>
+
+    {% include body/scripts.html %}
+</body>
+
+</html>

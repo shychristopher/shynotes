@@ -1,168 +1,280 @@
 ---
-layout: default
+layout: main
 title: Home
 ---
 
-{% assign contrib_endpoint = site.cdn_url | append: "/github/contributors.json" %}
-{% assign raw_courses = site.courses | default: empty %}
-{% assign featured_candidates = raw_courses | where: "featured", true %}
-{% assign featured_courses = "" | split: "" %}
+{% assign total_courses = 0 %}
+{% assign all_tags = "" | split: "" %}
+{% assign sortable_featured = "" | split: "" %}
 
-{% for course in featured_candidates %}
-{% unless course.deprecated == true or course.status == "deprecated" %}
-{% assign featured_courses = featured_courses | push: course %}
-{% endunless %}
-{% endfor %}
-
-<section class="p-4 p-md-5 mb-4 bg-body-tertiary border rounded-3">
-    <div class="col-lg-9">
-        <h1 class="display-6 fw-bold mb-2">Notes &amp; Random Study Stuff</h1>
-        <p class="lead text-body-secondary mb-3">
-            This is just an open-source stash of notes, breakdowns, and study materials I’ve put together to get through
-            whatever I’m working on.
-        </p>
-        <p class="text-body-secondary mb-4">
-            It’s definitely not going to cover every class or topic out there—it’s just what I’ve built and actually
-            used. If you’ve got clean notes, study guides, or a course you think would help other people, open a PR and
-            toss it in.
-        </p>
-        <div class="d-flex flex-wrap gap-2">
-            <a href="{{ '/courses/' | relative_url }}" class="btn btn-primary">Browse Courses →</a>
-            {% if site.repo.url %}
-            <a href="{{ site.repo.url }}" target="_blank" rel="noopener noreferrer" class="btn btn-outline-secondary">
-                Repo on GitHub ↗
-            </a>
-            {% endif %}
-        </div>
-    </div>
-</section>
-
-<!-- Featured Courses (`deprecated: true` automatically suppresses `featured: true`) -->
-<section class="mb-4">
-    <div class="d-flex justify-content-between align-items-baseline mb-3">
-        <div>
-            <h2 class="h4 fw-bold mb-0">Featured Courses</h2>
-            <p class="text-body-secondary small mb-0">Highlighted courses from the archive.</p>
-        </div>
-        <a href="{{ '/courses/' | relative_url }}" class="small text-decoration-none">View all courses →</a>
-    </div>
-
-    {% if featured_courses.size > 0 %}
-    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-3 justify-content-center">
-        {% for course in featured_courses %}
-        {% include cards/course-card.html course=course %}
+{% if site.data.courses %}
+  {% for entry in site.data.courses %}
+    {% assign slug = entry[0] %}
+    {% assign meta = entry[1] %}
+    {% unless meta.hidden == true or meta.suppressed == true %}
+      {% assign total_courses = total_courses | plus: 1 %}
+      {% if meta.tags %}
+        {% for tag in meta.tags %}
+          {% assign all_tags = all_tags | push: tag %}
         {% endfor %}
+      {% endif %}
+      {% if meta.featured == true %}
+        {% unless meta.deprecated == true or meta.status == "deprecated" %}
+          {% assign sort_key = meta.title | default: slug | downcase | append: ":::" | append: slug %}
+          {% assign sortable_featured = sortable_featured | push: sort_key %}
+        {% endunless %}
+      {% endif %}
+    {% endunless %}
+  {% endfor %}
+{% endif %}
+
+{% assign unique_tags = "" | split: "" %}
+{% if all_tags.size > 0 %}
+  {% assign unique_tags = all_tags | uniq %}
+{% endif %}
+
+{% assign featured_keys = "" | split: "" %}
+{% if sortable_featured.size > 0 %}
+  {% assign featured_keys = sortable_featured | sort_natural %}
+{% endif %}
+
+<!-- Hero -->
+<section class="p-4 p-md-5 mb-5 bg-body-tertiary border rounded-4">
+  <div class="col-lg-9">
+    <span class="badge rounded-pill text-bg-primary-subtle text-primary-emphasis border border-primary-subtle mb-3">
+      Open-Source Study Archive
+    </span>
+    <h1 class="display-5 fw-bold mb-3">Study smarter, not harder.</h1>
+    <p class="lead text-body-secondary mb-3">
+      Clean, searchable study notes, course breakdowns, and quick references built to help you actually understand the material—not dig through messy slide decks at 1&nbsp;AM.
+    </p>
+    <p class="text-body-secondary mb-4">
+      Jump straight into a course, filter by topic, or hit print when you want paper in front of you. Everything here is free, fast, and open to anyone trying to get through the semester.
+    </p>
+    <div class="d-flex flex-wrap align-items-center gap-2 mb-4">
+      <a href="{{ '/courses/' | relative_url }}" class="btn btn-primary btn-lg px-4">
+        Start Studying →
+      </a>
+      {% if site.repo.url %}
+        <a
+          href="{{ site.repo.url }}"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="btn btn-outline-secondary btn-lg px-4"
+        >
+          View on GitHub ↗
+        </a>
+      {% endif %}
     </div>
-    {% else %}
-    <div class="card bg-body-tertiary text-center py-4">
-        <div class="card-body">
-            <p class="mb-1 fw-semibold">Whoops, this is embarrassing.</p>
-            <p class="small text-body-secondary mb-0">
-                It doesn’t look like we have any recommendations at the moment—check back later.
-            </p>
-        </div>
+
+    <div class="d-flex flex-wrap gap-3 pt-3 border-top small text-body-secondary">
+      <span><strong class="text-body">{{ total_courses }}</strong> {% if total_courses == 1 %}course{% else %}courses{% endif %}</span>
+      <span aria-hidden="true">·</span>
+      <span><strong class="text-body">{{ unique_tags.size }}</strong> {% if unique_tags.size == 1 %}topic{% else %}topics{% endif %}</span>
+      <span aria-hidden="true">·</span>
+      <span>Dark &amp; print-ready</span>
+      <span aria-hidden="true">·</span>
+      <span>100% open source</span>
     </div>
-    {% endif %}
+  </div>
 </section>
 
-<!-- Contributing & /docs Guide -->
-<section class="card mb-4">
-    <div class="card-body p-4">
-        <h2 class="h5 fw-bold mb-2">Want to Add Stuff or Fix Something?</h2>
-        <p class="text-body-secondary small mb-3">
-            You don’t need permission to contribute. Check the repo <code>README</code> and the <code>/docs</code>
-            folder for formatting conventions, folder structure, and how new courses get added.
-        </p>
-        {% if site.repo.url %}
-        <div class="d-flex flex-wrap gap-2">
-            <a href="{{ site.repo.url }}#readme" target="_blank" rel="noopener noreferrer"
-                class="btn btn-sm btn-outline-secondary">
-                Read the README ↗
-            </a>
-            <a href="{{ site.repo.url }}/tree/main/docs" target="_blank" rel="noopener noreferrer"
-                class="btn btn-sm btn-outline-secondary">
-                Browse /docs ↗
-            </a>
-        </div>
-        {% endif %}
+<!-- Featured Courses Spotlight -->
+<section class="mb-5">
+  <div class="d-flex flex-wrap justify-content-between align-items-end gap-2 mb-3">
+    <div>
+      <h2 class="h4 fw-bold mb-1">Featured Courses</h2>
+      <p class="text-body-secondary small mb-0">A quick spotlight on highlighted study guides in the archive.</p>
     </div>
-</section>
 
-<!-- Contributors (Loaded from R2 / Worker JSON) -->
-<section class="card" id="contributors-section" data-contributors-url="{{ contrib_endpoint }}">
-    <div class="card-body p-4">
-        <div class="d-flex flex-column flex-sm-row justify-content-between align-items-sm-center gap-2 mb-3">
-            <div>
-                <h2 class="h5 fw-bold mb-1">Contributors</h2>
-                <p class="text-body-secondary small mb-0">
-                    Huge thanks to everyone who has added notes, fixed typos, or helped build this archive.
-                </p>
-            </div>
-            {% if site.repo.url %}
-            <a href="{{ site.repo.url }}/graphs/contributors" target="_blank" rel="noopener noreferrer"
-                class="btn btn-sm btn-outline-secondary">
-                All contributors ↗
-            </a>
+    <div class="d-flex align-items-center gap-2">
+      {% if featured_keys.size > 3 %}
+        <div class="btn-group btn-group-sm d-print-none" role="group" aria-label="Featured courses navigation">
+          <button
+            type="button"
+            class="btn btn-outline-secondary"
+            data-bs-target="#featuredCoursesCarousel"
+            data-bs-slide="prev"
+            aria-label="Previous featured courses"
+          >
+            ←
+          </button>
+          <button
+            type="button"
+            class="btn btn-outline-secondary"
+            data-bs-target="#featuredCoursesCarousel"
+            data-bs-slide="next"
+            aria-label="Next featured courses"
+          >
+            →
+          </button>
+        </div>
+      {% endif %}
+      <a href="{{ '/courses/' | relative_url }}" class="btn btn-sm btn-link text-decoration-none px-1">
+        Browse all →
+      </a>
+    </div>
+  </div>
+
+  {% if featured_keys.size > 3 %}
+    <div id="featuredCoursesCarousel" class="carousel slide" data-bs-ride="false">
+      <div class="carousel-inner">
+        {% for key in featured_keys %}
+          {% assign slug = key | split: ":::" | last %}
+          {% assign course = site.data.courses[slug] %}
+          {% assign course_url = "/courses/" | append: slug | append: "/" %}
+          {% if site.courses and site.courses.size > 0 %}
+            {% assign expected_path = "_courses/" | append: slug | append: "/index.md" %}
+            {% assign course_doc = site.courses | where: "path", expected_path | first %}
+            {% if course_doc %}
+              {% assign course_url = course_doc.url %}
             {% endif %}
-        </div>
+          {% endif %}
 
-        <div id="contributors-list" class="d-flex flex-wrap gap-2 align-items-center">
-            <span class="text-body-secondary small">Loading contributors...</span>
-        </div>
+          {% assign mod = forloop.index0 | modulo: 3 %}
+          {% if mod == 0 %}
+            <div class="carousel-item{% if forloop.first %} active{% endif %}">
+              <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-3">
+          {% endif %}
+
+          {% include components/cards/course-card.html slug=slug course=course course_url=course_url %}
+
+          {% assign next_mod = forloop.index | modulo: 3 %}
+          {% if next_mod == 0 or forloop.last %}
+              </div>
+            </div>
+          {% endif %}
+        {% endfor %}
+      </div>
     </div>
+  {% elsif featured_keys.size > 0 %}
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-3">
+      {% for key in featured_keys %}
+        {% assign slug = key | split: ":::" | last %}
+        {% assign course = site.data.courses[slug] %}
+        {% assign course_url = "/courses/" | append: slug | append: "/" %}
+        {% if site.courses and site.courses.size > 0 %}
+          {% assign expected_path = "_courses/" | append: slug | append: "/index.md" %}
+          {% assign course_doc = site.courses | where: "path", expected_path | first %}
+          {% if course_doc %}
+            {% assign course_url = course_doc.url %}
+          {% endif %}
+        {% endif %}
+
+        {% include components/cards/course-card.html slug=slug course=course course_url=course_url %}
+      {% endfor %}
+    </div>
+  {% else %}
+    <div class="card bg-body-tertiary border text-center py-4">
+      <div class="card-body">
+        <p class="fw-semibold mb-1">No featured courses right now.</p>
+        <p class="small text-body-secondary mb-3">
+          Check out the full catalog to see everything currently in the archive.
+        </p>
+        <a href="{{ '/courses/' | relative_url }}" class="btn btn-sm btn-outline-primary">
+          Explore Courses →
+        </a>
+      </div>
+    </div>
+  {% endif %}
 </section>
 
-<script>
-    (() => {
-        const section = document.getElementById("contributors-section");
-        const listEl = document.getElementById("contributors-list");
-        if (!section || !listEl) return;
-
-        const endpoint = section.dataset.contributorsUrl;
-        if (!endpoint || endpoint.includes("YOUR-BUCKET-OR-WORKER-URL")) {
-            listEl.innerHTML = `<span class="text-body-secondary small">Contributors will appear here once the JSON endpoint is connected.</span>`;
-            return;
-        }
-
-        fetch(endpoint)
-            .then((res) => {
-                if (!res.ok) throw new Error(`HTTP ${res.status}`);
-                return res.json();
-            })
-            .then((data) => {
-                const humans = Array.isArray(data) ? data : (data.contributors || []);
-                if (!humans.length) {
-                    listEl.innerHTML = `<span class="text-body-secondary small">No contributors yet—first PR gets bragging rights.</span>`;
-                    return;
-                }
-
-                listEl.innerHTML = humans
-                    .map(
-                        (c) => `
-            <a
-              href="${c.html_url}"
-              target="_blank"
-              rel="noopener noreferrer"
-              class="d-inline-flex align-items-center gap-2 text-decoration-none border rounded-pill pe-3 p-1 bg-body-tertiary text-body"
-              title="${c.login} (${c.contributions} ${c.contributions === 1 ? "contribution" : "contributions"})"
-            >
-              <img
-                src="${c.avatar_url}"
-                alt="${c.login}"
-                width="24"
-                height="24"
-                class="rounded-circle object-fit-cover"
-                loading="lazy"
-              >
-              <span class="small fw-medium">${c.login}</span>
-              <span class="badge text-bg-secondary rounded-pill">${c.contributions}</span>
+<!-- Why Use Shy Notes + Motivation -->
+<section class="mb-5">
+  <div class="row g-4 align-items-stretch">
+    <div class="col-lg-5">
+      <div class="card h-100 bg-body-tertiary border">
+        <div class="card-body p-4 d-flex flex-column">
+          <span class="small text-uppercase text-body-secondary fw-semibold mb-2">Why I Built This</span>
+          <h2 class="h4 fw-bold mb-3">Notes shouldn't die in a forgotten folder.</h2>
+          <p class="text-body-secondary small mb-3">
+            I started {{ site.title }} because I kept putting real effort into distilling dense lectures, textbooks, and study guides—only for those notes to sit untouched on my laptop once the final was over.
+          </p>
+          <p class="text-body-secondary small mb-4">
+            Putting them out in the open forces me to write clearer explanations, gives me a fast reference I can pull up anywhere, and hopefully saves someone else a few late nights along the way.
+          </p>
+          <div class="mt-auto">
+            <a href="{{ '/courses/' | relative_url }}" class="small fw-semibold text-decoration-none">
+              See what's in the archive →
             </a>
-          `
-                    )
-                    .join("");
-            })
-            .catch(() => {
-                listEl.innerHTML = `<span class="text-body-secondary small">Couldn’t load contributor list right now.</span>`;
-            });
-    })();
-</script>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-lg-7">
+      <div class="row row-cols-1 row-cols-sm-2 g-3 h-100">
+        <div class="col">
+          <div class="card h-100 border">
+            <div class="card-body p-4">
+              <h3 class="h6 fw-bold mb-2">Built for Fast Review</h3>
+              <p class="small text-body-secondary mb-0">
+                Organized by course and topic so you can review key concepts quickly without wading through fluff.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div class="col">
+          <div class="card h-100 border">
+            <div class="card-body p-4">
+              <h3 class="h6 fw-bold mb-2">Instant Search &amp; Filters</h3>
+              <p class="small text-body-secondary mb-0">
+                Narrow the archive by course code, keyword, status, or tags—your filters even stick around when you reload.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div class="col">
+          <div class="card h-100 border">
+            <div class="card-body p-4">
+              <h3 class="h6 fw-bold mb-2">Easy on the Eyes</h3>
+              <p class="small text-body-secondary mb-0">
+                Matches your OS light or dark theme automatically, and switches to clean paper-friendly styling whenever you print or add <code>?print</code>.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div class="col">
+          <div class="card h-100 border">
+            <div class="card-body p-4">
+              <h3 class="h6 fw-bold mb-2">Open to Contributions</h3>
+              <p class="small text-body-secondary mb-0">
+                Spot a typo, missing formula, or have clean notes of your own? Open a PR on GitHub and help grow the stash.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Bottom CTA -->
+<section class="card border bg-body-tertiary">
+  <div class="card-body p-4 p-md-5 d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3">
+    <div>
+      <h2 class="h4 fw-bold mb-1">Ready to get studying?</h2>
+      <p class="text-body-secondary small mb-0">
+        Pick a course, lock in, and knock out whatever exam or project is next on your list.
+      </p>
+    </div>
+    <div class="d-flex flex-wrap gap-2 flex-shrink-0">
+      <a href="{{ '/courses/' | relative_url }}" class="btn btn-primary">
+        Open Course Dashboard →
+      </a>
+      {% if site.repo.url %}
+        <a
+          href="{{ site.repo.url }}"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="btn btn-outline-secondary"
+        >
+          Contribute ↗
+        </a>
+      {% endif %}
+    </div>
+  </div>
+</section>

@@ -1,0 +1,363 @@
+<div
+  class="modal fade d-print-none"
+  id="displaySettingsModal"
+  tabindex="-1"
+  aria-labelledby="displaySettingsModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+    <div class="modal-content">
+      <div class="modal-header">
+        <div>
+          <h2 class="modal-title h5 fw-bold mb-0" id="displaySettingsModalLabel">Display &amp; Accessibility</h2>
+          <p class="small text-body-secondary mb-0">Customize theme, font, and reading spacing across the site and printouts.</p>
+        </div>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+
+      <div class="modal-body d-flex flex-column gap-4">
+        <!-- Theme Selector -->
+        <div>
+          <label for="displayThemeSelect" class="form-label small text-uppercase text-body-secondary fw-semibold mb-2">
+            Theme
+          </label>
+          <select id="displayThemeSelect" class="form-select form-select-sm display-pref-select" data-display-key="theme">
+            <option value="system">System (Match OS)</option>
+            <option value="light">Light</option>
+            <option value="dark">Dark</option>
+            <option value="hc-light">High Contrast Light</option>
+            <option value="hc-dark">High Contrast Dark</option>
+          </select>
+        </div>
+
+        <!-- Font Family -->
+        <div>
+          <div class="d-flex justify-content-between align-items-center mb-2">
+            <label for="displayFontSelect" class="form-label small text-uppercase text-body-secondary fw-semibold mb-0">
+              Font Family
+            </label>
+            <button
+              type="button"
+              class="btn btn-link btn-sm p-0 text-decoration-none d-none"
+              id="displayLoadAllFontsBtn"
+              style="font-size: 0.75rem;"
+            >
+              Load all installed fonts…
+            </button>
+          </div>
+          <select id="displayFontSelect" class="form-select form-select-sm display-pref-select a11y-font-dropdown" data-display-key="font">
+            <optgroup label="Web &amp; Accessibility Fonts">
+              <option value="sans">System Sans-Serif (Default)</option>
+              <option value="atkinson">Atkinson Hyperlegible (Low-Vision)</option>
+              <option value="lexend">Lexend (Reading Fluency)</option>
+              <option value="opendyslexic">OpenDyslexic (Dyslexia Friendly)</option>
+              <option value="serif">Serif (Georgia / Book)</option>
+              <option value="mono">Monospace</option>
+            </optgroup>
+            <optgroup label="System Fonts" class="a11y-system-fonts-group"></optgroup>
+          </select>
+
+          <div class="mt-2">
+            <button
+              type="button"
+              class="btn btn-link btn-sm p-0 text-decoration-none text-body-secondary"
+              id="displayToggleCustomFontBtn"
+              style="font-size: 0.75rem;"
+            >
+              + Enter a specific installed font name
+            </button>
+            <div id="displayCustomFontRow" class="d-none gap-2 mt-2">
+              <input
+                type="text"
+                id="displayCustomFontInput"
+                class="form-control form-control-sm"
+                placeholder="e.g. Avenir Next, Verdana, Comic Sans MS"
+                aria-label="Installed font family name"
+              >
+              <button type="button" class="btn btn-sm btn-outline-primary flex-shrink-0" id="displayApplyCustomFontBtn">
+                Apply
+              </button>
+            </div>
+            <p class="text-body-secondary mb-0 mt-1 d-none" id="displayFontStatusMsg" style="font-size: 0.72rem;"></p>
+          </div>
+        </div>
+
+        <!-- Typography Metrics -->
+        <div>
+          <div class="small text-uppercase text-body-secondary fw-semibold mb-2">
+            Text &amp; Spacing
+          </div>
+          <div class="row g-2">
+            <div class="col-6">
+              <label for="displayFontScale" class="form-label small mb-1 text-body-secondary">Text size</label>
+              <div class="input-group input-group-sm a11y-combo" data-combo-key="fontScale" data-combo-mode="percent-scale" data-min="60" data-max="250" data-step="5">
+                <input type="number" id="displayFontScale" class="form-control a11y-combo-input" min="60" max="250" step="5" placeholder="100" aria-label="Text size percentage">
+                <span class="input-group-text px-2">%</span>
+                <button type="button" class="btn btn-outline-secondary dropdown-toggle dropdown-toggle-split px-2" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Text size presets"></button>
+                <ul class="dropdown-menu dropdown-menu-end shadow-sm">
+                  <li><button type="button" class="dropdown-item small" data-preset-val="0.9">Small (90%)</button></li>
+                  <li><button type="button" class="dropdown-item small" data-preset-val="1">Default (100%)</button></li>
+                  <li><button type="button" class="dropdown-item small" data-preset-val="1.12">Large (112%)</button></li>
+                  <li><button type="button" class="dropdown-item small" data-preset-val="1.25">Extra Large (125%)</button></li>
+                </ul>
+              </div>
+            </div>
+            <div class="col-6">
+              <label for="displayLineHeight" class="form-label small mb-1 text-body-secondary">Line height</label>
+              <div class="input-group input-group-sm a11y-combo" data-combo-key="lineHeight" data-combo-mode="number" data-min="1" data-max="3.5" data-step="0.05">
+                <input type="number" id="displayLineHeight" class="form-control a11y-combo-input" min="1" max="3.5" step="0.05" placeholder="1.55" aria-label="Line height">
+                <span class="input-group-text px-2">×</span>
+                <button type="button" class="btn btn-outline-secondary dropdown-toggle dropdown-toggle-split px-2" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Line height presets"></button>
+                <ul class="dropdown-menu dropdown-menu-end shadow-sm">
+                  <li><button type="button" class="dropdown-item small" data-preset-val="1.35">Compact (1.35×)</button></li>
+                  <li><button type="button" class="dropdown-item small" data-preset-val="1.55">Default (1.55×)</button></li>
+                  <li><button type="button" class="dropdown-item small" data-preset-val="1.85">Relaxed (1.85×)</button></li>
+                  <li><button type="button" class="dropdown-item small" data-preset-val="2.1">Extra Roomy (2.1×)</button></li>
+                </ul>
+              </div>
+            </div>
+            <div class="col-6">
+              <label for="displayWordSpacing" class="form-label small mb-1 text-body-secondary">Word spacing</label>
+              <div class="input-group input-group-sm a11y-combo" data-combo-key="wordSpacing" data-combo-mode="unit" data-unit="em" data-empty-val="normal" data-zero-is-empty="true" data-min="0" data-max="1" data-step="0.02">
+                <input type="number" id="displayWordSpacing" class="form-control a11y-combo-input" min="0" max="1" step="0.02" placeholder="Normal" aria-label="Word spacing in em">
+                <span class="input-group-text px-2">em</span>
+                <button type="button" class="btn btn-outline-secondary dropdown-toggle dropdown-toggle-split px-2" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Word spacing presets"></button>
+                <ul class="dropdown-menu dropdown-menu-end shadow-sm">
+                  <li><button type="button" class="dropdown-item small" data-preset-val="normal">Normal</button></li>
+                  <li><button type="button" class="dropdown-item small" data-preset-val="0.12em">Wide (0.12 em)</button></li>
+                  <li><button type="button" class="dropdown-item small" data-preset-val="0.25em">Extra Wide (0.25 em)</button></li>
+                </ul>
+              </div>
+            </div>
+            <div class="col-6">
+              <label for="displayLetterSpacing" class="form-label small mb-1 text-body-secondary">Letter spacing</label>
+              <div class="input-group input-group-sm a11y-combo" data-combo-key="letterSpacing" data-combo-mode="unit" data-unit="em" data-empty-val="normal" data-zero-is-empty="true" data-min="-0.05" data-max="0.5" data-step="0.01">
+                <input type="number" id="displayLetterSpacing" class="form-control a11y-combo-input" min="-0.05" max="0.5" step="0.01" placeholder="Normal" aria-label="Letter spacing in em">
+                <span class="input-group-text px-2">em</span>
+                <button type="button" class="btn btn-outline-secondary dropdown-toggle dropdown-toggle-split px-2" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Letter spacing presets"></button>
+                <ul class="dropdown-menu dropdown-menu-end shadow-sm">
+                  <li><button type="button" class="dropdown-item small" data-preset-val="normal">Normal</button></li>
+                  <li><button type="button" class="dropdown-item small" data-preset-val="0.03em">Slightly Wide (0.03 em)</button></li>
+                  <li><button type="button" class="dropdown-item small" data-preset-val="0.07em">Wide (0.07 em)</button></li>
+                </ul>
+              </div>
+            </div>
+            <div class="col-6">
+              <label for="displayTextCase" class="form-label small mb-1 text-body-secondary">Capitalization</label>
+              <select id="displayTextCase" class="form-select form-select-sm display-pref-select" data-display-key="textCase">
+                <option value="none">As-is (Default)</option>
+                <option value="sentence">Sentence case</option>
+                <option value="capitalize">Title Case</option>
+                <option value="uppercase">UPPERCASE</option>
+                <option value="lowercase">lowercase</option>
+                <option value="small-caps">Small Caps</option>
+              </select>
+            </div>
+            <div class="col-6">
+              <label for="displayFontWeight" class="form-label small mb-1 text-body-secondary">Text weight</label>
+              <select id="displayFontWeight" class="form-select form-select-sm display-pref-select" data-display-key="fontWeight">
+                <option value="normal">Normal</option>
+                <option value="500">Medium (Slightly bold)</option>
+                <option value="600">Bold</option>
+              </select>
+            </div>
+            <div class="col-6">
+              <label for="displayParaSpacing" class="form-label small mb-1 text-body-secondary">Paragraph spacing</label>
+              <div class="input-group input-group-sm a11y-combo" data-combo-key="paragraphSpacing" data-combo-mode="unit" data-unit="em" data-empty-val="normal" data-min="0.5" data-max="5" data-step="0.1">
+                <input type="number" id="displayParaSpacing" class="form-control a11y-combo-input" min="0.5" max="5" step="0.1" placeholder="Normal" aria-label="Paragraph spacing in em">
+                <span class="input-group-text px-2">em</span>
+                <button type="button" class="btn btn-outline-secondary dropdown-toggle dropdown-toggle-split px-2" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Paragraph spacing presets"></button>
+                <ul class="dropdown-menu dropdown-menu-end shadow-sm">
+                  <li><button type="button" class="dropdown-item small" data-preset-val="normal">Normal</button></li>
+                  <li><button type="button" class="dropdown-item small" data-preset-val="1.5em">Wide (1.5 em)</button></li>
+                  <li><button type="button" class="dropdown-item small" data-preset-val="2.25em">Extra Wide (2.25 em)</button></li>
+                </ul>
+              </div>
+            </div>
+            <div class="col-6">
+              <label for="displayReadingWidth" class="form-label small mb-1 text-body-secondary">Reading width</label>
+              <div class="input-group input-group-sm a11y-combo" data-combo-key="readingWidth" data-combo-mode="unit" data-unit="ch" data-empty-val="none" data-min="30" data-max="140" data-step="5">
+                <input type="number" id="displayReadingWidth" class="form-control a11y-combo-input" min="30" max="140" step="5" placeholder="Full" aria-label="Reading width in characters">
+                <span class="input-group-text px-2">ch</span>
+                <button type="button" class="btn btn-outline-secondary dropdown-toggle dropdown-toggle-split px-2" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Reading width presets"></button>
+                <ul class="dropdown-menu dropdown-menu-end shadow-sm">
+                  <li><button type="button" class="dropdown-item small" data-preset-val="none">Full width</button></li>
+                  <li><button type="button" class="dropdown-item small" data-preset-val="70ch">Comfortable (70 ch)</button></li>
+                  <li><button type="button" class="dropdown-item small" data-preset-val="55ch">Focused (55 ch)</button></li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Additional ADA Toggles -->
+        <div>
+          <div class="small text-uppercase text-body-secondary fw-semibold mb-2">
+            Accessibility
+          </div>
+          <div class="form-check form-switch mb-2">
+            <input class="form-check-input display-pref-switch" type="checkbox" role="switch" id="displayUnderlineLinks" data-display-key="underlineLinks">
+            <label class="form-check-label small" for="displayUnderlineLinks">Always underline links</label>
+          </div>
+          <div class="form-check form-switch mb-2">
+            <input class="form-check-input display-pref-switch" type="checkbox" role="switch" id="displayNoItalics" data-display-key="noItalics">
+            <label class="form-check-label small" for="displayNoItalics">Disable italics (upright text only)</label>
+          </div>
+          <div class="form-check form-switch mb-2">
+            <input class="form-check-input display-pref-switch" type="checkbox" role="switch" id="displayReadingGuide" data-display-key="readingGuide">
+            <label class="form-check-label small" for="displayReadingGuide">Reading guide (horizontal focus bar)</label>
+          </div>
+
+          <!-- Contextual Reading Guide Options (visible when Reading guide is enabled) -->
+          <div id="displayReadingGuideOptions" class="ms-3 mb-2 p-2 px-3 rounded border bg-body-tertiary d-none flex-column gap-2">
+            <div class="row g-2">
+              <div class="col-12">
+                <label for="displayGuideStyle" class="form-label mb-1 text-body-secondary" style="font-size: 0.74rem;">Style</label>
+                <select id="displayGuideStyle" class="form-select form-select-sm display-pref-select" data-display-key="readingGuideStyle">
+                  <option value="highlight">Highlight band</option>
+                  <option value="mask">Focus window (dim outside)</option>
+                  <option value="invert">Invert colors</option>
+                  <option value="underline">Guide line (ruler)</option>
+                </select>
+              </div>
+              <div class="col-6" id="displayGuideHeightWrap">
+                <label for="displayGuideHeight" class="form-label mb-1 text-body-secondary" style="font-size: 0.74rem;">Band height</label>
+                <div class="input-group input-group-sm a11y-combo" data-combo-key="readingGuideHeight" data-combo-mode="unit" data-unit="px" data-min="14" data-max="300" data-step="4">
+                  <input type="number" id="displayGuideHeight" class="form-control a11y-combo-input" min="14" max="300" step="4" placeholder="42" aria-label="Reading guide height in pixels">
+                  <span class="input-group-text px-2">px</span>
+                  <button type="button" class="btn btn-outline-secondary dropdown-toggle dropdown-toggle-split px-2" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Band height presets"></button>
+                  <ul class="dropdown-menu dropdown-menu-end shadow-sm">
+                    <li><button type="button" class="dropdown-item small" data-preset-val="28px">Slim (28 px)</button></li>
+                    <li><button type="button" class="dropdown-item small" data-preset-val="42px">Medium (42 px)</button></li>
+                    <li><button type="button" class="dropdown-item small" data-preset-val="68px">Tall (68 px)</button></li>
+                    <li><button type="button" class="dropdown-item small" data-preset-val="100px">Extra tall (100 px)</button></li>
+                  </ul>
+                </div>
+              </div>
+              <div class="col-6" id="displayGuideOpacityWrap">
+                <label for="displayGuideOpacity" class="form-label mb-1 text-body-secondary" style="font-size: 0.74rem;">Strength</label>
+                <div class="input-group input-group-sm a11y-combo" data-combo-key="readingGuideOpacity" data-combo-mode="unit" data-unit="%" data-min="5" data-max="95" data-step="5">
+                  <input type="number" id="displayGuideOpacity" class="form-control a11y-combo-input" min="5" max="95" step="5" placeholder="45" aria-label="Reading guide strength percentage">
+                  <span class="input-group-text px-2">%</span>
+                  <button type="button" class="btn btn-outline-secondary dropdown-toggle dropdown-toggle-split px-2" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Strength presets"></button>
+                  <ul class="dropdown-menu dropdown-menu-end shadow-sm">
+                    <li><button type="button" class="dropdown-item small" data-preset-val="25%">Subtle (25%)</button></li>
+                    <li><button type="button" class="dropdown-item small" data-preset-val="45%">Medium (45%)</button></li>
+                    <li><button type="button" class="dropdown-item small" data-preset-val="75%">Strong (75%)</button></li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+            <div id="displayGuideColorWrap">
+              <div class="text-body-secondary mb-1" style="font-size: 0.74rem;">Color</div>
+              <div class="d-flex align-items-center gap-2" role="radiogroup" aria-label="Reading guide color">
+                <button type="button" class="guide-color-swatch" data-guide-color="blue" title="Blue" aria-label="Blue" style="background-color: #0d6efd;"></button>
+                <button type="button" class="guide-color-swatch" data-guide-color="yellow" title="Yellow / Amber" aria-label="Yellow" style="background-color: #facc15;"></button>
+                <button type="button" class="guide-color-swatch" data-guide-color="green" title="Green" aria-label="Green" style="background-color: #22c55e;"></button>
+                <button type="button" class="guide-color-swatch" data-guide-color="pink" title="Pink" aria-label="Pink" style="background-color: #ec4899;"></button>
+                <button type="button" class="guide-color-swatch" data-guide-color="purple" title="Purple" aria-label="Purple" style="background-color: #8b5cf6;"></button>
+                <button type="button" class="guide-color-swatch" data-guide-color="ink" title="Neutral Gray" aria-label="Neutral Gray" style="background-color: #495057;"></button>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-check form-switch mb-2">
+            <input class="form-check-input display-pref-switch" type="checkbox" role="switch" id="displayMagnifier" data-display-key="magnifier">
+            <label class="form-check-label small" for="displayMagnifier">Magnifier (screen loupe)</label>
+          </div>
+
+          <!-- Contextual Magnifier Options (visible when Magnifier is enabled) -->
+          <div id="displayMagnifierOptions" class="ms-3 mb-2 p-2 px-3 rounded border bg-body-tertiary d-none flex-column gap-2">
+            <div class="row g-2">
+              <div class="col-6">
+                <label for="displayMagMode" class="form-label mb-1 text-body-secondary" style="font-size: 0.74rem;">Mode</label>
+                <select id="displayMagMode" class="form-select form-select-sm display-pref-select" data-display-key="magnifierMode">
+                  <option value="lens">Floating lens</option>
+                  <option value="docked">Docked top bar</option>
+                </select>
+              </div>
+              <div class="col-6">
+                <label for="displayMagZoom" class="form-label mb-1 text-body-secondary" style="font-size: 0.74rem;">Zoom</label>
+                <div class="input-group input-group-sm a11y-combo" data-combo-key="magnifierZoom" data-combo-mode="number" data-min="1.1" data-max="6" data-step="0.1">
+                  <input type="number" id="displayMagZoom" class="form-control a11y-combo-input" min="1.1" max="6" step="0.1" placeholder="2" aria-label="Magnifier zoom factor">
+                  <span class="input-group-text px-2">×</span>
+                  <button type="button" class="btn btn-outline-secondary dropdown-toggle dropdown-toggle-split px-2" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Zoom presets"></button>
+                  <ul class="dropdown-menu dropdown-menu-end shadow-sm">
+                    <li><button type="button" class="dropdown-item small" data-preset-val="1.5">1.5×</button></li>
+                    <li><button type="button" class="dropdown-item small" data-preset-val="2">2× (Default)</button></li>
+                    <li><button type="button" class="dropdown-item small" data-preset-val="2.5">2.5×</button></li>
+                    <li><button type="button" class="dropdown-item small" data-preset-val="3">3×</button></li>
+                  </ul>
+                </div>
+              </div>
+              <div class="col-6">
+                <label for="displayMagSize" class="form-label mb-1 text-body-secondary" style="font-size: 0.74rem;">Size</label>
+                <div class="input-group input-group-sm a11y-combo" data-combo-key="magnifierSize" data-combo-mode="unit" data-unit="px" data-min="120" data-max="900" data-step="20">
+                  <input type="number" id="displayMagSize" class="form-control a11y-combo-input" min="120" max="900" step="20" placeholder="360" aria-label="Magnifier size in pixels">
+                  <span class="input-group-text px-2">px</span>
+                  <button type="button" class="btn btn-outline-secondary dropdown-toggle dropdown-toggle-split px-2" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Size presets"></button>
+                  <ul class="dropdown-menu dropdown-menu-end shadow-sm">
+                    <li><button type="button" class="dropdown-item small" data-preset-val="260px">Compact (260 px)</button></li>
+                    <li><button type="button" class="dropdown-item small" data-preset-val="360px">Medium (360 px)</button></li>
+                    <li><button type="button" class="dropdown-item small" data-preset-val="480px">Large (480 px)</button></li>
+                  </ul>
+                </div>
+              </div>
+              <div class="col-6" id="displayMagShapeWrap">
+                <label for="displayMagShape" class="form-label mb-1 text-body-secondary" style="font-size: 0.74rem;">Shape</label>
+                <select id="displayMagShape" class="form-select form-select-sm display-pref-select" data-display-key="magnifierShape">
+                  <option value="rect">Rectangle</option>
+                  <option value="wide">Wide strip</option>
+                  <option value="circle">Circle</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-check form-switch">
+            <input class="form-check-input display-pref-switch" type="checkbox" role="switch" id="displayReduceMotion" data-display-key="reduceMotion">
+            <label class="form-check-label small" for="displayReduceMotion">Reduce motion &amp; animations</label>
+          </div>
+        </div>
+
+        <!-- Offline Course Storage Status -->
+        <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 pt-2 border-top">
+          <div class="small text-body-secondary" id="displayOfflineStatus" style="font-size: 0.76rem;">
+            Courses you open are cached automatically for offline study.
+          </div>
+          <button
+            type="button"
+            class="btn btn-link btn-sm p-0 text-decoration-none text-danger d-none flex-shrink-0"
+            id="displayClearOfflineBtn"
+            style="font-size: 0.76rem;"
+          >
+            Clear offline cache
+          </button>
+        </div>
+
+        <!-- Live Sample Preview -->
+        <div class="p-3 rounded border bg-body-tertiary" id="displayLivePreview">
+          <div class="small text-uppercase text-body-secondary fw-semibold mb-1" style="font-size: 0.7rem;">
+            Live Preview
+          </div>
+          <p class="mb-2 small">
+            <strong>Perfusion:</strong> Continuous circulation of <em>oxygenated blood</em> through capillary beds. Distinguish <code>Il1</code> and <code>O0</code> clearly while studying.
+          </p>
+          <p class="mb-0 small">
+            Second paragraph example! Helps you preview spacing, capitalization, and text weight right away.
+          </p>
+        </div>
+      </div>
+
+      <div class="modal-footer justify-content-between">
+        <button type="button" class="btn btn-sm btn-outline-secondary" id="displaySettingsResetBtn">
+          Reset to defaults
+        </button>
+        <button type="button" class="btn btn-sm btn-primary" data-bs-dismiss="modal">
+          Done
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

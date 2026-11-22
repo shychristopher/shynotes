@@ -1,0 +1,75 @@
+<nav class="navbar sticky-top bg-body-tertiary border-bottom d-print-none">
+  <div class="container-fluid">
+    <div class="d-flex align-items-center gap-2">
+      {% if include.sidebar_id %}
+        <button
+          class="navbar-toggler border-0 p-1 d-lg-none"
+          type="button"
+          data-bs-toggle="offcanvas"
+          data-bs-target="#{{ include.sidebar_id }}"
+          aria-controls="{{ include.sidebar_id }}"
+          aria-label="Toggle sidebar"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
+      {% endif %}
+
+      <a class="navbar-brand d-inline-flex align-items-center gap-2 mb-0" href="{{ '/' | relative_url }}">
+        <img src="/assets/images/logo.jpg" alt="Logo" width="26" height="26" class="rounded-circle object-fit-cover">
+        <span>{{ site.title }}</span>
+      </a>
+    </div>
+
+    <div class="d-flex align-items-center gap-3">
+      <a
+        class="nav-link{% if page.url contains '/courses' %} active fw-semibold{% endif %}"
+        {% if page.url contains '/courses' %}aria-current="page"{% endif %}
+        href="{{ '/courses/' | relative_url }}"
+      >
+        Courses
+      </a>
+
+      <button
+        type="button"
+        class="btn btn-sm btn-outline-secondary d-inline-flex align-items-center gap-1"
+        data-bs-toggle="modal"
+        data-bs-target="#displaySettingsModal"
+        title="Display & accessibility settings"
+        aria-label="Open display and accessibility settings"
+      >
+        <span class="fw-semibold" aria-hidden="true">Aa</span>
+        <span class="d-none d-md-inline">Display</span>
+      </button>
+
+      {% if site.repo.url %}
+        <a
+          href="{{ site.repo.url }}"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="btn btn-sm btn-outline-secondary d-inline-flex align-items-center gap-1"
+        >
+          <span>GitHub</span>
+          <span aria-hidden="true">↗</span>
+        </a>
+      {% endif %}
+
+      {% if include.right_sidebar_id %}
+        <button
+          class="navbar-toggler border-0 p-1 d-xl-none position-relative{% if include.right_sidebar_class %} {{ include.right_sidebar_class }}{% endif %}"
+          type="button"
+          data-bs-toggle="offcanvas"
+          data-bs-target="#{{ include.right_sidebar_id }}"
+          aria-controls="{{ include.right_sidebar_id }}"
+          aria-label="Toggle filters"
+        >
+          <span class="navbar-toggler-icon"></span>
+          <span
+            class="position-absolute top-0 start-100 translate-middle badge rounded-pill text-bg-primary d-none"
+            id="glossaryMobileFilterCount"
+            style="font-size: 0.65rem;"
+          >0</span>
+        </button>
+      {% endif %}
+    </div>
+  </div>
+</nav>

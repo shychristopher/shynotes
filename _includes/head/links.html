@@ -1,0 +1,669 @@
+<link
+  href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+  rel="stylesheet"
+  crossorigin="anonymous"
+>
+<style>
+  /* Display & Accessibility (ADA) font families */
+  html[data-a11y-font="sans"] {
+    --a11y-font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  }
+  html[data-a11y-font="atkinson"] {
+    --a11y-font-family: "Atkinson Hyperlegible", system-ui, -apple-system, sans-serif;
+  }
+  html[data-a11y-font="lexend"] {
+    --a11y-font-family: "Lexend", system-ui, -apple-system, sans-serif;
+  }
+  html[data-a11y-font="opendyslexic"] {
+    --a11y-font-family: "Open-Dyslexic", "OpenDyslexic", "Open Dyslexic", system-ui, -apple-system, sans-serif;
+  }
+  html[data-a11y-font="serif"] {
+    --a11y-font-family: Georgia, "Iowan Old Style", "Times New Roman", Times, serif;
+  }
+  html[data-a11y-font="mono"] {
+    --a11y-font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  }
+  html[data-a11y-font] {
+    --bs-body-font-family: var(--a11y-font-family);
+    --bs-font-sans-serif: var(--a11y-font-family);
+  }
+
+  /* Typography & reading spacing */
+  html {
+    font-size: calc(16px * var(--a11y-font-scale, 1));
+  }
+  body {
+    font-family: var(--a11y-font-family, var(--bs-body-font-family)) !important;
+    line-height: var(--a11y-line-height, 1.55);
+    word-spacing: var(--a11y-word-spacing, normal);
+    letter-spacing: var(--a11y-letter-spacing, normal);
+  }
+  html[data-a11y-weight="500"] main,
+  html[data-a11y-weight="500"] #displayLivePreview {
+    font-weight: 500;
+  }
+  html[data-a11y-weight="600"] main,
+  html[data-a11y-weight="600"] #displayLivePreview {
+    font-weight: 600;
+  }
+  html[data-a11y-para-space] main p,
+  html[data-a11y-para-space] main ul,
+  html[data-a11y-para-space] main ol,
+  html[data-a11y-para-space] #displayLivePreview p {
+    margin-bottom: var(--a11y-para-space);
+  }
+  html[data-a11y-case="uppercase"] main,
+  html[data-a11y-case="uppercase"] .course-sidebar,
+  html[data-a11y-case="uppercase"] .glossary-sidebar,
+  html[data-a11y-case="uppercase"] #displayLivePreview {
+    text-transform: uppercase;
+  }
+  html[data-a11y-case="lowercase"] main,
+  html[data-a11y-case="lowercase"] .course-sidebar,
+  html[data-a11y-case="lowercase"] .glossary-sidebar,
+  html[data-a11y-case="lowercase"] #displayLivePreview {
+    text-transform: lowercase;
+  }
+  html[data-a11y-case="capitalize"] main,
+  html[data-a11y-case="capitalize"] .course-sidebar,
+  html[data-a11y-case="capitalize"] .glossary-sidebar,
+  html[data-a11y-case="capitalize"] #displayLivePreview {
+    text-transform: capitalize;
+  }
+  html[data-a11y-case="small-caps"] main,
+  html[data-a11y-case="small-caps"] .course-sidebar,
+  html[data-a11y-case="small-caps"] .glossary-sidebar,
+  html[data-a11y-case="small-caps"] #displayLivePreview {
+    font-variant-caps: small-caps;
+  }
+  html[data-a11y-case] code,
+  html[data-a11y-case] pre,
+  html[data-a11y-case] kbd,
+  html[data-a11y-case] samp,
+  html[data-a11y-case] input,
+  html[data-a11y-case] textarea,
+  html[data-a11y-case] select,
+  html[data-a11y-case] option {
+    text-transform: none !important;
+    font-variant-caps: normal !important;
+  }
+  html[data-a11y-no-italics="true"] main em,
+  html[data-a11y-no-italics="true"] main i,
+  html[data-a11y-no-italics="true"] #displayLivePreview em,
+  html[data-a11y-no-italics="true"] #displayLivePreview i {
+    font-style: normal !important;
+  }
+  @media screen {
+    html[data-a11y-width]:not(.print-mode) #courseArticleContent,
+    html[data-a11y-width]:not(.print-mode) #sectionKeyTerms,
+    html[data-a11y-width]:not(.print-mode) .content-screen-header,
+    html[data-a11y-width]:not(.print-mode) .glossary-screen-header,
+    html[data-a11y-width]:not(.print-mode) #courseGlossary,
+    html[data-a11y-width]:not(.print-mode) #courseQuickReference,
+    html[data-a11y-width]:not(.print-mode) .course-view-only-glossary,
+    html[data-a11y-width]:not(.print-mode) .course-view-only-quickref {
+      max-width: var(--a11y-reading-width);
+    }
+  }
+  #a11yReadingGuideRoot,
+  #a11yReadingGuideRoot *,
+  #a11yMagnifierRoot,
+  #a11yMagnifierRoot * {
+    pointer-events: none !important;
+  }
+  #a11yReadingGuideRoot {
+    position: fixed;
+    inset: 0;
+    z-index: 2000;
+    opacity: 0;
+    transition: opacity 0.12s ease;
+  }
+  #a11yGuideMaskTop,
+  #a11yGuideMaskBottom,
+  .mag-guide-mask-top,
+  .mag-guide-mask-bottom {
+    position: fixed;
+    left: 0;
+    right: 0;
+    background-color: rgba(0, 0, 0, var(--guide-mask-alpha, 0.45));
+    display: none;
+  }
+  .mag-guide-mask-top,
+  .mag-guide-mask-bottom,
+  .mag-guide-band {
+    position: absolute;
+    left: 0;
+    right: 0;
+  }
+  #a11yGuideMaskTop,
+  .mag-guide-mask-top { top: 0; }
+  #a11yGuideMaskBottom,
+  .mag-guide-mask-bottom { bottom: 0; }
+  #a11yReadingGuideRoot.guide-style-mask #a11yGuideMaskTop,
+  #a11yReadingGuideRoot.guide-style-mask #a11yGuideMaskBottom,
+  #a11yMagGuideLayer.guide-style-mask .mag-guide-mask-top,
+  #a11yMagGuideLayer.guide-style-mask .mag-guide-mask-bottom {
+    display: block;
+  }
+  #a11yGuideBand {
+    position: fixed;
+    left: 0;
+    right: 0;
+    overflow: hidden;
+  }
+  .mag-guide-band {
+    overflow: hidden;
+  }
+  #a11yGuideTint,
+  .mag-guide-tint {
+    position: absolute;
+    inset: 0;
+  }
+  #a11yReadingGuideRoot.guide-style-highlight #a11yGuideTint,
+  #a11yMagGuideLayer.guide-style-highlight .mag-guide-tint {
+    background-color: rgba(var(--guide-rgb, 13, 110, 253), var(--guide-fill-alpha, 0.14));
+    border-top: 1px solid rgba(var(--guide-rgb, 13, 110, 253), var(--guide-border-alpha, 0.45));
+    border-bottom: 1px solid rgba(var(--guide-rgb, 13, 110, 253), var(--guide-border-alpha, 0.45));
+  }
+  #a11yReadingGuideRoot.guide-style-mask #a11yGuideTint,
+  #a11yMagGuideLayer.guide-style-mask .mag-guide-tint {
+    background-color: transparent;
+    border-top: 1.5px solid rgba(var(--guide-rgb, 13, 110, 253), 0.65);
+    border-bottom: 1.5px solid rgba(var(--guide-rgb, 13, 110, 253), 0.65);
+  }
+  #a11yReadingGuideRoot.guide-style-invert #a11yGuideTint,
+  #a11yMagGuideLayer.guide-style-invert .mag-guide-tint {
+    -webkit-backdrop-filter: invert(1) contrast(1.08);
+    backdrop-filter: invert(1) contrast(1.08);
+    border-top: 1px solid rgba(128, 128, 128, 0.5);
+    border-bottom: 1px solid rgba(128, 128, 128, 0.5);
+  }
+  #a11yReadingGuideRoot.guide-style-underline #a11yGuideBand,
+  #a11yMagGuideLayer.guide-style-underline .mag-guide-band {
+    overflow: visible;
+  }
+  #a11yReadingGuideRoot.guide-style-underline #a11yGuideTint,
+  #a11yMagGuideLayer.guide-style-underline .mag-guide-tint {
+    background-color: transparent;
+    border-bottom: var(--guide-line-width, 3px) solid rgba(var(--guide-rgb, 13, 110, 253), var(--guide-line-alpha, 0.78));
+  }
+  .guide-color-swatch {
+    width: 22px;
+    height: 22px;
+    border-radius: 999px;
+    border: 2px solid var(--bs-body-bg);
+    box-shadow: 0 0 0 1px var(--bs-border-color);
+    padding: 0;
+    cursor: pointer;
+    transition: transform 0.12s ease, box-shadow 0.12s ease;
+  }
+  .guide-color-swatch:hover {
+    transform: scale(1.1);
+  }
+  .guide-color-swatch.active {
+    box-shadow: 0 0 0 2px var(--bs-body-color);
+    transform: scale(1.12);
+  }
+
+  /* Standalone Screen Magnifier (Windows Magnifier-style Lens & Docked Bar) */
+  #a11yMagnifierRoot {
+    position: fixed;
+    inset: 0;
+    z-index: 2010;
+    opacity: 0;
+    transition: opacity 0.1s ease;
+  }
+  #a11yMagViewport {
+    position: fixed;
+    overflow: hidden;
+    background-color: var(--bs-body-bg);
+    border: 2px solid var(--bs-primary);
+    box-shadow: 0 12px 34px rgba(0, 0, 0, 0.28), 0 0 0 1px rgba(0, 0, 0, 0.12);
+    border-radius: 0.6rem;
+  }
+  #a11yMagnifierRoot.mag-mode-docked #a11yMagViewport {
+    left: 0 !important;
+    top: 0 !important;
+    width: 100vw !important;
+    border-radius: 0 !important;
+    border-width: 0 0 2px 0;
+    box-shadow: 0 6px 22px rgba(0, 0, 0, 0.22);
+  }
+  #a11yMagnifierRoot.mag-shape-circle #a11yMagViewport {
+    border-radius: 9999px;
+  }
+  #a11yMagStage {
+    position: absolute;
+    top: 0;
+    left: 0;
+    transform-origin: 0 0;
+    will-change: transform;
+  }
+  #a11yMagPageWrap {
+    position: relative;
+    will-change: transform;
+  }
+  #a11yMagFixedLayer {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 10;
+  }
+  #a11yMagGuideLayer {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 20;
+    overflow: hidden;
+  }
+  #a11yMagCrosshair {
+    position: absolute;
+    inset: 0;
+    background:
+      linear-gradient(to right, transparent calc(50% - 8px), rgba(var(--bs-primary-rgb), 0.35) calc(50% - 8px), rgba(var(--bs-primary-rgb), 0.35) calc(50% + 8px), transparent calc(50% + 8px)) center / 100% 1px no-repeat,
+      linear-gradient(to bottom, transparent calc(50% - 8px), rgba(var(--bs-primary-rgb), 0.35) calc(50% - 8px), rgba(var(--bs-primary-rgb), 0.35) calc(50% + 8px), transparent calc(50% + 8px)) center / 1px 100% no-repeat;
+    display: none;
+  }
+  #a11yMagnifierRoot.mag-mode-docked #a11yMagCrosshair {
+    display: block;
+  }
+  .a11y-mag-clone table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 1rem;
+    font-size: 0.92em;
+  }
+  .a11y-mag-clone th,
+  .a11y-mag-clone td {
+    border: 1px solid var(--bs-border-color);
+    padding: 0.45rem 0.65rem;
+    text-align: left;
+  }
+  .a11y-mag-clone thead th {
+    background-color: var(--bs-tertiary-bg);
+    font-weight: 600;
+  }
+  @media print {
+    #a11yReadingGuideRoot,
+    #a11yMagnifierRoot {
+      display: none !important;
+    }
+  }
+
+  /* High Contrast Light */
+  html[data-bs-theme="light"][data-a11y-contrast="high"] {
+    --bs-body-bg: #ffffff;
+    --bs-body-color: #000000;
+    --bs-secondary-color: #1f2328;
+    --bs-tertiary-bg: #f3f4f6;
+    --bs-secondary-bg: #e5e7eb;
+    --bs-border-color: #000000;
+    --bs-link-color: #0038b8;
+    --bs-link-hover-color: #002277;
+    --bs-primary: #0038b8;
+    --bs-primary-rgb: 0, 56, 184;
+  }
+  html[data-bs-theme="light"][data-a11y-contrast="high"] .card,
+  html[data-bs-theme="light"][data-a11y-contrast="high"] .form-control,
+  html[data-bs-theme="light"][data-a11y-contrast="high"] .form-select,
+  html[data-bs-theme="light"][data-a11y-contrast="high"] .btn-outline-secondary {
+    border-color: #000000 !important;
+    color: #000000;
+  }
+  html[data-bs-theme="light"][data-a11y-contrast="high"] a:not(.btn):not(.navbar-brand):not(.nav-link) {
+    text-decoration: underline !important;
+  }
+
+  /* High Contrast Dark */
+  html[data-bs-theme="dark"][data-a11y-contrast="high"] {
+    --bs-body-bg: #000000;
+    --bs-body-color: #ffffff;
+    --bs-secondary-color: #e5e7eb;
+    --bs-tertiary-bg: #111111;
+    --bs-secondary-bg: #1f1f1f;
+    --bs-border-color: #ffffff;
+    --bs-link-color: #ffe066;
+    --bs-link-hover-color: #fff3bf;
+    --bs-primary: #4dabf7;
+    --bs-primary-rgb: 77, 171, 247;
+  }
+  html[data-bs-theme="dark"][data-a11y-contrast="high"] .card,
+  html[data-bs-theme="dark"][data-a11y-contrast="high"] .form-control,
+  html[data-bs-theme="dark"][data-a11y-contrast="high"] .form-select,
+  html[data-bs-theme="dark"][data-a11y-contrast="high"] .btn-outline-secondary {
+    border-color: #ffffff !important;
+    color: #ffffff;
+  }
+  html[data-bs-theme="dark"][data-a11y-contrast="high"] a:not(.btn):not(.navbar-brand):not(.nav-link) {
+    text-decoration: underline !important;
+  }
+  html[data-a11y-contrast="high"] :focus-visible {
+    outline: 3px solid var(--bs-link-color) !important;
+    outline-offset: 2px;
+  }
+
+  /* Always underline links */
+  html[data-a11y-links="underline"] main a:not(.btn):not(.badge) {
+    text-decoration: underline !important;
+    text-underline-offset: 2px;
+  }
+
+  /* Reduce motion */
+  html[data-a11y-motion="reduce"],
+  html[data-a11y-motion="reduce"] *,
+  html[data-a11y-motion="reduce"] *::before,
+  html[data-a11y-motion="reduce"] *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  /* Print mode */
+  html.print-mode {
+    color-scheme: light;
+  }
+  html.print-mode .d-print-none {
+    display: none !important;
+  }
+  html.print-mode body {
+    background: #fff !important;
+    color: #000 !important;
+  }
+  @media print {
+    body {
+      background: #fff !important;
+      color: #000 !important;
+      font-family: var(--a11y-font-family, var(--bs-body-font-family)) !important;
+      word-spacing: var(--a11y-word-spacing, normal);
+      letter-spacing: var(--a11y-letter-spacing, normal);
+    }
+  }
+</style>
+<script>
+  (() => {
+    const STORAGE_KEY = "shynotes.display.prefs.v1";
+    const DEFAULTS = {
+      theme: "system",
+      font: "sans",
+      fontScale: "1",
+      lineHeight: "1.55",
+      wordSpacing: "normal",
+      letterSpacing: "normal",
+      paragraphSpacing: "normal",
+      textCase: "none",
+      fontWeight: "normal",
+      readingWidth: "none",
+      underlineLinks: false,
+      noItalics: false,
+      readingGuide: false,
+      readingGuideStyle: "highlight",
+      readingGuideColor: "blue",
+      readingGuideHeight: "md",
+      readingGuideOpacity: "medium",
+      magnifier: false,
+      magnifierMode: "lens",
+      magnifierZoom: "2",
+      magnifierSize: "md",
+      magnifierShape: "rect",
+      reduceMotion: false
+    };
+
+    const BUILTIN_FONT_FAMILIES = {
+      sans: 'system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
+      atkinson: '"Atkinson Hyperlegible", system-ui, -apple-system, sans-serif',
+      lexend: '"Lexend", system-ui, -apple-system, sans-serif',
+      opendyslexic: '"Open-Dyslexic", "OpenDyslexic", "Open Dyslexic", system-ui, -apple-system, sans-serif',
+      serif: 'Georgia, "Iowan Old Style", "Times New Roman", Times, serif',
+      mono: 'ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace'
+    };
+
+    const BUILTIN_FONT_LABELS = {
+      sans: "Sans-Serif",
+      atkinson: "Atkinson Hyperlegible",
+      lexend: "Lexend",
+      opendyslexic: "OpenDyslexic",
+      serif: "Serif",
+      mono: "Monospace"
+    };
+
+    const FONT_STYLESHEETS = {
+      atkinson: [
+        "https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400;1,700&display=swap"
+      ],
+      lexend: [
+        "https://fonts.googleapis.com/css2?family=Lexend:wght@400;500;600;700&display=swap"
+      ],
+      opendyslexic: [
+        "https://fonts.cdnfonts.com/css/open-dyslexic"
+      ]
+    };
+
+    const params = new URLSearchParams(window.location.search);
+    const printParam = params.get("print");
+    const isPrintMode = params.has("print") && printParam !== "false" && printParam !== "0";
+    const viewParam = params.get("view");
+    const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
+
+    function loadPrefs() {
+      try {
+        const raw = window.localStorage.getItem(STORAGE_KEY);
+        if (!raw) return { ...DEFAULTS };
+        const parsed = JSON.parse(raw);
+        return { ...DEFAULTS, ...(parsed && typeof parsed === "object" ? parsed : {}) };
+      } catch (_) {
+        return { ...DEFAULTS };
+      }
+    }
+
+    function savePrefs(prefs) {
+      try {
+        window.localStorage.setItem(STORAGE_KEY, JSON.stringify(prefs));
+      } catch (_) {
+        // Ignore storage errors
+      }
+    }
+
+    function ensureWebFontLoaded(fontKey) {
+      const urls = FONT_STYLESHEETS[fontKey];
+      if (!urls) return;
+      urls.forEach((href) => {
+        if (document.querySelector(`link[data-a11y-font-href="${href}"]`)) return;
+        const link = document.createElement("link");
+        link.rel = "stylesheet";
+        link.href = href;
+        link.dataset.a11yFontHref = href;
+        document.head.appendChild(link);
+      });
+    }
+
+    let currentPrefs = loadPrefs();
+    let isNativePrinting = false;
+
+    function applyPrefs(prefs) {
+      currentPrefs = { ...DEFAULTS, ...prefs };
+      const root = document.documentElement;
+
+      // Theme & contrast (forced to standard light during ?print or native print)
+      if (isPrintMode || isNativePrinting) {
+        root.setAttribute("data-bs-theme", "light");
+        root.removeAttribute("data-a11y-contrast");
+      } else {
+        const theme = currentPrefs.theme || "system";
+        if (theme === "hc-light") {
+          root.setAttribute("data-bs-theme", "light");
+          root.setAttribute("data-a11y-contrast", "high");
+        } else if (theme === "hc-dark") {
+          root.setAttribute("data-bs-theme", "dark");
+          root.setAttribute("data-a11y-contrast", "high");
+        } else if (theme === "dark") {
+          root.setAttribute("data-bs-theme", "dark");
+          root.removeAttribute("data-a11y-contrast");
+        } else if (theme === "light") {
+          root.setAttribute("data-bs-theme", "light");
+          root.removeAttribute("data-a11y-contrast");
+        } else {
+          root.setAttribute("data-bs-theme", mediaQuery.matches ? "dark" : "light");
+          root.removeAttribute("data-a11y-contrast");
+        }
+      }
+
+      // Font family (built-in preset OR "system:<Installed Font Name>", kept active in screen and print!)
+      const font = currentPrefs.font || "sans";
+      if (font.startsWith("system:")) {
+        const customName = font.slice("system:".length).replace(/["'\\;{}]/g, "").trim();
+        if (customName) {
+          root.setAttribute("data-a11y-font", "custom");
+          root.style.setProperty(
+            "--a11y-font-family",
+            `"${customName}", system-ui, -apple-system, sans-serif`
+          );
+        } else {
+          root.style.removeProperty("--a11y-font-family");
+          root.setAttribute("data-a11y-font", "sans");
+        }
+      } else {
+        root.style.removeProperty("--a11y-font-family");
+        root.setAttribute("data-a11y-font", font);
+        ensureWebFontLoaded(font);
+      }
+
+      // Typography metrics
+      root.style.setProperty("--a11y-font-scale", String(currentPrefs.fontScale || "1"));
+      root.style.setProperty("--a11y-line-height", String(currentPrefs.lineHeight || "1.55"));
+      root.style.setProperty("--a11y-word-spacing", String(currentPrefs.wordSpacing || "normal"));
+      root.style.setProperty("--a11y-letter-spacing", String(currentPrefs.letterSpacing || "normal"));
+
+      // Capitalization, weight, paragraph spacing & reading width
+      const textCase = currentPrefs.textCase || "none";
+      if (textCase !== "none") {
+        root.setAttribute("data-a11y-case", textCase);
+      } else {
+        root.removeAttribute("data-a11y-case");
+      }
+
+      const fontWeight = currentPrefs.fontWeight || "normal";
+      if (fontWeight !== "normal") {
+        root.setAttribute("data-a11y-weight", fontWeight);
+      } else {
+        root.removeAttribute("data-a11y-weight");
+      }
+
+      const paraSpace = String(currentPrefs.paragraphSpacing || "normal");
+      if (paraSpace !== "normal") {
+        const resolvedPara =
+          paraSpace === "wide" ? "1.5em" : paraSpace === "xwide" ? "2.25em" : paraSpace;
+        root.setAttribute("data-a11y-para-space", "custom");
+        root.style.setProperty("--a11y-para-space", resolvedPara);
+      } else {
+        root.removeAttribute("data-a11y-para-space");
+        root.style.removeProperty("--a11y-para-space");
+      }
+
+      const readingWidth = String(currentPrefs.readingWidth || "none");
+      if (readingWidth !== "none") {
+        root.setAttribute("data-a11y-width", "custom");
+        root.style.setProperty("--a11y-reading-width", readingWidth);
+      } else {
+        root.removeAttribute("data-a11y-width");
+        root.style.removeProperty("--a11y-reading-width");
+      }
+
+      // Extra ADA flags
+      if (currentPrefs.underlineLinks) {
+        root.setAttribute("data-a11y-links", "underline");
+      } else {
+        root.removeAttribute("data-a11y-links");
+      }
+
+      if (currentPrefs.noItalics) {
+        root.setAttribute("data-a11y-no-italics", "true");
+      } else {
+        root.removeAttribute("data-a11y-no-italics");
+      }
+
+      if (currentPrefs.reduceMotion) {
+        root.setAttribute("data-a11y-motion", "reduce");
+      } else {
+        root.removeAttribute("data-a11y-motion");
+      }
+    }
+
+    if (isPrintMode) {
+      document.documentElement.classList.add("print-mode");
+    }
+    if (viewParam === "glossary") {
+      document.documentElement.classList.add("course-view-glossary");
+    } else if (viewParam === "quick-reference") {
+      document.documentElement.classList.add("course-view-quickref");
+    }
+
+    applyPrefs(currentPrefs);
+
+    mediaQuery.addEventListener("change", () => {
+      if (currentPrefs.theme === "system") {
+        applyPrefs(currentPrefs);
+      }
+    });
+
+    window.addEventListener("beforeprint", () => {
+      isNativePrinting = true;
+      applyPrefs(currentPrefs);
+    });
+    window.addEventListener("afterprint", () => {
+      isNativePrinting = false;
+      applyPrefs(currentPrefs);
+    });
+
+    function resolveFontFamily(fontKey) {
+      const key = String(fontKey || "sans");
+      if (key.startsWith("system:")) {
+        const customName = key.slice("system:".length).replace(/["'\\;{}]/g, "").trim();
+        return customName
+          ? `"${customName}", system-ui, -apple-system, sans-serif`
+          : BUILTIN_FONT_FAMILIES.sans;
+      }
+      ensureWebFontLoaded(key);
+      return BUILTIN_FONT_FAMILIES[key] || BUILTIN_FONT_FAMILIES.sans;
+    }
+
+    function getFontLabel(fontKey) {
+      const key = String(fontKey || "sans");
+      if (key.startsWith("system:")) {
+        return key.slice("system:".length).trim() || "System Font";
+      }
+      return BUILTIN_FONT_LABELS[key] || BUILTIN_FONT_LABELS.sans;
+    }
+
+    window.ShyNotesDisplay = {
+      DEFAULTS,
+      resolveFontFamily,
+      getFontLabel,
+      get() {
+        return { ...currentPrefs };
+      },
+      update(patch) {
+        const next = { ...currentPrefs, ...patch };
+        savePrefs(next);
+        applyPrefs(next);
+        window.dispatchEvent(new CustomEvent("shynotes:display-change", { detail: next }));
+        return next;
+      },
+      reset() {
+        try {
+          window.localStorage.removeItem(STORAGE_KEY);
+        } catch (_) {
+          // Ignore
+        }
+        applyPrefs({ ...DEFAULTS });
+        window.dispatchEvent(new CustomEvent("shynotes:display-change", { detail: { ...DEFAULTS } }));
+        return { ...DEFAULTS };
+      }
+    };
+  })();
+</script>
+{% if page.custom_css %}
+  {% for stylesheet in page.custom_css %}
+    <link rel="stylesheet" href="{{ stylesheet | relative_url }}">
+  {% endfor %}
+{% endif %}
