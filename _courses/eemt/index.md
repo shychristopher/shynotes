@@ -1,5 +1,5 @@
 ---
-permalink: /courses/emt/
+permalink: /courses/eemt/
 ---
 
 Welcome to the EMT study notes.

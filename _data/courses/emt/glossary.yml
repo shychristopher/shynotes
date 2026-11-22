@@ -1,0 +1,3195 @@
+- id: abandonment
+  term: Abandonment
+  category: Legal & Ethical
+  definition: The act of discontinuing emergency care without ensuring that another health care professional with equivalent or better training will take over.
+  builds_on:
+    - duty-to-act
+    - standard-of-care
+  related:
+    - negligence
+
+- id: abdominal-quadrants
+  term: Abdominal Quadrants
+  category: Medical Terminology & Positions
+  definition: The four parts of the abdomen as divided by imaginary horizontal and vertical lines through the umbilicus.
+  builds_on:
+    - midline
+    - transverse-line
+  related:
+    - pelvis
+
+- id: abduction
+  term: Abduction
+  category: Medical Terminology & Positions
+  definition: Movement away from the midline.
+  builds_on:
+    - midline
+  related:
+    - adduction
+
+- id: acetabulum
+  term: Acetabulum
+  category: Anatomy & Physiology
+  definition: The rounded cavity or socket on the external surface of the pelvis that receives the head of the femur.
+  builds_on:
+    - pelvis
+  related:
+    - femur
+    - ball-and-socket-joint
+
+- id: acromion
+  term: Acromion
+  category: Anatomy & Physiology
+  definition: The lateral triangular projection of the scapula that forms the point of the shoulder.
+  builds_on:
+    - scapula
+
+- id: adduction
+  term: Adduction
+  category: Medical Terminology & Positions
+  definition: Movement toward the midline.
+  builds_on:
+    - midline
+  related:
+    - abduction
+
+- id: advance-directive
+  term: Advance Directive
+  category: Legal & Ethical
+  definition: Instructions, written in advance, such as a do not resuscitate (DNR) order, a living will, or a durable power of attorney.
+  builds_on:
+    - consent
+
+- id: advanced-emergency-medical-technician
+  term: Advanced Emergency Medical Technician
+  full: AEMT
+  category: EMS Systems & Operations
+  aliases:
+    - AEMT
+  definition: The level of EMS practitioner who performs the responsibilities of an EMT with the addition of the use of advanced airway devices, monitoring of blood glucose levels, initiation of intravenous and intraosseous infusions, and administration of a select number of medications.
+  builds_on:
+    - emergency-medical-technician
+  related:
+    - paramedic
+
+- id: aerobic-metabolism
+  term: Aerobic Metabolism
+  category: Pathophysiology
+  definition: Chemical and physical changes that take place within the cells in the presence of oxygen.
+  builds_on:
+    - oxygenation
+    - perfusion
+  related:
+    - anaerobic-metabolism
+    - glycolysis
+
+- id: afterload
+  term: Afterload
+  category: Pathophysiology
+  definition: The force of contraction that the left ventricle must generate to overcome the resistance in the aorta to eject the blood.
+  builds_on:
+    - ventricles
+    - aorta
+    - systemic-vascular-resistance
+  related:
+    - preload
+
+- id: agonal-respirations
+  term: Agonal Respirations
+  category: Pathophysiology
+  aliases:
+    - Agonal Breathing
+  definition: Gasping-type respirations that have no pattern and occur infrequently; a sign of impending cardiac or respiratory arrest. Also called agonal breathing.
+  builds_on:
+    - respiration
+    - ventilation
+  related:
+    - hypoperfusion
+
+- id: airway
+  term: Airway
+  category: Anatomy & Physiology
+  definition: The path by which air reaches the lungs. The portion of the respiratory system that extends from the nose and mouth to the larynx, and from the trachea to the alveoli of the lungs.
+  builds_on:
+    - respiratory-system
+
+- id: airway-resistance
+  term: Airway Resistance
+  category: Pathophysiology
+  definition: The restriction of airflow that is related to the diameter of the airways.
+  builds_on:
+    - airway
+    - bronchioles
+  related:
+    - compliance
+
+- id: alveolar-ventilation
+  term: Alveolar Ventilation
+  category: Pathophysiology
+  definition: The amount of inspired air that reaches the alveoli of the lungs.
+  builds_on:
+    - tidal-volume
+    - dead-air-space
+    - alveoli
+  related:
+    - minute-ventilation
+
+- id: alveoli
+  term: Alveoli
+  category: Anatomy & Physiology
+  aliases:
+    - Alveolus
+  definition: The air sacs of the lungs. Plural of alveolus.
+  builds_on:
+    - bronchioles
+    - lungs
+
+- id: americans-with-disabilities-act
+  term: Americans with Disabilities Act
+  full: ADA
+  category: Legal & Ethical
+  aliases:
+    - ADA
+  definition: A federal law passed in 1990 that protects individuals with a documented disability from being denied initial or continued employment based on their disability.
+  related:
+    - scope-of-practice
+
+- id: anaerobic-metabolism
+  term: Anaerobic Metabolism
+  category: Pathophysiology
+  definition: Chemical and physical changes that take place within the cells without the presence of oxygen.
+  builds_on:
+    - aerobic-metabolism
+  related:
+    - glycolysis
+
+- id: anatomical-planes
+  term: Anatomical Planes
+  category: Medical Terminology & Positions
+  definition: Imaginary divisions of the body.
+  builds_on:
+    - anatomical-position
+
+- id: anatomical-position
+  term: Anatomical Position
+  category: Medical Terminology & Positions
+  definition: A position in which the patient is standing erect, facing forward, with arms down at the sides and palms forward.
+  related:
+    - pronation
+    - anatomical-planes
+    - supination
+
+- id: anatomy
+  term: Anatomy
+  category: Medical Terminology & Positions
+  definition: The study of the structure of the body and the relationship of its parts to each other.
+  related:
+    - physiology
+
+- id: anterior
+  term: Anterior
+  category: Medical Terminology & Positions
+  definition: Toward the front. Opposite of posterior.
+  related:
+    - posterior
+    - ventral
+
+- id: anterior-plane
+  term: Anterior Plane
+  category: Medical Terminology & Positions
+  definition: The front, or abdominal side of the body.
+  builds_on:
+    - anatomical-planes
+    - anterior
+  related:
+    - posterior-plane
+
+- id: aorta
+  term: Aorta
+  category: Anatomy & Physiology
+  definition: The major artery from the heart.
+  builds_on:
+    - artery
+    - heart
+  related:
+    - venae-cavae
+
+- id: aortic-valve
+  term: Aortic Valve
+  category: Anatomy & Physiology
+  definition: The valve located between the left ventricle and the aorta that prevents blood from backflowing into the ventricle.
+  builds_on:
+    - valve
+    - ventricles
+    - aorta
+  related:
+    - pulmonary-valve
+
+- id: arteriole
+  term: Arteriole
+  category: Anatomy & Physiology
+  aliases:
+    - Arterioles
+  definition: The smallest branch of an artery, which at its distal end leads into a capillary.
+  builds_on:
+    - artery
+  related:
+    - venule
+    - capillary
+
+- id: artery
+  term: Artery
+  category: Anatomy & Physiology
+  aliases:
+    - Arteries
+  definition: Blood vessel that carries blood away from the heart.
+  builds_on:
+    - circulatory-system
+  related:
+    - vein
+
+- id: aspiration
+  term: Aspiration
+  category: Pathophysiology
+  definition: Breathing a foreign substance into the lungs.
+  builds_on:
+    - airway
+    - epiglottis
+  related:
+    - patent-airway
+
+- id: assault
+  term: Assault
+  category: Legal & Ethical
+  definition: A willful threat to inflict harm on a person.
+  builds_on:
+    - intentional-tort
+  related:
+    - battery
+
+- id: atria
+  term: Atria
+  category: Anatomy & Physiology
+  aliases:
+    - Atrium
+  definition: The two upper chambers of the heart. Plural of atrium.
+  builds_on:
+    - heart
+  related:
+    - ventricles
+
+- id: automaticity
+  term: Automaticity
+  category: Pathophysiology
+  definition: The capability of cells within the cardiac conduction system to generate a cardiac impulse on their own.
+  related:
+    - heart
+
+- id: ball-and-socket-joint
+  term: Ball-and-Socket Joint
+  category: Anatomy & Physiology
+  definition: A joint that permits the widest range of motion, including flexion, extension, abduction, adduction, and rotation, for example the shoulder or hip joint.
+  builds_on:
+    - joint
+  related:
+    - acetabulum
+    - hinged-joint
+
+- id: baroreceptors
+  term: Baroreceptors
+  category: Pathophysiology
+  aliases:
+    - Baroreceptor
+  definition: Stretch-sensitive receptors located in the aortic arch and carotid bodies that constantly measure the blood pressure.
+  builds_on:
+    - blood-pressure
+    - aorta
+    - carotid-arteries
+
+- id: base-station
+  term: Base Station
+  category: Communication & Documentation
+  definition: The central dispatch and coordination area of an EMS communications system that ideally is in contact with all other elements of the system.
+  related:
+    - repeaters
+
+- id: battery
+  term: Battery
+  category: Legal & Ethical
+  definition: The act of touching a person unlawfully without their consent.
+  builds_on:
+    - intentional-tort
+    - consent
+  related:
+    - assault
+    - false-imprisonment
+
+- id: bicuspid-valve
+  term: Bicuspid Valve
+  full: Mitral Valve
+  category: Anatomy & Physiology
+  aliases:
+    - Mitral Valve
+  definition: The valve located between the left atrium and the left ventricle.
+  builds_on:
+    - valve
+    - atria
+    - ventricles
+  related:
+    - tricuspid-valve
+
+- id: bilateral
+  term: Bilateral
+  category: Medical Terminology & Positions
+  definition: On both sides.
+  related:
+    - lateral
+
+- id: blood-pressure
+  term: Blood Pressure
+  category: Pathophysiology
+  definition: The force exerted by the blood on the interior walls of the blood vessels.
+  builds_on:
+    - cardiac-output
+    - systemic-vascular-resistance
+  related:
+    - brachial-arteries
+    - urinary-system
+    - baroreceptors
+    - pulse
+
+- id: body-mechanics
+  term: Body Mechanics
+  category: Lifting & Moving
+  definition: Application of the study of muscles and body movement (kinesiology) to the use of the body and to the prevention and correction of problems related to posture and lifting.
+  related:
+    - power-lift
+    - nonurgent-move
+    - emergency-move
+    - power-grip
+
+- id: boyles-law
+  term: Boyle's Law
+  category: Pathophysiology
+  definition: The concept that at a constant temperature the volume of a gas is inversely proportionate to the pressure.
+  related:
+    - diaphragm
+
+- id: brachial-arteries
+  term: Brachial Arteries
+  category: Anatomy & Physiology
+  aliases:
+    - Brachial Artery
+  definition: The major artery of the upper arm.
+  builds_on:
+    - artery
+  related:
+    - radial-arteries
+    - blood-pressure
+
+- id: brainstem
+  term: Brainstem
+  category: Anatomy & Physiology
+  definition: The funnel-shaped inferior part of the brain that controls most automatic functions of the body. It is made up of the pons, the midbrain, and the medulla, which is the brain's connection to the spinal cord.
+  builds_on:
+    - central-nervous-system
+  related:
+    - cerebellum
+
+- id: bronchi
+  term: Bronchi
+  category: Anatomy & Physiology
+  aliases:
+    - Bronchus
+  definition: The two main branches leading from the trachea to the lungs, providing the passageway for air movement. Plural of bronchus.
+  builds_on:
+    - trachea
+    - airway
+  related:
+    - carina
+    - bronchioles
+
+- id: bronchioles
+  term: Bronchioles
+  category: Anatomy & Physiology
+  aliases:
+    - Bronchiole
+  definition: Small branches of the bronchi.
+  builds_on:
+    - bronchi
+  related:
+    - alveoli
+
+- id: burnout
+  term: Burnout
+  category: Safety & Wellness
+  definition: A condition resulting from chronic job stress, characterized by a state of irritability and fatigue that can markedly decrease effectiveness.
+  builds_on:
+    - critical-incident
+  related:
+    - defense-mechanisms
+
+- id: calcaneus
+  term: Calcaneus
+  category: Anatomy & Physiology
+  definition: The heel bone.
+  builds_on:
+    - extremities
+  related:
+    - metatarsals
+
+- id: capillary
+  term: Capillary
+  category: Anatomy & Physiology
+  aliases:
+    - Capillaries
+  definition: Tiny blood vessel that connects an arteriole to a venule.
+  builds_on:
+    - arteriole
+    - venule
+
+- id: cardiac-muscle
+  term: Cardiac Muscle
+  category: Anatomy & Physiology
+  definition: A type of involuntary muscle found only in the walls of the heart. Cardiac muscle has the property of automaticity, the capability to generate an impulse on its own, separately from the central nervous system.
+  builds_on:
+    - heart
+    - automaticity
+  related:
+    - skeletal-muscle
+    - smooth-muscle
+    - coronary-arteries
+
+- id: cardiac-output
+  term: Cardiac Output
+  category: Pathophysiology
+  definition: The volume of blood ejected from the left ventricle in one minute.
+  builds_on:
+    - stroke-volume
+    - heart
+  related:
+    - systemic-vascular-resistance
+
+- id: carina
+  term: Carina
+  category: Anatomy & Physiology
+  definition: The point at which the trachea splits into the right and left mainstem bronchi.
+  builds_on:
+    - trachea
+    - bronchi
+
+- id: carotid-arteries
+  term: Carotid Arteries
+  category: Anatomy & Physiology
+  aliases:
+    - Carotid Artery
+  definition: One of two major arteries of the neck, which supply the brain and head with blood.
+  builds_on:
+    - artery
+  related:
+    - pulse
+
+- id: carpals
+  term: Carpals
+  category: Anatomy & Physiology
+  definition: The eight bones that form the wrist.
+  builds_on:
+    - extremities
+  related:
+    - metacarpals
+    - gliding-joint
+
+- id: central-chemoreceptors
+  term: Central Chemoreceptors
+  category: Pathophysiology
+  definition: Receptors located in the medulla that are most sensitive to changes in carbon dioxide and the pH.
+  builds_on:
+    - chemoreceptors
+    - brainstem
+  related:
+    - peripheral-chemoreceptors
+
+- id: central-nervous-system
+  term: Central Nervous System
+  full: CNS
+  category: Anatomy & Physiology
+  aliases:
+    - CNS
+  definition: The brain and the spinal cord (CNS).
+  builds_on:
+    - nervous-system
+  related:
+    - peripheral-nervous-system
+    - spinal-column
+
+- id: cerebellum
+  term: Cerebellum
+  category: Anatomy & Physiology
+  definition: The section of the brain located beneath the cerebrum that coordinates balance, body movements, and muscle coordination.
+  builds_on:
+    - central-nervous-system
+  related:
+    - cerebrum
+    - brainstem
+
+- id: cerebrum
+  term: Cerebrum
+  category: Anatomy & Physiology
+  definition: Largest part of the brain, responsible for most conscious and sensory functions, the emotions, and the personality.
+  builds_on:
+    - central-nervous-system
+  related:
+    - cerebellum
+
+- id: cervical-spine
+  term: Cervical Spine
+  category: Anatomy & Physiology
+  definition: The first seven vertebrae, or the neck.
+  builds_on:
+    - spinal-column
+    - vertebrae
+  related:
+    - thoracic-spine
+    - pivot-joint
+
+- id: chemoreceptors
+  term: Chemoreceptors
+  category: Pathophysiology
+  aliases:
+    - Chemoreceptor
+  definition: Receptors that constantly monitor the arterial content of oxygen, carbon dioxide, and the blood pH and stimulate a change in the respiratory rate and depth.
+  builds_on:
+    - respiration
+    - respiratory-control-centers
+
+- id: circulatory-system
+  term: Circulatory System
+  full: Cardiovascular System
+  category: Anatomy & Physiology
+  aliases:
+    - Cardiovascular System
+  definition: System composed of the heart and blood vessels that brings oxygen and nutrients to and takes wastes away from body cells. Also called the cardiovascular system.
+  related:
+    - respiratory-system
+    - urinary-system
+
+- id: circumduction
+  term: Circumduction
+  category: Medical Terminology & Positions
+  definition: Conical movement, or movement through 360 degrees.
+  builds_on:
+    - flexion
+    - extension
+    - abduction
+    - adduction
+
+- id: clavicle
+  term: Clavicle
+  category: Anatomy & Physiology
+  definition: The collarbone, attached to the superior portion of the sternum.
+  builds_on:
+    - sternum
+    - manubrium
+  related:
+    - scapula
+
+- id: cleaning
+  term: Cleaning
+  category: Safety & Wellness
+  definition: The process of washing a soiled object with soap and water.
+  related:
+    - disinfecting
+
+- id: closed-ended-questions
+  term: Closed-Ended Questions
+  category: Communication & Documentation
+  aliases:
+    - Closed-Ended Question
+  definition: A question that requires only a "yes" or "no" answer.
+  builds_on:
+    - communication
+  related:
+    - open-ended-questions
+    - leading-questions
+
+- id: coccyx
+  term: Coccyx
+  category: Anatomy & Physiology
+  definition: The four fused vertebrae that form the most distal end of the spine; the tailbone.
+  builds_on:
+    - spinal-column
+    - vertebrae
+  related:
+    - sacral-spine
+
+- id: combining-form
+  term: Combining Form
+  category: Medical Terminology & Positions
+  definition: Word part that carries the word's essential meaning.
+  related:
+    - suffix
+    - prefix
+
+- id: communication
+  term: Communication
+  category: Communication & Documentation
+  definition: A dynamic process that incorporates verbal and nonverbal expressions into meaningful messages that are received and interpreted by others.
+  related:
+    - feedback
+    - haptics
+    - gestures
+    - leading-questions
+
+- id: community-paramedicine
+  term: Community Paramedicine
+  full: CP
+  category: EMS Systems & Operations
+  aliases:
+    - CP
+  definition: Services provided by the EMS agency and personnel that are administratively and clinically integrated with other health care entities.
+  builds_on:
+    - mobile-integrated-healthcare
+    - paramedic
+
+- id: compliance
+  term: Compliance
+  category: Pathophysiology
+  definition: The measure of the capability of the chest wall and lungs to stretch, distend, and expand.
+  builds_on:
+    - lungs
+    - thorax
+  related:
+    - airway-resistance
+    - surfactant
+
+- id: conchae
+  term: Conchae
+  category: Anatomy & Physiology
+  definition: The scroll-like bones in the nasal cavity that help warm, moisten, and filter inhaled air.
+  builds_on:
+    - airway
+
+- id: condyloid-joint
+  term: Condyloid Joint
+  category: Anatomy & Physiology
+  definition: A joint that permits limited motion in two directions, for example such a joint in the wrist enables the hand to move up and down and side to side but not to rotate completely.
+  builds_on:
+    - joint
+  related:
+    - saddle-joint
+
+- id: consent
+  term: Consent
+  category: Legal & Ethical
+  definition: Permission that must be obtained before care is rendered.
+  related:
+    - battery
+    - informed-consent
+    - false-imprisonment
+    - expressed-consent
+
+- id: consolidated-omnibus-budget-reconciliation-act
+  term: Consolidated Omnibus Budget Reconciliation Act
+  full: COBRA
+  category: Legal & Ethical
+  aliases:
+    - COBRA
+  definition: A federal regulation that ensures the public's access to emergency health care regardless of ability to pay.
+  related:
+    - emergency-medical-treatment-and-active-labor-act
+
+- id: coronal-plane
+  term: Coronal Plane
+  full: Frontal Plane
+  category: Medical Terminology & Positions
+  aliases:
+    - Frontal Plane
+  definition: A plane that divides the body into anterior and posterior halves.
+  builds_on:
+    - anatomical-planes
+    - anterior
+    - posterior
+  related:
+    - sagittal-plane
+    - transverse-plane
+
+- id: coronary-arteries
+  term: Coronary Arteries
+  category: Anatomy & Physiology
+  aliases:
+    - Coronary Artery
+  definition: Blood vessels that supply the heart with blood.
+  builds_on:
+    - artery
+    - heart
+  related:
+    - cardiac-muscle
+
+- id: cranium
+  term: Cranium
+  category: Anatomy & Physiology
+  definition: The bones that form the top, back, and sides of the skull plus the forehead.
+  builds_on:
+    - skull
+  related:
+    - face
+
+- id: cricoid-cartilage
+  term: Cricoid Cartilage
+  category: Anatomy & Physiology
+  definition: The most inferior portion of the larynx and only full cartilaginous ring of the upper airway. It is felt immediately below the thyroid cartilage.
+  builds_on:
+    - larynx
+  related:
+    - thyroid-cartilage
+
+- id: critical-incident
+  term: Critical Incident
+  category: Safety & Wellness
+  definition: Any situation that causes unusually strong emotions that interfere with the ability to function.
+  related:
+    - defense-mechanisms
+
+- id: critical-incident-stress-debriefing
+  term: Critical Incident Stress Debriefing
+  full: CISD
+  category: Safety & Wellness
+  aliases:
+    - CISD
+  definition: A session usually held within 24 to 72 hours of a critical incident, where a team of peer counselors and mental health professionals help emergency service personnel work through emotions that normally follow a critical incident.
+  builds_on:
+    - critical-incident
+    - defusing
+
+- id: culture
+  term: Culture
+  category: Communication & Documentation
+  definition: The thoughts, communications, actions, and values of a racial, an ethnic, a religious, or a social group.
+  related:
+    - ethnocentrism
+
+- id: dead-air-space
+  term: Dead Air Space
+  full: VD
+  category: Pathophysiology
+  aliases:
+    - Dead Space
+    - VD
+  definition: Anatomical areas in the respiratory tract (outside of the alveoli) in which air collects during inhalation but no gas exchange occurs.
+  builds_on:
+    - airway
+    - ventilation
+  related:
+    - tidal-volume
+
+- id: decoder
+  term: Decoder
+  category: Communication & Documentation
+  definition: Device that recognizes and responds to only certain codes imposed on radio broadcasts.
+  builds_on:
+    - encoder
+    - base-station
+
+- id: decoding
+  term: Decoding
+  category: Communication & Documentation
+  definition: Process by which a received message is translated and interpreted.
+  builds_on:
+    - communication
+    - encoding
+
+- id: defamation
+  term: Defamation
+  category: Legal & Ethical
+  definition: An intentional false communication that injures another person's reputation or good name.
+  builds_on:
+    - intentional-tort
+  related:
+    - health-insurance-portability-and-accountability-act
+
+- id: defense-mechanisms
+  term: Defense Mechanisms
+  category: Safety & Wellness
+  aliases:
+    - Defense Mechanism
+  definition: Psychological coping strategies individuals use to protect themselves from unwanted feelings or thoughts.
+  related:
+    - burnout
+    - critical-incident
+
+- id: defusing
+  term: Defusing
+  category: Safety & Wellness
+  definition: A session held prior to a critical incident stress debriefing (CISD) for emergency service personnel most directly involved to provide an opportunity to vent emotions and get information before the CISD.
+  builds_on:
+    - critical-incident
+  related:
+    - critical-incident-stress-debriefing
+
+- id: deoxyhemoglobin
+  term: Deoxyhemoglobin
+  category: Pathophysiology
+  definition: Hemoglobin that does not have any oxygen molecules attached to it.
+  builds_on:
+    - red-blood-cells
+    - respiration
+  related:
+    - oxyhemoglobin
+
+- id: dermis
+  term: Dermis
+  category: Anatomy & Physiology
+  definition: The second layer of the skin.
+  builds_on:
+    - integumentary-system
+    - epidermis
+  related:
+    - subcutaneous-layer
+
+- id: diaphragm
+  term: Diaphragm
+  category: Anatomy & Physiology
+  definition: The major muscle of respiration that separates the chest cavity from the abdominal cavity.
+  builds_on:
+    - thorax
+    - respiratory-system
+  related:
+    - intercostal-muscles
+    - boyles-law
+
+- id: diastolic-blood-pressure
+  term: Diastolic Blood Pressure
+  category: Pathophysiology
+  definition: The pressure exerted against the walls of the arteries when the left ventricle is at rest.
+  builds_on:
+    - blood-pressure
+    - systemic-vascular-resistance
+  related:
+    - systolic-blood-pressure
+
+- id: digestion
+  term: Digestion
+  category: Anatomy & Physiology
+  definition: The mechanical and chemical breakdown of food into smaller components that can be absorbed and used by the body.
+  builds_on:
+    - digestive-system
+
+- id: digestive-system
+  term: Digestive System
+  category: Anatomy & Physiology
+  definition: The structures and organs that ingest and carry food so that absorption and waste elimination can occur.
+  related:
+    - digestion
+
+- id: direct-medical-oversight
+  term: Direct Medical Oversight
+  category: EMS Systems & Operations
+  definition: Real-time oversight or medical direction provided by a physician to an EMS provider seeking immediate feedback or direction; can be on-line or on-scene.
+  builds_on:
+    - medical-oversight
+    - medical-director
+  related:
+    - indirect-medical-oversight
+
+- id: disinfecting
+  term: Disinfecting
+  category: Safety & Wellness
+  definition: Using a disinfectant such as alcohol or bleach to kill many of the microorganisms that can be present on the surface of an object.
+  builds_on:
+    - cleaning
+    - pathogens
+  related:
+    - sterilization
+
+- id: distal
+  term: Distal
+  category: Medical Terminology & Positions
+  definition: Distant, or far from the point of reference. Opposite of proximal.
+  related:
+    - proximal
+
+- id: do-not-resuscitate-order
+  term: Do Not Resuscitate Order
+  full: DNR
+  category: Legal & Ethical
+  aliases:
+    - DNR
+    - DNR Order
+    - Do Not Resuscitate (DNR) Order
+  definition: A legal document, usually signed by the patient and their physician, that indicates to medical personnel which, if any, life-sustaining measures should be taken when the patient's heart and respiratory functions have ceased.
+  builds_on:
+    - advance-directive
+  related:
+    - living-will
+    - durable-power-of-attorney
+    - physician-orders-for-life-sustaining-treatment
+
+- id: dorsal
+  term: Dorsal
+  category: Medical Terminology & Positions
+  definition: Toward the back or spine. Opposite of ventral.
+  related:
+    - posterior
+    - ventral
+
+- id: dorsal-respiratory-group
+  term: Dorsal Respiratory Group
+  full: DRG
+  category: Pathophysiology
+  aliases:
+    - DRG
+  definition: Respiratory rhythm center located in the brainstem that controls the rate and depth of normal quiet respiration.
+  builds_on:
+    - respiratory-control-centers
+    - brainstem
+  related:
+    - ventral-respiratory-group
+    - pontine-respiratory-center
+
+- id: dorsalis-pedis-arteries
+  term: Dorsalis Pedis Arteries
+  category: Anatomy & Physiology
+  aliases:
+    - Dorsalis Pedis Artery
+  definition: An artery of the foot, which can be felt on the top surface of the foot.
+  builds_on:
+    - artery
+  related:
+    - posterior-tibial-arteries
+
+- id: durable-power-of-attorney
+  term: Durable Power of Attorney
+  category: Legal & Ethical
+  definition: A legal document that designates a person who is legally empowered to make health care decisions for the signer of the document if they cannot do it themselves.
+  builds_on:
+    - advance-directive
+  related:
+    - do-not-resuscitate-order
+    - living-will
+
+- id: duty-to-act
+  term: Duty to Act
+  category: Legal & Ethical
+  definition: The obligation to care for a patient who requires it.
+  related:
+    - good-samaritan-law
+
+- id: edema
+  term: Edema
+  category: Pathophysiology
+  definition: Swelling caused by fluid accumulating in the tissues.
+  builds_on:
+    - hydrostatic-pressure
+    - plasma-oncotic-pressure
+    - capillary
+  related:
+    - j-receptors
+
+- id: emergency-medical-responder
+  term: Emergency Medical Responder
+  full: EMR
+  category: EMS Systems & Operations
+  aliases:
+    - EMR
+  definition: The level of EMS practitioner who is likely to be the first person on the scene with emergency care training.
+  related:
+    - emergency-medical-technician
+
+- id: emergency-medical-technician
+  term: Emergency Medical Technician
+  full: EMT
+  category: EMS Systems & Operations
+  aliases:
+    - EMT
+  definition: The level of EMS practitioner who provides basic emergency medical care and transportation to patients who access the EMS system including oxygen therapy and ventilation equipment, pulse oximetry, use of automatic blood pressure monitoring equipment, and limited medication administration.
+  builds_on:
+    - emergency-medical-responder
+    - prehospital-care
+  related:
+    - advanced-emergency-medical-technician
+
+- id: emergency-medical-treatment-and-active-labor-act
+  term: Emergency Medical Treatment and Active Labor Act
+  full: EMTALA
+  category: Legal & Ethical
+  aliases:
+    - EMTALA
+  definition: A federal regulation that ensures the public's access to emergency health care regardless of the person's ability to pay. Also known as the "anti-patient-dumping statute," forbidding turning a patient away at the door or sending them to a public hospital because of an inability to pay.
+  builds_on:
+    - consolidated-omnibus-budget-reconciliation-act
+
+- id: emergency-move
+  term: Emergency Move
+  category: Lifting & Moving
+  definition: A patient move that should be performed when there is immediate danger to the patient or to the rescuer.
+  builds_on:
+    - body-mechanics
+  related:
+    - urgent-move
+    - nonurgent-move
+
+- id: encoder
+  term: Encoder
+  category: Communication & Documentation
+  definition: Device that breaks down sound waves into unique digital codes for radio transmission.
+  related:
+    - decoder
+
+- id: encoding
+  term: Encoding
+  category: Communication & Documentation
+  definition: Process of converting information into a message.
+  builds_on:
+    - communication
+  related:
+    - decoding
+
+- id: endocrine-system
+  term: Endocrine System
+  category: Anatomy & Physiology
+  definition: A system of ductless glands that produce hormones that regulate body functions.
+  related:
+    - nervous-system
+
+- id: epidermis
+  term: Epidermis
+  category: Anatomy & Physiology
+  definition: The outermost layer of the skin.
+  builds_on:
+    - integumentary-system
+  related:
+    - dermis
+
+- id: epiglottis
+  term: Epiglottis
+  category: Anatomy & Physiology
+  definition: A small, leaf-shaped flap of cartilaginous tissue, located immediately posterior to the root of the tongue, that covers the opening of the larynx to keep food and liquid from entering the trachea and lungs.
+  builds_on:
+    - larynx
+    - airway
+  related:
+    - glottis
+
+- id: esophagus
+  term: Esophagus
+  category: Anatomy & Physiology
+  definition: Passageway at the lower end of the pharynx that leads to the stomach.
+  builds_on:
+    - digestive-system
+    - pharynx
+  related:
+    - laryngopharynx
+    - trachea
+
+- id: ethnocentrism
+  term: Ethnocentrism
+  category: Communication & Documentation
+  definition: The tendency to evaluate other cultures or groups according to the standards, values, and customs of one's own culture, often viewing one's own way of life as superior.
+  builds_on:
+    - culture
+
+- id: evidence-based-guidelines
+  term: Evidence-Based Guidelines
+  full: EBG
+  category: EMS Systems & Operations
+  aliases:
+    - EBG
+  definition: Development of medical guidelines based on scientific evidence and research studies.
+  builds_on:
+    - evidence-based-medicine
+
+- id: evidence-based-medicine
+  term: Evidence-Based Medicine
+  category: EMS Systems & Operations
+  aliases:
+    - EBM
+  definition: Medical practice based on scientific evidence that certain procedures, medications, and equipment improve patient outcome.
+  related:
+    - evidence-based-guidelines
+
+- id: expressed-consent
+  term: Expressed Consent
+  category: Legal & Ethical
+  definition: Permission that must be obtained from every conscious adult who has the capacity to understand and make a reasoned judgment before emergency treatment can be provided.
+  builds_on:
+    - consent
+  related:
+    - informed-consent
+    - implied-consent
+    - minor-consent
+
+- id: extension
+  term: Extension
+  category: Medical Terminology & Positions
+  definition: Straightening away from the body or increasing the angle between the bones or parts of the body.
+  related:
+    - flexion
+
+- id: extremities
+  term: Extremities
+  category: Anatomy & Physiology
+  aliases:
+    - Extremity
+  definition: The limbs of the body. The lower extremities include the hips, thighs, legs, ankles, and feet. The upper extremities include the shoulders, arms, forearms, wrists, and hands.
+  builds_on:
+    - musculoskeletal-system
+
+- id: face
+  term: Face
+  category: Anatomy & Physiology
+  definition: The area of the skull between the brow and the chin.
+  builds_on:
+    - skull
+  related:
+    - cranium
+
+- id: false-imprisonment
+  term: False Imprisonment
+  category: Legal & Ethical
+  definition: The intentional and unjustifiable detention of a person without their consent or other legal authority.
+  builds_on:
+    - intentional-tort
+    - consent
+  related:
+    - battery
+
+- id: feedback
+  term: Feedback
+  category: Communication & Documentation
+  definition: Any information that an individual receives about their behavior.
+  builds_on:
+    - communication
+    - decoding
+  related:
+    - open-ended-questions
+
+- id: femoral-arteries
+  term: Femoral Arteries
+  category: Anatomy & Physiology
+  aliases:
+    - Femoral Artery
+  definition: The major artery of the thigh that supplies the groin and leg with blood.
+  builds_on:
+    - artery
+  related:
+    - posterior-tibial-arteries
+
+- id: femur
+  term: Femur
+  category: Anatomy & Physiology
+  definition: The thighbone.
+  builds_on:
+    - extremities
+  related:
+    - acetabulum
+    - patella
+    - tibia
+
+- id: fibula
+  term: Fibula
+  category: Anatomy & Physiology
+  definition: The lateral, smaller long bone of the lower leg.
+  builds_on:
+    - extremities
+  related:
+    - tibia
+
+- id: flexion
+  term: Flexion
+  category: Medical Terminology & Positions
+  definition: Bending toward the body or decreasing the angle between the bones or parts of the body.
+  related:
+    - extension
+
+- id: fowlers-position
+  term: Fowler's Position
+  category: Medical Terminology & Positions
+  definition: A position in which the patient is lying on their back with the upper body elevated at a 45° to 60° angle.
+  builds_on:
+    - supine
+  related:
+    - semi-fowlers-position
+
+- id: frank-starling-law-of-the-heart
+  term: Frank-Starling Law of the Heart
+  category: Pathophysiology
+  aliases:
+    - Frank-Starling Law
+  definition: The concept that the stretch of the muscle fiber in the left ventricle at the end of diastole determines the force necessary to eject the blood contained within it.
+  builds_on:
+    - preload
+    - stroke-volume
+
+- id: frequency-of-ventilation
+  term: Frequency of Ventilation
+  full: f
+  category: Pathophysiology
+  definition: Number of ventilations in one minute.
+  builds_on:
+    - ventilation
+
+- id: gestures
+  term: Gestures
+  category: Communication & Documentation
+  definition: Nonverbal body movements that convey meaning to others.
+  builds_on:
+    - communication
+  related:
+    - haptics
+
+- id: gliding-joint
+  term: Gliding Joint
+  category: Anatomy & Physiology
+  definition: A joint where one bone slides across another, such as those connecting the small bones in the hands and feet.
+  builds_on:
+    - joint
+  related:
+    - carpals
+
+- id: glottis
+  term: Glottis
+  full: Glottic Opening
+  category: Anatomy & Physiology
+  aliases:
+    - Glottic Opening
+  definition: The space between the true vocal cords.
+  builds_on:
+    - larynx
+    - true-vocal-cords
+  related:
+    - epiglottis
+
+- id: glycolysis
+  term: Glycolysis
+  category: Pathophysiology
+  definition: The breakdown of glucose into pyruvic acid in the cells.
+  builds_on:
+    - aerobic-metabolism
+    - anaerobic-metabolism
+
+- id: good-samaritan-law
+  term: Good Samaritan Law
+  category: Legal & Ethical
+  aliases:
+    - Good Samaritan Laws
+  definition: A law that provides immunity from liability for acts performed in good faith to assist at the scene of a medical emergency unless those acts constitute gross negligence.
+  builds_on:
+    - negligence
+    - standard-of-care
+  related:
+    - duty-to-act
+
+- id: haptics
+  term: Haptics
+  category: Communication & Documentation
+  definition: The study of touching.
+  builds_on:
+    - communication
+  related:
+    - gestures
+    - intimate-zone
+
+- id: health-insurance-portability-and-accountability-act
+  term: Health Insurance Portability and Accountability Act
+  full: HIPAA
+  category: Legal & Ethical
+  aliases:
+    - HIPAA
+  definition: A federal law enacted in 1996 that protects the privacy of patient health care information and gives the patient control over how the information is distributed and used.
+  related:
+    - prehospital-care-report
+    - defamation
+
+- id: heart
+  term: Heart
+  category: Anatomy & Physiology
+  definition: The muscular organ that contracts to force blood into circulation through the body.
+  builds_on:
+    - circulatory-system
+  related:
+    - automaticity
+
+- id: hinged-joint
+  term: Hinged Joint
+  category: Anatomy & Physiology
+  aliases:
+    - Hinge Joint
+  definition: A joint that permits flexion and extension, such as the elbow, knee, or finger.
+  builds_on:
+    - joint
+  related:
+    - olecranon
+    - ball-and-socket-joint
+
+- id: humerus
+  term: Humerus
+  category: Anatomy & Physiology
+  definition: The largest bone in the upper extremity, located in the proximal portion of the upper arm.
+  builds_on:
+    - extremities
+  related:
+    - scapula
+    - radius
+    - ulna
+
+- id: hydrostatic-pressure
+  term: Hydrostatic Pressure
+  category: Pathophysiology
+  definition: The blood pressure or force exerted against the inside of vessel walls; the "push" effect that forces fluid out of a capillary.
+  builds_on:
+    - blood-pressure
+    - capillary
+  related:
+    - plasma-oncotic-pressure
+    - edema
+
+- id: hypoperfusion
+  term: Hypoperfusion
+  full: Shock
+  category: Pathophysiology
+  definition: The inadequate perfusion of cells, tissue, and organs with oxygen and other nutrients, resulting in cell, tissue, and organ dysfunction.
+  builds_on:
+    - perfusion
+    - aerobic-metabolism
+    - anaerobic-metabolism
+  related:
+    - agonal-respirations
+    - ventilation-perfusion-ratio
+    - shock-position
+    - trendelenburg-position
+
+- id: iliac-crest
+  term: Iliac Crest
+  category: Anatomy & Physiology
+  definition: The upper margin of the bones of the pelvis.
+  builds_on:
+    - pelvis
+  related:
+    - ischium
+
+- id: implied-consent
+  term: Implied Consent
+  category: Legal & Ethical
+  aliases:
+    - Emergency Doctrine
+  definition: The assumption that in a true emergency in which a patient who is unresponsive or cannot make a rational decision is at a significant risk of death, disability, or deterioration of a condition, that patient would agree to emergency treatment. Also called the emergency doctrine.
+  builds_on:
+    - consent
+  related:
+    - expressed-consent
+    - involuntary-consent
+
+- id: indirect-medical-oversight
+  term: Indirect Medical Oversight
+  category: EMS Systems & Operations
+  definition: The routine duties and responsibilities of the EMS medical director, including the creation of protocols and standing orders.
+  builds_on:
+    - medical-oversight
+    - medical-director
+  related:
+    - direct-medical-oversight
+
+- id: inferior
+  term: Inferior
+  category: Medical Terminology & Positions
+  definition: Beneath, lower, toward the feet. Opposite of superior.
+  related:
+    - superior
+
+- id: inferior-plane
+  term: Inferior Plane
+  category: Medical Terminology & Positions
+  definition: Everything below the transverse line (below the waist). Opposite of the superior plane.
+  builds_on:
+    - transverse-plane
+    - inferior
+  related:
+    - superior-plane
+
+- id: informed-consent
+  term: Informed Consent
+  category: Legal & Ethical
+  definition: Consent for treatment that is given by a patient who has the capacity to understand and make a reasoned judgment based on full disclosure of possible risks and consequences.
+  builds_on:
+    - consent
+    - expressed-consent
+
+- id: integumentary-system
+  term: Integumentary System
+  category: Anatomy & Physiology
+  definition: The skin.
+  related:
+    - dermis
+    - epidermis
+    - subcutaneous-layer
+
+- id: intentional-tort
+  term: Intentional Tort
+  category: Legal & Ethical
+  definition: A wrongful act, injury, or damage that is committed knowingly.
+  builds_on:
+    - tort
+
+- id: intercostal-muscles
+  term: Intercostal Muscles
+  category: Anatomy & Physiology
+  definition: The muscles between the ribs.
+  builds_on:
+    - thorax
+    - skeletal-muscle
+  related:
+    - diaphragm
+
+- id: intimate-zone
+  term: Intimate Zone
+  category: Communication & Documentation
+  definition: In American culture, the space within less than 1½ feet of an individual.
+  builds_on:
+    - communication
+    - culture
+  related:
+    - haptics
+
+- id: involuntary-consent
+  term: Involuntary Consent
+  category: Legal & Ethical
+  definition: Consent that is assumed when the patient either lacks the capacity to understand and make a reasoned judgment or is legally not permitted to make their own medical decisions.
+  builds_on:
+    - consent
+  related:
+    - implied-consent
+
+- id: irritant-receptors
+  term: Irritant Receptors
+  category: Pathophysiology
+  definition: Receptors in the airways that are sensitive to irritating gases, aerosol, and particles and result in cough, bronchoconstriction, and increased ventilatory rate when stimulated.
+  builds_on:
+    - airway
+    - respiratory-control-centers
+  related:
+    - stretch-receptors
+
+- id: ischium
+  term: Ischium
+  category: Anatomy & Physiology
+  definition: The posterior and inferior portion of the pelvis.
+  builds_on:
+    - pelvis
+  related:
+    - iliac-crest
+    - pubis
+
+- id: j-receptors
+  term: J-Receptors
+  category: Pathophysiology
+  aliases:
+    - J-receptors
+  definition: Receptors that are found in the capillaries surrounding the alveoli and are sensitive to increases in the pressure in the capillary and cause rapid, shallow ventilation when stimulated.
+  builds_on:
+    - alveoli
+    - capillary
+  related:
+    - edema
+
+- id: joint
+  term: Joint
+  category: Anatomy & Physiology
+  definition: A place where one bone meets another.
+  related:
+    - ball-and-socket-joint
+    - saddle-joint
+    - gliding-joint
+    - hinged-joint
+
+- id: kyphosis
+  term: Kyphosis
+  category: Lifting & Moving
+  definition: Abnormal curvature of the spine with convexity backward. Also called slouch.
+  builds_on:
+    - spinal-column
+    - thoracic-spine
+  related:
+    - lordosis
+
+- id: laryngeal-spasm
+  term: Laryngeal Spasm
+  full: Laryngospasm
+  category: Pathophysiology
+  aliases:
+    - Laryngospasm
+  definition: A contraction of the vocal cords that causes them to close and prevents air from passing through into the trachea. Also called a laryngospasm.
+  builds_on:
+    - larynx
+    - vocal-cords
+    - patent-airway
+
+- id: laryngopharynx
+  term: Laryngopharynx
+  full: Hypopharynx
+  category: Anatomy & Physiology
+  aliases:
+    - Hypopharynx
+  definition: Upper airway section that extends from the hyoid bone at the base of the tongue to the openings of the esophagus and larynx.
+  builds_on:
+    - pharynx
+  related:
+    - oropharynx
+    - esophagus
+
+- id: larynx
+  term: Larynx
+  category: Anatomy & Physiology
+  definition: Structure that houses the vocal cords and is located inferior to the pharynx and superior to the trachea.
+  builds_on:
+    - airway
+    - pharynx
+
+- id: lateral
+  term: Lateral
+  category: Medical Terminology & Positions
+  definition: Refers to the left or right of the midline, or away from the midline, or to the side of the body.
+  related:
+    - medial
+    - bilateral
+
+- id: lateral-malleolus
+  term: Lateral Malleolus
+  category: Anatomy & Physiology
+  definition: The prominent bony projection on the lateral side of the ankle, formed by the distal end of the fibula.
+  builds_on:
+    - fibula
+    - lateral
+  related:
+    - medial-malleolus
+
+- id: lateral-recumbent-position
+  term: Lateral Recumbent Position
+  full: Recovery Position
+  category: Medical Terminology & Positions
+  aliases:
+    - Recovery Position
+  definition: A position in which the patient is lying on the left or right side.
+  builds_on:
+    - lateral
+  related:
+    - supine
+
+- id: leading-questions
+  term: Leading Questions
+  category: Communication & Documentation
+  aliases:
+    - Leading Question
+  definition: Questions that suggest an answer guided by the individual who is asking the question.
+  builds_on:
+    - communication
+  related:
+    - closed-ended-questions
+    - open-ended-questions
+
+- id: left
+  term: Left
+  category: Medical Terminology & Positions
+  definition: Refers to the patient's left; provider's right side when standing directly in front of the patient.
+  related:
+    - right
+
+- id: libel
+  term: Libel
+  category: Legal & Ethical
+  definition: The act of injuring a person's reputation or good name in writing or through the mass media with malicious intent or reckless disregard for the falsity of those statements.
+  builds_on:
+    - defamation
+  related:
+    - slander
+
+- id: ligaments
+  term: Ligaments
+  category: Anatomy & Physiology
+  aliases:
+    - Ligament
+  definition: Bands of fibrous tissue that connect bones to a joint and support organs.
+  builds_on:
+    - joint
+  related:
+    - tendons
+
+- id: living-will
+  term: Living Will
+  category: Legal & Ethical
+  definition: A legal document that delineates the signer's wishes about general health care issues such as the use of long-term life support measures.
+  builds_on:
+    - advance-directive
+  related:
+    - do-not-resuscitate-order
+    - durable-power-of-attorney
+
+- id: lordosis
+  term: Lordosis
+  category: Lifting & Moving
+  definition: Abnormal anterior convexity of the spine. Also called swayback.
+  builds_on:
+    - spinal-column
+    - lumbar-spine
+  related:
+    - kyphosis
+
+- id: lumbar-spine
+  term: Lumbar Spine
+  category: Anatomy & Physiology
+  definition: The five vertebrae located between the sacral and the thoracic spine that form the lower back.
+  builds_on:
+    - spinal-column
+    - vertebrae
+  related:
+    - thoracic-spine
+    - sacral-spine
+
+- id: lungs
+  term: Lungs
+  category: Anatomy & Physiology
+  definition: The principal organs of respiration.
+  builds_on:
+    - respiratory-system
+    - thorax
+  related:
+    - pleural-cavity
+
+- id: mandible
+  term: Mandible
+  category: Anatomy & Physiology
+  definition: The lower movable portion of the jaw.
+  builds_on:
+    - face
+    - skull
+  related:
+    - maxilla
+
+- id: manubrium
+  term: Manubrium
+  category: Anatomy & Physiology
+  definition: The broad superior portion of the sternum with which the clavicle and first ribs articulate.
+  builds_on:
+    - sternum
+  related:
+    - xiphoid-process
+
+- id: maxilla
+  term: Maxilla
+  category: Anatomy & Physiology
+  definition: The fixed upper portion of the jaw.
+  builds_on:
+    - face
+    - skull
+  related:
+    - mandible
+
+- id: medial
+  term: Medial
+  category: Medical Terminology & Positions
+  definition: Toward the midline or center of the body.
+  related:
+    - lateral
+
+- id: medial-malleolus
+  term: Medial Malleolus
+  category: Anatomy & Physiology
+  definition: The prominent bony projection on the medial side of the ankle, formed by the distal end of the tibia.
+  builds_on:
+    - tibia
+    - medial
+  related:
+    - lateral-malleolus
+
+- id: medical-direction
+  term: Medical Direction
+  category: EMS Systems & Operations
+  definition: Medical policies, procedures, and practices that are available to EMS providers either off-line or on-line.
+  builds_on:
+    - medical-director
+    - medical-oversight
+
+- id: medical-director
+  term: Medical Director
+  category: EMS Systems & Operations
+  definition: Physician who is legally responsible for the clinical and patient care aspects of an EMS system.
+  related:
+    - medical-direction
+    - direct-medical-oversight
+    - indirect-medical-oversight
+
+- id: medical-oversight
+  term: Medical Oversight
+  category: EMS Systems & Operations
+  definition: The medical director's broad responsibilities, including all clinical and administrative functions and activities necessary to exercise ultimate responsibility for the emergency care provided by individual personnel and the entire emergency medical services (EMS) system.
+  related:
+    - quality-improvement
+    - medical-direction
+    - direct-medical-oversight
+    - indirect-medical-oversight
+
+- id: metacarpals
+  term: Metacarpals
+  category: Anatomy & Physiology
+  definition: The bones of the hands.
+  builds_on:
+    - extremities
+  related:
+    - carpals
+    - phalanges
+
+- id: metatarsals
+  term: Metatarsals
+  category: Anatomy & Physiology
+  definition: The bones that form the arch of the foot.
+  builds_on:
+    - extremities
+  related:
+    - calcaneus
+    - phalanges
+
+- id: microcirculation
+  term: Microcirculation
+  category: Pathophysiology
+  definition: The flow of blood through the arterioles, capillaries, and venules that is the site of exchange of gases, nutrients, and waste products with the cells.
+  builds_on:
+    - arteriole
+    - capillary
+    - venule
+  related:
+    - perfusion
+
+- id: midaxillary
+  term: Midaxillary
+  category: Medical Terminology & Positions
+  definition: Refers to the center of the armpit.
+  related:
+    - midclavicular
+
+- id: midaxillary-line
+  term: Midaxillary Line
+  category: Medical Terminology & Positions
+  definition: An imaginary line that divides the body into anterior and posterior planes; the imaginary line from the middle of the armpit to the ankle.
+  builds_on:
+    - midaxillary
+    - anatomical-planes
+  related:
+    - midline
+    - transverse-line
+
+- id: midclavicular
+  term: Midclavicular
+  category: Medical Terminology & Positions
+  definition: Refers to the center of the collarbone (clavicle).
+  related:
+    - midaxillary
+
+- id: midline
+  term: Midline
+  category: Medical Terminology & Positions
+  definition: An imaginary line drawn vertically through the middle of the patient, dividing it into right and left planes.
+  related:
+    - midsagittal-plane
+    - midaxillary-line
+
+- id: midsagittal-plane
+  term: Midsagittal Plane
+  category: Medical Terminology & Positions
+  definition: A vertical plane that divides the body into equal right and left halves.
+  builds_on:
+    - sagittal-plane
+    - midline
+
+- id: minimum-data-set
+  term: Minimum Data Set
+  category: Communication & Documentation
+  definition: The minimum information the U.S. Department of Transportation has determined should be included on all prehospital care reports.
+  builds_on:
+    - prehospital-care-report
+  related:
+    - pertinent-negatives
+
+- id: minor-consent
+  term: Minor Consent
+  category: Legal & Ethical
+  definition: Permission obtained from a parent or legal guardian for emergency treatment of a minor or an adult who has been legally ruled mentally incompetent.
+  builds_on:
+    - consent
+  related:
+    - expressed-consent
+
+- id: minute-ventilation
+  term: Minute Ventilation
+  full: Minute Volume
+  category: Pathophysiology
+  aliases:
+    - Minute Volume
+  definition: The amount of air moved in and out of the lungs in one minute.
+  builds_on:
+    - tidal-volume
+    - frequency-of-ventilation
+  related:
+    - alveolar-ventilation
+
+- id: mobile-data-terminal
+  term: Mobile Data Terminal
+  full: MDT
+  category: Communication & Documentation
+  aliases:
+    - MDT
+  definition: Device that is mounted in the cab of an ambulance, receives a signal from a digital radio, and displays the information on the terminal screen. Some also print a hard copy of the information.
+  builds_on:
+    - base-station
+  related:
+    - telemetry
+
+- id: mobile-integrated-healthcare
+  term: Mobile Integrated Healthcare
+  full: MIH
+  category: EMS Systems & Operations
+  aliases:
+    - MIH
+  definition: Provision by a variety of health care entities and practitioners of patient-centered health care in the out-of-hospital environment using mobile technology and resources and integrated administratively or clinically with the EMS system.
+  related:
+    - community-paramedicine
+
+- id: musculoskeletal-system
+  term: Musculoskeletal System
+  category: Anatomy & Physiology
+  definition: The system of bones and muscle plus connective tissue that provides support and protection of the body and permits motion.
+  related:
+    - skull
+    - tendons
+    - skeletal-muscle
+    - extremities
+
+- id: nasal-bones
+  term: Nasal Bones
+  category: Anatomy & Physiology
+  definition: The bones that form the bed of the nose.
+  builds_on:
+    - face
+    - skull
+  related:
+    - orbits
+
+- id: nasopharynx
+  term: Nasopharynx
+  category: Anatomy & Physiology
+  definition: The portion of the pharynx that extends from the posterior nasal cavity to the soft palate.
+  builds_on:
+    - pharynx
+  related:
+    - oropharynx
+
+- id: negligence
+  term: Negligence
+  category: Legal & Ethical
+  definition: The act of deviating from an accepted standard of care through carelessness, inattention, disregard, inadvertence, or oversight, which results in further injury to the patient.
+  builds_on:
+    - duty-to-act
+    - standard-of-care
+    - proximate-cause
+  related:
+    - abandonment
+    - tort
+
+- id: nervous-system
+  term: Nervous System
+  category: Anatomy & Physiology
+  definition: The body system including the brain, spinal cord, and nerves that controls the voluntary and involuntary activity of the human body.
+  related:
+    - endocrine-system
+
+- id: nonurgent-move
+  term: Nonurgent Move
+  category: Lifting & Moving
+  definition: A patient move made when no immediate threat to life exists.
+  builds_on:
+    - body-mechanics
+  related:
+    - urgent-move
+    - emergency-move
+
+- id: off-line-medical-direction
+  term: Off-Line Medical Direction
+  category: EMS Systems & Operations
+  aliases:
+    - Offline Medical Direction
+  definition: Medical policies, procedures, and practices that medical direction has established in written guidelines.
+  builds_on:
+    - medical-direction
+    - indirect-medical-oversight
+  related:
+    - on-line-medical-direction
+
+- id: olecranon
+  term: Olecranon
+  category: Anatomy & Physiology
+  definition: The part of the ulna that forms the bony prominence of the elbow.
+  builds_on:
+    - ulna
+  related:
+    - hinged-joint
+
+- id: on-line-medical-direction
+  term: On-Line Medical Direction
+  category: EMS Systems & Operations
+  aliases:
+    - Online Medical Direction
+  definition: Direct orders from a physician to a prehospital care provider given by radio or telephone.
+  builds_on:
+    - medical-direction
+    - direct-medical-oversight
+  related:
+    - off-line-medical-direction
+    - on-scene-medical-direction
+
+- id: on-scene-medical-direction
+  term: On-Scene Medical Direction
+  category: EMS Systems & Operations
+  definition: Medical direction provided by an EMS medical director physician who is on scene with the EMS crew.
+  builds_on:
+    - medical-direction
+    - direct-medical-oversight
+  related:
+    - on-line-medical-direction
+
+- id: open-ended-questions
+  term: Open-Ended Questions
+  category: Communication & Documentation
+  aliases:
+    - Open-Ended Question
+  definition: Questions that enable the patient to give a detailed response in their own words.
+  builds_on:
+    - communication
+  related:
+    - closed-ended-questions
+    - leading-questions
+    - feedback
+
+- id: orbits
+  term: Orbits
+  category: Anatomy & Physiology
+  aliases:
+    - Orbit
+  definition: The bony structures that surround the eyes; the eye sockets.
+  builds_on:
+    - face
+    - skull
+  related:
+    - nasal-bones
+    - zygomatic-bones
+
+- id: oropharynx
+  term: Oropharynx
+  category: Anatomy & Physiology
+  definition: The central portion of the pharynx lying between the soft palate and the epiglottis with the mouth as the opening.
+  builds_on:
+    - pharynx
+  related:
+    - nasopharynx
+    - laryngopharynx
+
+- id: oxygenation
+  term: Oxygenation
+  category: Pathophysiology
+  definition: The form of respiration in which oxygen molecules move across a membrane from an area of high oxygen concentration to an area of low oxygen concentration, as when oxygen moves out of a blood vessel into a cell; the process by which the blood and cells become saturated with oxygen.
+  builds_on:
+    - respiration
+    - alveoli
+  related:
+    - perfusion
+
+- id: oxyhemoglobin
+  term: Oxyhemoglobin
+  category: Pathophysiology
+  definition: Hemoglobin that has at least one oxygen molecule attached to it.
+  builds_on:
+    - red-blood-cells
+    - oxygenation
+  related:
+    - deoxyhemoglobin
+
+- id: palmar
+  term: Palmar
+  category: Medical Terminology & Positions
+  definition: Relates to the palm of the hand.
+  related:
+    - plantar
+
+- id: paramedic
+  term: Paramedic
+  category: EMS Systems & Operations
+  definition: The level of EMS practitioner who provides the highest level of prehospital care, including advanced assessments and care, formation of a field impression, and invasive and drug interventions.
+  builds_on:
+    - advanced-emergency-medical-technician
+
+- id: parietal-pleura
+  term: Parietal Pleura
+  category: Anatomy & Physiology
+  definition: The outermost pleural layer that adheres to the chest wall.
+  builds_on:
+    - lungs
+    - thorax
+  related:
+    - visceral-pleura
+
+- id: patella
+  term: Patella
+  category: Anatomy & Physiology
+  definition: The kneecap.
+  builds_on:
+    - extremities
+  related:
+    - femur
+
+- id: patent-airway
+  term: Patent Airway
+  category: Pathophysiology
+  definition: An airway that is open and clear of any obstructions.
+  builds_on:
+    - airway
+  related:
+    - aspiration
+    - laryngeal-spasm
+
+- id: pathogens
+  term: Pathogens
+  category: Safety & Wellness
+  aliases:
+    - Pathogen
+  definition: Microorganisms such as bacteria and viruses that cause disease.
+  related:
+    - purified-protein-derivative-tuberculin-test
+    - white-blood-cells
+
+- id: pelvis
+  term: Pelvis
+  category: Anatomy & Physiology
+  definition: "The bones that form the floor of the abdominal cavity: the sacrum and coccyx of the spine, the iliac crests, the pubis, and the ischium."
+  builds_on:
+    - musculoskeletal-system
+    - sacral-spine
+    - coccyx
+  related:
+    - abdominal-quadrants
+
+- id: perfusion
+  term: Perfusion
+  category: Pathophysiology
+  definition: The delivery of oxygen and other nutrients to the cells of all organ systems and the elimination of waste products from the cells, which result from the constant adequate circulation of blood through the capillaries.
+  builds_on:
+    - cardiac-output
+    - microcirculation
+    - oxygenation
+  related:
+    - hypoperfusion
+
+- id: peripheral-chemoreceptors
+  term: Peripheral Chemoreceptors
+  category: Pathophysiology
+  definition: Receptors located in the aortic arch and the carotid bodies that are somewhat sensitive to blood pressure and pH, but are most sensitive to the level of oxygen in the arterial blood.
+  builds_on:
+    - chemoreceptors
+    - aorta
+    - carotid-arteries
+  related:
+    - central-chemoreceptors
+
+- id: peripheral-nervous-system
+  term: Peripheral Nervous System
+  full: PNS
+  category: Anatomy & Physiology
+  aliases:
+    - PNS
+  definition: The portion of the nervous system located outside the brain and spinal cord (PNS).
+  builds_on:
+    - nervous-system
+  related:
+    - central-nervous-system
+
+- id: personal-protective-equipment
+  term: Personal Protective Equipment
+  full: PPE
+  category: Safety & Wellness
+  aliases:
+    - PPE
+  definition: Equipment worn to protect against injury and disease.
+  builds_on:
+    - standard-precautions
+    - pathogens
+
+- id: pertinent-negatives
+  term: Pertinent Negatives
+  category: Communication & Documentation
+  aliases:
+    - Pertinent Negative
+  definition: Signs or symptoms that might be expected in certain circumstances, based on the chief complaint or physical exam, but are denied by the patient or not found on examination.
+  builds_on:
+    - prehospital-care-report
+  related:
+    - minimum-data-set
+
+- id: phalanges
+  term: Phalanges
+  category: Anatomy & Physiology
+  aliases:
+    - Phalanx
+  definition: Bones of the fingers, thumbs, and toes. Plural of phalanx.
+  builds_on:
+    - extremities
+  related:
+    - metacarpals
+    - metatarsals
+
+- id: pharynx
+  term: Pharynx
+  category: Anatomy & Physiology
+  definition: The throat, or passageway for air from the nasal and oral cavities to the larynx and passageway for food from the mouth to the esophagus; areas that comprise the pharynx are the nasopharynx, oropharynx, and laryngopharynx.
+  builds_on:
+    - airway
+
+- id: physician-orders-for-life-sustaining-treatment
+  term: Physician Orders for Life-Sustaining Treatment
+  full: POLST
+  category: Legal & Ethical
+  aliases:
+    - POLST
+    - MOLST
+  definition: Orders that identify the desired level of life-sustaining treatment in patients with a terminal or life-threatening illness who are not likely to survive. Also known as medical orders for life-sustaining treatment (MOLST).
+  builds_on:
+    - advance-directive
+    - do-not-resuscitate-order
+
+- id: physiology
+  term: Physiology
+  category: Medical Terminology & Positions
+  definition: The study of the function of the living body and its parts.
+  related:
+    - anatomy
+
+- id: pivot-joint
+  term: Pivot Joint
+  category: Anatomy & Physiology
+  definition: A joint that permits a turning motion, including joints between the head and neck at the first and second cervical vertebrae and those in the wrist.
+  builds_on:
+    - joint
+    - cervical-spine
+
+- id: plantar
+  term: Plantar
+  category: Medical Terminology & Positions
+  definition: Refers to the sole of the foot.
+  related:
+    - palmar
+
+- id: plasma
+  term: Plasma
+  category: Anatomy & Physiology
+  definition: The liquid part of the blood.
+  builds_on:
+    - circulatory-system
+  related:
+    - red-blood-cells
+
+- id: plasma-oncotic-pressure
+  term: Plasma Oncotic Pressure
+  full: Colloid Oncotic Pressure
+  category: Pathophysiology
+  aliases:
+    - Colloid Oncotic Pressure
+    - Oncotic Pressure
+  definition: The force created by the presence of large molecules that tends to keep fluid inside a capillary by exerting a "pull" effect. Also called colloid oncotic pressure or oncotic pressure.
+  builds_on:
+    - plasma
+    - capillary
+  related:
+    - hydrostatic-pressure
+
+- id: platelets
+  term: Platelets
+  category: Anatomy & Physiology
+  definition: Components of blood that are essential to the formation of blood clots.
+  builds_on:
+    - circulatory-system
+  related:
+    - red-blood-cells
+
+- id: pleural-cavity
+  term: Pleural Cavity
+  category: Anatomy & Physiology
+  definition: The potential space between the parietal and visceral layers of the pleura surrounding the lungs, containing lubricating fluid.
+  builds_on:
+    - parietal-pleura
+    - visceral-pleura
+  related:
+    - lungs
+
+- id: pontine-respiratory-center
+  term: Pontine Respiratory Center
+  full: Pneumotaxic Center
+  category: Pathophysiology
+  aliases:
+    - Pneumotaxic Center
+  definition: Located in the pons of the brainstem, sends inhibitory impulses to the inspiratory neurons to halt inspiration and permit exhalation. Also known as the pneumotaxic center.
+  builds_on:
+    - respiratory-control-centers
+    - brainstem
+  related:
+    - dorsal-respiratory-group
+
+- id: posterior
+  term: Posterior
+  category: Medical Terminology & Positions
+  definition: Toward the back. Opposite of anterior.
+  related:
+    - anterior
+    - dorsal
+
+- id: posterior-plane
+  term: Posterior Plane
+  category: Medical Terminology & Positions
+  definition: The back or dorsal side of the body.
+  builds_on:
+    - anatomical-planes
+    - posterior
+  related:
+    - anterior-plane
+
+- id: posterior-tibial-arteries
+  term: Posterior Tibial Arteries
+  category: Anatomy & Physiology
+  aliases:
+    - Posterior Tibial Artery
+  definition: A major artery that travels from the calf to the foot and that can be felt on the medial surface of the ankle bone.
+  builds_on:
+    - artery
+  related:
+    - femoral-arteries
+    - dorsalis-pedis-arteries
+
+- id: power-grip
+  term: Power Grip
+  category: Lifting & Moving
+  definition: Recommended gripping technique. The palm and fingers come in complete contact with the object and all fingers are bent at the same angle.
+  builds_on:
+    - body-mechanics
+  related:
+    - power-lift
+
+- id: power-lift
+  term: Power Lift
+  category: Lifting & Moving
+  definition: Recommended technique for lifting. Feet are apart, knees bent, back and abdominal muscles tightened, back as straight as possible, lifting force driven through heels and arches, upper body rising before hips.
+  builds_on:
+    - body-mechanics
+    - power-grip
+
+- id: prefix
+  term: Prefix
+  category: Medical Terminology & Positions
+  definition: A word part added to the beginning of a word to modify its meaning or to give additional or specific meaning to a word.
+  builds_on:
+    - combining-form
+  related:
+    - suffix
+
+- id: prehospital-care
+  term: Prehospital Care
+  category: EMS Systems & Operations
+  aliases:
+    - Out-of-Hospital Care
+  definition: Emergency medical treatment given to patients before they are transported to a hospital or other facility. Also called out-of-hospital care.
+  related:
+    - triage-tag
+
+- id: prehospital-care-report
+  term: Prehospital Care Report
+  full: PCR
+  category: Communication & Documentation
+  aliases:
+    - PCR
+  definition: Documentation of an EMT's contact with a patient.
+  builds_on:
+    - communication
+  related:
+    - health-insurance-portability-and-accountability-act
+    - sbar
+
+- id: preload
+  term: Preload
+  category: Pathophysiology
+  definition: The pressure generated in the left ventricle at the end of diastole (resting phase of the cardiac cycle).
+  builds_on:
+    - ventricles
+    - venae-cavae
+  related:
+    - afterload
+    - frank-starling-law-of-the-heart
+
+- id: pronation
+  term: Pronation
+  category: Medical Terminology & Positions
+  definition: Turning the forearm so the palm of the hand is turned toward the back.
+  builds_on:
+    - anatomical-position
+  related:
+    - supination
+
+- id: prone
+  term: Prone
+  category: Medical Terminology & Positions
+  definition: Lying face down.
+  related:
+    - supine
+
+- id: protocols
+  term: Protocols
+  category: EMS Systems & Operations
+  aliases:
+    - Protocol
+  definition: The policies and procedures for all components of an EMS system. Also called orders or standing orders.
+  builds_on:
+    - off-line-medical-direction
+    - medical-direction
+  related:
+    - standing-orders
+
+- id: proximal
+  term: Proximal
+  category: Medical Terminology & Positions
+  definition: Near the point of reference. Opposite of distal.
+  related:
+    - distal
+
+- id: proximate-cause
+  term: Proximate Cause
+  category: Legal & Ethical
+  definition: Causation; the direct link establishing that the EMT's action or inaction (breach of duty) caused or worsened the patient's injury or harm.
+  builds_on:
+    - duty-to-act
+    - standard-of-care
+
+- id: pubis
+  term: Pubis
+  category: Anatomy & Physiology
+  definition: Bone of the groin.
+  builds_on:
+    - pelvis
+  related:
+    - ischium
+
+- id: pulmonary-arteries
+  term: Pulmonary Arteries
+  category: Anatomy & Physiology
+  aliases:
+    - Pulmonary Artery
+  definition: Artery that carries deoxygenated blood from the right ventricle of the heart to the lungs.
+  builds_on:
+    - artery
+    - ventricles
+    - lungs
+  related:
+    - pulmonary-veins
+
+- id: pulmonary-valve
+  term: Pulmonary Valve
+  category: Anatomy & Physiology
+  definition: The valve located between the right ventricle and the pulmonary artery that prevents backflow into the ventricle.
+  builds_on:
+    - valve
+    - ventricles
+    - pulmonary-arteries
+  related:
+    - aortic-valve
+
+- id: pulmonary-veins
+  term: Pulmonary Veins
+  category: Anatomy & Physiology
+  aliases:
+    - Pulmonary Vein
+  definition: Vein that carries oxygenated blood from the lungs to the left atrium of the heart.
+  builds_on:
+    - vein
+    - lungs
+    - atria
+  related:
+    - pulmonary-arteries
+
+- id: pulse
+  term: Pulse
+  category: Pathophysiology
+  definition: The wave of blood propelled through the arteries because of the contraction of the left ventricle.
+  builds_on:
+    - heart
+    - ventricles
+    - artery
+  related:
+    - carotid-arteries
+    - radial-arteries
+    - blood-pressure
+
+- id: purified-protein-derivative-tuberculin-test
+  term: Purified Protein Derivative (PPD) Tuberculin Test
+  full: PPD
+  category: Safety & Wellness
+  aliases:
+    - PPD
+    - PPD Test
+    - Tuberculin Test
+  definition: A test to determine the presence of a tuberculosis infection based on a person's positive reaction to tuberculin, a substance prepared from the tubercle bacillus.
+  builds_on:
+    - pathogens
+
+- id: quality-improvement
+  term: Quality Improvement
+  full: QI
+  category: EMS Systems & Operations
+  aliases:
+    - QI
+  definition: A system of internal and external reviews and audits of an EMS system to ensure a high quality of care.
+  builds_on:
+    - medical-oversight
+    - evidence-based-medicine
+  related:
+    - standard-of-care
+
+- id: radial-arteries
+  term: Radial Arteries
+  category: Anatomy & Physiology
+  aliases:
+    - Radial Artery
+  definition: A major artery of the arm, distal to the elbow joint.
+  builds_on:
+    - artery
+  related:
+    - brachial-arteries
+    - pulse
+
+- id: radius
+  term: Radius
+  category: Anatomy & Physiology
+  definition: The lateral bone of the forearm.
+  builds_on:
+    - extremities
+  related:
+    - humerus
+    - ulna
+
+- id: red-blood-cells
+  term: Red Blood Cells
+  category: Anatomy & Physiology
+  aliases:
+    - RBC
+    - RBCs
+  definition: Part of the blood that gives it its color, carries oxygen to body cells, and carries carbon dioxide away from body cells.
+  builds_on:
+    - circulatory-system
+  related:
+    - plasma
+    - white-blood-cells
+    - platelets
+
+- id: repeaters
+  term: Repeaters
+  category: Communication & Documentation
+  aliases:
+    - Repeater
+  definition: Devices that receive transmissions from a relatively low-powered source such as a mobile or portable radio and rebroadcast them at another frequency and a higher power.
+  builds_on:
+    - base-station
+
+- id: reproductive-system
+  term: Reproductive System
+  category: Anatomy & Physiology
+  definition: The male and female organs that function to accomplish human reproduction, the creation of offspring.
+  related:
+    - urinary-system
+
+- id: respiration
+  term: Respiration
+  category: Pathophysiology
+  definition: The exchange of gases between an organism and its environment; the exchange of oxygen and carbon dioxide that takes place during inhalation and exhalation.
+  builds_on:
+    - ventilation
+    - respiratory-membrane
+    - alveoli
+  related:
+    - oxygenation
+
+- id: respiratory-control-centers
+  term: Respiratory Control Centers
+  category: Pathophysiology
+  definition: Centers in the brainstem that regulate respiration, including the dorsal respiratory group (DRG) and the ventral respiratory group (VRG).
+  builds_on:
+    - brainstem
+    - ventilation
+
+- id: respiratory-membrane
+  term: Respiratory Membrane
+  category: Anatomy & Physiology
+  definition: Thin network of capillaries that surrounds an alveolus; the respiratory membranes enable diffusion of oxygen from alveoli to capillaries and diffusion of carbon dioxide from capillaries to alveoli.
+  builds_on:
+    - alveoli
+    - capillary
+
+- id: respiratory-system
+  term: Respiratory System
+  category: Anatomy & Physiology
+  definition: The organs involved in the exchange of gases between an organism and the atmosphere.
+  related:
+    - circulatory-system
+
+- id: right
+  term: Right
+  category: Medical Terminology & Positions
+  definition: Refers to the patient's right; provider's left side when standing directly in front of the patient.
+  related:
+    - left
+
+- id: sacral-spine
+  term: Sacral Spine
+  full: Sacrum
+  category: Anatomy & Physiology
+  aliases:
+    - Sacrum
+  definition: Five vertebrae that are fused together to form the rigid part of the posterior side of the pelvis. Also called the sacrum.
+  builds_on:
+    - spinal-column
+    - vertebrae
+  related:
+    - lumbar-spine
+    - coccyx
+
+- id: saddle-joint
+  term: Saddle Joint
+  category: Anatomy & Physiology
+  definition: A joint shaped to permit combinations of limited movements along perpendicular planes. For example, the ankle allows the foot to turn inward slightly as it moves up and down.
+  builds_on:
+    - joint
+  related:
+    - condyloid-joint
+
+- id: sagittal-plane
+  term: Sagittal Plane
+  full: Medial Plane
+  category: Medical Terminology & Positions
+  aliases:
+    - Medial Plane
+  definition: A vertical plane that divides the body into right and left segments. Also called the medial plane.
+  builds_on:
+    - anatomical-planes
+    - midline
+  related:
+    - coronal-plane
+    - transverse-plane
+
+- id: sbar
+  term: SBAR
+  full: Situation, Background, Assessment, and Recommendation
+  category: Communication & Documentation
+  definition: Acronym for situation, background, assessment, and recommendation; a method of organizing communications about a patient.
+  builds_on:
+    - communication
+  related:
+    - prehospital-care-report
+
+- id: scapula
+  term: Scapula
+  category: Anatomy & Physiology
+  definition: The shoulder blade.
+  related:
+    - clavicle
+    - humerus
+
+- id: scope-of-practice
+  term: Scope of Practice
+  category: Legal & Ethical
+  definition: The actions and care that an EMT is legally allowed to perform, as typically defined by state laws.
+  builds_on:
+    - medical-direction
+  related:
+    - americans-with-disabilities-act
+
+- id: semi-fowlers-position
+  term: Semi-Fowler's Position
+  category: Medical Terminology & Positions
+  definition: A position in which the patient is lying on their back with their upper body elevated at less than 45°.
+  builds_on:
+    - fowlers-position
+    - supine
+
+- id: shock-position
+  term: Shock Position
+  category: Medical Terminology & Positions
+  definition: Elevation of the legs of a supine patient approximately 12 inches; an alternative to the Trendelenburg position; sometimes useful for treating a simple faint but no longer recommended in the treatment of shock.
+  builds_on:
+    - supine
+  related:
+    - trendelenburg-position
+    - hypoperfusion
+
+- id: skeletal-muscle
+  term: Skeletal Muscle
+  full: Voluntary Muscle
+  category: Anatomy & Physiology
+  aliases:
+    - Voluntary Muscle
+  definition: Any muscle that can be consciously controlled by the individual.
+  builds_on:
+    - musculoskeletal-system
+  related:
+    - smooth-muscle
+    - cardiac-muscle
+
+- id: skull
+  term: Skull
+  category: Anatomy & Physiology
+  definition: "The bony structure at the top of the spinal column that houses and protects the brain. The skull has two parts: the cranium and the face."
+  builds_on:
+    - musculoskeletal-system
+
+- id: slander
+  term: Slander
+  category: Legal & Ethical
+  definition: The act of injuring a person's reputation or good name through spoken statements with malicious intent or reckless disregard for the falsity of those statements.
+  builds_on:
+    - defamation
+  related:
+    - libel
+
+- id: smooth-muscle
+  term: Smooth Muscle
+  full: Involuntary Muscle
+  category: Anatomy & Physiology
+  aliases:
+    - Involuntary Muscle
+  definition: Muscle that carries out the automatic muscular functions of the body.
+  builds_on:
+    - musculoskeletal-system
+  related:
+    - skeletal-muscle
+    - cardiac-muscle
+
+- id: spinal-column
+  term: Spinal Column
+  full: Vertebral Column
+  category: Anatomy & Physiology
+  aliases:
+    - Vertebral Column
+  definition: The column of 33 vertebrae that enclose and protect the spinal cord.
+  builds_on:
+    - musculoskeletal-system
+    - vertebrae
+  related:
+    - central-nervous-system
+
+- id: standard-of-care
+  term: Standard of Care
+  category: Legal & Ethical
+  definition: Emergency care that would be expected to be given to a patient by any trained EMT under similar circumstances.
+  builds_on:
+    - scope-of-practice
+    - protocols
+  related:
+    - quality-improvement
+
+- id: standard-precautions
+  term: Standard Precautions
+  category: Safety & Wellness
+  aliases:
+    - Body Substance Isolation
+    - BSI
+  definition: A method of preventing infection by disease organisms based on the premise that all blood and body fluids are infectious. Formerly called body substance isolation.
+  builds_on:
+    - pathogens
+  related:
+    - personal-protective-equipment
+
+- id: standing-orders
+  term: Standing Orders
+  category: EMS Systems & Operations
+  definition: Preauthorized treatment procedures; a type of treatment protocol.
+  builds_on:
+    - protocols
+    - off-line-medical-direction
+
+- id: sterilization
+  term: Sterilization
+  category: Safety & Wellness
+  definition: The process by which an object is subject to certain chemical or physical substances (typically, superheated steam in an autoclave) that kill all microorganisms on the surface of an object.
+  builds_on:
+    - disinfecting
+    - pathogens
+
+- id: sternum
+  term: Sternum
+  category: Anatomy & Physiology
+  definition: The breastbone.
+  related:
+    - thorax
+    - manubrium
+    - clavicle
+    - xiphoid-process
+
+- id: stretch-receptors
+  term: Stretch Receptors
+  category: Pathophysiology
+  definition: Receptors found in the smooth muscle of the airways that monitor the size and volume of the lungs. These receptors stimulate a decrease in the rate and volume of ventilation when stretched by high tidal volumes to protect against lung overinflation.
+  builds_on:
+    - lungs
+    - tidal-volume
+  related:
+    - irritant-receptors
+
+- id: stroke-volume
+  term: Stroke Volume
+  category: Pathophysiology
+  definition: The volume of blood ejected by the left ventricle with each contraction.
+  builds_on:
+    - preload
+    - afterload
+    - ventricles
+  related:
+    - cardiac-output
+
+- id: subcutaneous-layer
+  term: Subcutaneous Layer
+  category: Anatomy & Physiology
+  definition: A layer of fatty tissue just below the dermis.
+  builds_on:
+    - integumentary-system
+    - dermis
+
+- id: suffix
+  term: Suffix
+  category: Medical Terminology & Positions
+  definition: A word part added to the end of a word to modify its meaning or to give additional or specific meaning to a word.
+  builds_on:
+    - combining-form
+  related:
+    - prefix
+
+- id: superior
+  term: Superior
+  category: Medical Terminology & Positions
+  definition: Above; toward the head. Opposite of inferior.
+  related:
+    - inferior
+
+- id: superior-plane
+  term: Superior Plane
+  category: Medical Terminology & Positions
+  definition: Everything above the transverse line (above the waist). Opposite of inferior plane.
+  builds_on:
+    - transverse-plane
+    - superior
+  related:
+    - inferior-plane
+
+- id: supination
+  term: Supination
+  category: Medical Terminology & Positions
+  definition: Turning the forearm so that the palm of the hand is turned toward the front.
+  builds_on:
+    - anatomical-position
+  related:
+    - pronation
+
+- id: supine
+  term: Supine
+  category: Medical Terminology & Positions
+  definition: Lying face up.
+  related:
+    - prone
+    - lateral-recumbent-position
+
+- id: surfactant
+  term: Surfactant
+  category: Pathophysiology
+  definition: A substance responsible for maintaining surface tension in the alveoli.
+  builds_on:
+    - alveoli
+    - compliance
+
+- id: systemic-vascular-resistance
+  term: Systemic Vascular Resistance
+  full: SVR
+  category: Pathophysiology
+  aliases:
+    - SVR
+  definition: The resistance of blood flow through a vessel based on the diameter of the vessel.
+  builds_on:
+    - arteriole
+  related:
+    - cardiac-output
+
+- id: systolic-blood-pressure
+  term: Systolic Blood Pressure
+  category: Pathophysiology
+  definition: The pressure exerted against the walls of the arteries when the left ventricle contracts.
+  builds_on:
+    - blood-pressure
+    - ventricles
+  related:
+    - diastolic-blood-pressure
+
+- id: telemetry
+  term: Telemetry
+  category: Communication & Documentation
+  definition: The process of transmitting data through an automated communications process, usually using wireless data transfer technology.
+  builds_on:
+    - base-station
+  related:
+    - mobile-data-terminal
+
+- id: tendons
+  term: Tendons
+  category: Anatomy & Physiology
+  aliases:
+    - Tendon
+  definition: Bands of fibrous tissue that connect muscles to bones.
+  builds_on:
+    - musculoskeletal-system
+  related:
+    - ligaments
+
+- id: thoracic-spine
+  term: Thoracic Spine
+  category: Anatomy & Physiology
+  definition: The 12 vertebrae directly below the cervical vertebrae that comprise the upper back.
+  builds_on:
+    - spinal-column
+    - vertebrae
+  related:
+    - cervical-spine
+    - lumbar-spine
+
+- id: thorax
+  term: Thorax
+  category: Anatomy & Physiology
+  definition: The chest, or that part of the body between the base of the neck and the diaphragm.
+  builds_on:
+    - sternum
+    - thoracic-spine
+
+- id: thyroid-cartilage
+  term: Thyroid Cartilage
+  category: Anatomy & Physiology
+  aliases:
+    - Adam's Apple
+  definition: The bulky cartilage that forms the anterior portion of the larynx. Also called the Adam's apple.
+  builds_on:
+    - larynx
+  related:
+    - cricoid-cartilage
+
+- id: tibia
+  term: Tibia
+  category: Anatomy & Physiology
+  definition: The medial, larger bone of the lower leg; the shinbone.
+  builds_on:
+    - extremities
+  related:
+    - femur
+    - fibula
+
+- id: tidal-volume
+  term: Tidal Volume
+  full: VT
+  category: Pathophysiology
+  aliases:
+    - VT
+  definition: The amount of air moved in and out of the lungs in one respiration.
+  builds_on:
+    - ventilation
+  related:
+    - minute-ventilation
+    - dead-air-space
+
+- id: tort
+  term: Tort
+  category: Legal & Ethical
+  definition: A wrongful act, injury, or damage.
+  related:
+    - negligence
+    - intentional-tort
+
+- id: trachea
+  term: Trachea
+  category: Anatomy & Physiology
+  definition: The tubelike structure that leads from the larynx to the lungs.
+  builds_on:
+    - airway
+    - larynx
+  related:
+    - esophagus
+    - trachealis-muscle
+
+- id: trachealis-muscle
+  term: Trachealis Muscle
+  category: Anatomy & Physiology
+  definition: The smooth muscle bridging the open posterior ends of the C-shaped cartilaginous rings of the trachea.
+  builds_on:
+    - trachea
+    - smooth-muscle
+
+- id: transverse-line
+  term: Transverse Line
+  category: Medical Terminology & Positions
+  definition: An imaginary line drawn horizontally through the waist.
+  related:
+    - midaxillary-line
+
+- id: transverse-plane
+  term: Transverse Plane
+  full: Horizontal Plane
+  category: Medical Terminology & Positions
+  aliases:
+    - Horizontal Plane
+  definition: A plane that divides the body into superior and inferior segments.
+  builds_on:
+    - anatomical-planes
+    - transverse-line
+  related:
+    - sagittal-plane
+    - coronal-plane
+
+- id: trendelenburg-position
+  term: Trendelenburg Position
+  category: Medical Terminology & Positions
+  definition: Lying on the back with the lower part of the body elevated higher than the head on an inclined plane.
+  builds_on:
+    - supine
+  related:
+    - shock-position
+    - hypoperfusion
+
+- id: triage-tag
+  term: Triage Tag
+  category: EMS Systems & Operations
+  definition: A tag containing key information that is attached to a patient during a multiple-casualty incident.
+  related:
+    - prehospital-care
+
+- id: tricuspid-valve
+  term: Tricuspid Valve
+  category: Anatomy & Physiology
+  definition: The valve located between the right atrium and the right ventricle that prevents the backflow of blood.
+  builds_on:
+    - valve
+    - atria
+    - ventricles
+  related:
+    - bicuspid-valve
+
+- id: true-vocal-cords
+  term: True Vocal Cords
+  category: Anatomy & Physiology
+  aliases:
+    - Vocal Folds
+  definition: The inferior pair of mucosal folds within the larynx that vibrate to produce speech sounds.
+  builds_on:
+    - vocal-cords
+    - larynx
+
+- id: ulna
+  term: Ulna
+  category: Anatomy & Physiology
+  definition: The medial bone of the forearm.
+  builds_on:
+    - extremities
+  related:
+    - humerus
+    - radius
+
+- id: urgent-move
+  term: Urgent Move
+  category: Lifting & Moving
+  definition: A patient move made because there is an immediate threat to life because of the patient's condition and the patient must be moved quickly for transport.
+  builds_on:
+    - body-mechanics
+  related:
+    - emergency-move
+    - nonurgent-move
+
+- id: urinary-system
+  term: Urinary System
+  full: Renal System
+  category: Anatomy & Physiology
+  aliases:
+    - Renal System
+  definition: The organs and structure responsible for filtering and excreting wastes from the blood.
+  related:
+    - reproductive-system
+    - blood-pressure
+    - circulatory-system
+
+- id: valve
+  term: Valve
+  category: Anatomy & Physiology
+  aliases:
+    - Valves
+  definition: Structures within the heart and circulatory system that keep blood flowing in one direction and prevent backflow.
+  builds_on:
+    - heart
+    - circulatory-system
+
+- id: vein
+  term: Vein
+  category: Anatomy & Physiology
+  aliases:
+    - Veins
+  definition: Vessel that carries blood toward the heart.
+  builds_on:
+    - circulatory-system
+  related:
+    - artery
+
+- id: venae-cavae
+  term: Venae Cavae
+  category: Anatomy & Physiology
+  aliases:
+    - Vena Cava
+    - Superior Vena Cava
+    - Inferior Vena Cava
+  definition: The principal veins that carry deoxygenated blood to the heart. Plural of vena cava. The superior vena cava carries blood from the upper body; the inferior vena cava carries blood from the lower body.
+  builds_on:
+    - vein
+    - atria
+  related:
+    - aorta
+
+- id: ventilation
+  term: Ventilation
+  category: Pathophysiology
+  definition: The mechanical process by which air is moved in and out of the lungs, primarily caused by changes in pressure inside the chest.
+  builds_on:
+    - boyles-law
+    - diaphragm
+    - lungs
+  related:
+    - respiration
+
+- id: ventilation-perfusion-ratio
+  term: Ventilation/Perfusion (V/Q) Ratio
+  full: V/Q Ratio
+  category: Pathophysiology
+  aliases:
+    - V/Q Ratio
+    - Ventilation/Perfusion Ratio
+  definition: The dynamic relationship between the amount of ventilation the alveoli receive and the amount of perfusion through the capillary surrounding the alveoli.
+  builds_on:
+    - alveolar-ventilation
+    - perfusion
+    - alveoli
+  related:
+    - hypoperfusion
+
+- id: ventral
+  term: Ventral
+  category: Medical Terminology & Positions
+  definition: Toward the front, or toward the anterior portion of the body. Opposite of dorsal.
+  related:
+    - anterior
+    - dorsal
+
+- id: ventral-respiratory-group
+  term: Ventral Respiratory Group
+  full: VRG
+  category: Pathophysiology
+  aliases:
+    - VRG
+  definition: Respiratory rhythm center located in the brainstem that has both inspiratory and expiratory neurons. It becomes active and stimulates accessory muscles when an increase in ventilatory effort is necessary.
+  builds_on:
+    - respiratory-control-centers
+    - brainstem
+  related:
+    - dorsal-respiratory-group
+
+- id: ventricles
+  term: Ventricles
+  category: Anatomy & Physiology
+  aliases:
+    - Ventricle
+  definition: The two lower chambers of the heart.
+  builds_on:
+    - heart
+  related:
+    - atria
+
+- id: venule
+  term: Venule
+  category: Anatomy & Physiology
+  aliases:
+    - Venules
+  definition: The smallest branch of a vein.
+  builds_on:
+    - vein
+  related:
+    - arteriole
+    - capillary
+
+- id: vertebrae
+  term: Vertebrae
+  category: Anatomy & Physiology
+  aliases:
+    - Vertebra
+  definition: The 33 bony segments of the spinal column. Plural of vertebra.
+  related:
+    - sacral-spine
+    - cervical-spine
+    - coccyx
+    - thoracic-spine
+
+- id: visceral-pleura
+  term: Visceral Pleura
+  category: Anatomy & Physiology
+  definition: Innermost layer of the pleura that covers the lung.
+  builds_on:
+    - lungs
+  related:
+    - parietal-pleura
+
+- id: vocal-cords
+  term: Vocal Cords
+  category: Anatomy & Physiology
+  definition: Ligaments within the larynx that produce the sounds that permit speech. The superior of these ligaments is called false vocal cords or vestibular folds; the inferior of these ligaments are called the true vocal cords or vocal folds.
+  builds_on:
+    - larynx
+  related:
+    - true-vocal-cords
+
+- id: white-blood-cells
+  term: White Blood Cells
+  category: Anatomy & Physiology
+  aliases:
+    - WBC
+    - WBCs
+  definition: The part of the blood that helps the body's immune system defend against infection.
+  builds_on:
+    - circulatory-system
+  related:
+    - red-blood-cells
+    - pathogens
+
+- id: xiphoid-process
+  term: Xiphoid Process
+  category: Anatomy & Physiology
+  definition: Inferior portion of the sternum.
+  builds_on:
+    - sternum
+  related:
+    - manubrium
+
+- id: zygomatic-bones
+  term: Zygomatic Bones
+  category: Anatomy & Physiology
+  aliases:
+    - Zygomatic Bone
+  definition: The cheekbones.
+  builds_on:
+    - face
+    - skull
+  related:
+    - orbits
