@@ -1,0 +1,116 @@
+- id: abc
+  term: ABC
+  full: Airway, Breathing, Circulation
+  category: Assessment
+  definition: The three immediate life-threat priorities evaluated and stabilized during the primary assessment.
+  related:
+    - avpu
+    - perfusion
+    - hypoxia
+    - opa
+
+- id: avpu
+  term: AVPU
+  full: Alert, Verbal, Painful, Unresponsive
+  category: Assessment
+  definition: A rapid neurological scale used during the primary assessment to gauge a patient's level of consciousness.
+  related:
+    - abc
+    - sample
+
+- id: bsi
+  term: BSI
+  full: Body Substance Isolation
+  category: Operations
+  definition: Standard infection-control precautions (gloves, eye protection, masks, gowns) used to protect providers from exposure to blood and bodily fluids.
+  related:
+    - abc
+
+- id: hypoxia
+  term: Hypoxia
+  category: Pathophysiology
+  definition: Inadequate oxygen delivery to body tissues and cells, forcing a shift toward inefficient anaerobic metabolism.
+  builds_on:
+    - ventilation
+    - respiration
+  related:
+    - perfusion
+    - shock
+
+- id: npa
+  term: NPA
+  full: Nasopharyngeal Airway
+  category: Airway
+  definition: A soft, flexible rubber tube inserted through a nostril to maintain upper airway patency in semiconscious or unresponsive patients who still have an intact gag reflex.
+  related:
+    - opa
+    - abc
+    - ventilation
+
+- id: opa
+  term: OPA
+  full: Oropharyngeal Airway
+  category: Airway
+  definition: A rigid curved device inserted into the mouth to keep the tongue from obstructing the upper airway in unresponsive patients without a gag reflex.
+  related:
+    - npa
+    - abc
+    - ventilation
+
+- id: opqrst
+  term: OPQRST
+  full: Onset, Provocation/Palliation, Quality, Region/Radiation, Severity, Time
+  category: Assessment
+  definition: A structured questioning mnemonic used to evaluate a patient's pain or primary medical symptom in detail.
+  related:
+    - sample
+
+- id: perfusion
+  term: Perfusion
+  category: Pathophysiology
+  definition: The continuous circulation of oxygenated blood through capillary beds to deliver oxygen and nutrients to cells while removing metabolic waste.
+  builds_on:
+    - respiration
+  related:
+    - hypoxia
+    - shock
+
+- id: respiration
+  term: Respiration
+  category: Pathophysiology
+  definition: The exchange of oxygen and carbon dioxide across alveolar-capillary membranes (external respiration) and between capillaries and body cells (internal respiration).
+  builds_on:
+    - ventilation
+  related:
+    - perfusion
+    - hypoxia
+
+- id: sample
+  term: SAMPLE
+  full: Signs/Symptoms, Allergies, Medications, Past Medical History, Last Oral Intake, Events
+  category: Assessment
+  definition: A core history-taking mnemonic used to gather essential medical background from a patient or bystanders.
+  related:
+    - opqrst
+    - avpu
+
+- id: shock
+  term: Shock
+  full: Hypoperfusion
+  category: Pathophysiology
+  definition: A life-threatening state in which the cardiovascular system fails to deliver adequate oxygenated blood to body organs and tissues.
+  builds_on:
+    - perfusion
+    - hypoxia
+  related:
+    - abc
+
+- id: ventilation
+  term: Ventilation
+  category: Airway
+  definition: The mechanical process of moving air into and out of the lungs through inhalation and exhalation.
+  related:
+    - respiration
+    - hypoxia
+    - opa
+    - npa

@@ -1,0 +1,270 @@
+{% assign slug = include.course_slug %}
+{% assign course_meta = include.course_meta %}
+
+{% assign raw_terms = "" | split: "" %}
+{% if site.data.glossaries %}
+  {% if course_meta and course_meta.glossary_includes %}
+    {% for inc_slug in course_meta.glossary_includes %}
+      {% assign inc_terms = site.data.glossaries[inc_slug] %}
+      {% if inc_terms %}
+        {% for item in inc_terms %}
+          {% assign raw_terms = raw_terms | push: item %}
+        {% endfor %}
+      {% endif %}
+    {% endfor %}
+  {% endif %}
+  {% assign own_terms = site.data.glossaries[slug] %}
+  {% if own_terms %}
+    {% for item in own_terms %}
+      {% assign raw_terms = raw_terms | push: item %}
+    {% endfor %}
+  {% endif %}
+{% endif %}
+
+{% assign sorted_terms = "" | split: "" %}
+{% if raw_terms.size > 0 %}
+  {% assign sorted_terms = raw_terms | sort_natural: "term" %}
+{% endif %}
+
+{% assign all_categories = "" | split: "" %}
+{% assign all_letters = "" | split: "" %}
+{% for item in sorted_terms %}
+  {% if item.category %}
+    {% assign all_categories = all_categories | push: item.category %}
+  {% endif %}
+  {% assign first_char = item.term | slice: 0, 1 | upcase %}
+  {% assign all_letters = all_letters | push: first_char %}
+{% endfor %}
+
+{% assign unique_categories = "" | split: "" %}
+{% if all_categories.size > 0 %}
+  {% assign unique_categories = all_categories | uniq | sort_natural %}
+{% endif %}
+
+{% assign unique_letters = "" | split: "" %}
+{% if all_letters.size > 0 %}
+  {% assign unique_letters = all_letters | uniq | sort %}
+{% endif %}
+
+<section id="courseGlossary" class="mt-3" data-course-slug="{{ slug | escape }}">
+  {% if sorted_terms.size > 0 %}
+    <!-- Controls (hidden in print mode) -->
+    <div id="glossaryControls" class="bg-body py-2 mb-3 border-bottom d-print-none" style="position: sticky; top: 57px; z-index: 1005;">
+      <div class="d-flex flex-column flex-sm-row gap-2 mb-2">
+        <input
+          type="search"
+          id="glossarySearch"
+          class="form-control form-control-sm"
+          placeholder="Search terms, full names, or definitions..."
+          aria-label="Search glossary"
+          autocomplete="off"
+        >
+        <div class="d-flex align-items-center gap-2 flex-shrink-0">
+          <span class="small text-body-secondary text-nowrap" id="glossaryCount">
+            {{ sorted_terms.size }} {% if sorted_terms.size == 1 %}term{% else %}terms{% endif %}
+          </span>
+          <button
+            type="button"
+            class="btn btn-sm btn-outline-secondary d-none"
+            id="glossaryResetBtn"
+          >
+            Reset
+          </button>
+        </div>
+      </div>
+
+      {% if unique_categories.size > 0 %}
+        <div class="d-flex flex-wrap gap-1 mb-2" id="glossaryCategoryBar" role="group" aria-label="Filter glossary by category">
+          <button
+            type="button"
+            class="btn btn-sm btn-primary rounded-pill glossary-cat-btn"
+            data-category="all"
+            aria-pressed="true"
+          >
+            All
+          </button>
+          {% for cat in unique_categories %}
+            <button
+              type="button"
+              class="btn btn-sm btn-outline-secondary rounded-pill glossary-cat-btn"
+              data-category="{{ cat | downcase | escape }}"
+              aria-pressed="false"
+            >
+              {{ cat }}
+            </button>
+          {% endfor %}
+        </div>
+      {% endif %}
+
+      <div class="d-flex flex-wrap gap-1" id="glossaryAlphaBar" aria-label="Jump to letter">
+        {% for letter in unique_letters %}
+          <a
+            href="#glossary-letter-{{ letter }}"
+            class="btn btn-sm btn-outline-secondary py-0 px-2 glossary-letter-link"
+            data-letter="{{ letter }}"
+            style="font-size: 0.75rem;"
+          >
+            {{ letter }}
+          </a>
+        {% endfor %}
+      </div>
+
+      <div class="d-none align-items-center flex-wrap gap-1 mt-2 pt-2 border-top" id="glossaryRecentBar">
+        <span class="text-body-secondary me-1" style="font-size: 0.72rem;">Recent:</span>
+        <div class="d-inline-flex flex-wrap gap-1" id="glossaryRecentList"></div>
+        <button
+          type="button"
+          class="btn btn-link btn-sm p-0 ms-auto text-decoration-none text-body-secondary"
+          id="glossaryClearRecentBtn"
+          style="font-size: 0.72rem;"
+        >
+          Clear recent
+        </button>
+      </div>
+    </div>
+
+    <!-- Alphabetical Term Groups -->
+    <div id="glossaryGroups" class="d-flex flex-column gap-4">
+      {% for letter in unique_letters %}
+        <div class="glossary-letter-group" id="glossary-letter-{{ letter }}" data-letter="{{ letter }}">
+          <h2 class="glossary-letter-heading h5 fw-bold text-body-secondary bg-body border-bottom py-2 mb-3">{{ letter }}</h2>
+
+          <div class="d-flex flex-column gap-3">
+            {% for item in sorted_terms %}
+              {% assign item_letter = item.term | slice: 0, 1 | upcase %}
+              {% if item_letter == letter %}
+                {% assign term_id = item.id | default: item.term | slugify %}
+                {% capture term_search %}
+                  {{ item.term }} {{ item.full }} {{ item.category }} {{ item.definition }} {{ item.aliases | join: " " }}
+                {% endcapture %}
+
+                <div
+                  class="card border glossary-term-card"
+                  id="term-{{ term_id }}"
+                  data-term-id="{{ term_id }}"
+                  data-category="{{ item.category | default: '' | downcase | escape }}"
+                  data-search="{{ term_search | strip_newlines | downcase | escape }}"
+                >
+                  <div class="card-body py-3 px-3">
+                    <div class="d-flex flex-wrap justify-content-between align-items-baseline gap-2 mb-1">
+                      <div>
+                        <h3 class="h6 fw-bold d-inline mb-0">{{ item.term }}</h3>
+                        {% if item.full %}
+                          <span class="small text-body-secondary ms-1">— {{ item.full }}</span>
+                        {% endif %}
+                      </div>
+                      {% if item.category %}
+                        <span class="badge rounded-pill text-bg-secondary-subtle text-secondary-emphasis border fw-normal">
+                          {{ item.category }}
+                        </span>
+                      {% endif %}
+                    </div>
+
+                    <p class="small mb-0{% if item.builds_on or item.related %} mb-2{% endif %}">
+                      {{ item.definition }}
+                    </p>
+
+                    {% if item.builds_on and item.builds_on.size > 0 %}
+                      <div class="d-flex flex-wrap align-items-center gap-1 mt-2">
+                        <span class="text-body-secondary me-1" style="font-size: 0.75rem;">Builds on:</span>
+                        {% for ref_id in item.builds_on %}
+                          {% assign ref_slug = ref_id | slugify %}
+                          {% assign ref_label = ref_id %}
+                          {% for target in sorted_terms %}
+                            {% assign target_id = target.id | default: target.term | slugify %}
+                            {% if target_id == ref_slug %}
+                              {% assign ref_label = target.term %}
+                              {% break %}
+                            {% endif %}
+                          {% endfor %}
+                          <a
+                            href="#term-{{ ref_slug }}"
+                            class="badge rounded-pill text-bg-primary-subtle text-primary-emphasis border border-primary-subtle text-decoration-none fw-normal glossary-ref-link"
+                            data-target-term="{{ ref_slug }}"
+                          >
+                            ↑ {{ ref_label }}
+                          </a>
+                        {% endfor %}
+                      </div>
+                    {% endif %}
+
+                    {% if item.related and item.related.size > 0 %}
+                      <div class="d-flex flex-wrap align-items-center gap-1 mt-2">
+                        <span class="text-body-secondary me-1" style="font-size: 0.75rem;">Related:</span>
+                        {% for ref_id in item.related %}
+                          {% assign ref_slug = ref_id | slugify %}
+                          {% assign ref_label = ref_id %}
+                          {% for target in sorted_terms %}
+                            {% assign target_id = target.id | default: target.term | slugify %}
+                            {% if target_id == ref_slug %}
+                              {% assign ref_label = target.term %}
+                              {% break %}
+                            {% endif %}
+                          {% endfor %}
+                          <a
+                            href="#term-{{ ref_slug }}"
+                            class="badge rounded-pill bg-body-tertiary border text-body text-decoration-none fw-normal glossary-ref-link"
+                            data-target-term="{{ ref_slug }}"
+                          >
+                            {{ ref_label }}
+                          </a>
+                        {% endfor %}
+                      </div>
+                    {% endif %}
+                  </div>
+                </div>
+              {% endif %}
+            {% endfor %}
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+
+    <div class="card bg-body-tertiary border d-none mt-3" id="glossaryNoMatches">
+      <div class="card-body text-center py-4">
+        <p class="fw-semibold mb-1">No matching terms.</p>
+        <p class="small text-body-secondary mb-3">Try clearing your search or switching categories.</p>
+        <button type="button" class="btn btn-sm btn-outline-secondary" id="glossaryEmptyResetBtn">
+          Reset glossary filters
+        </button>
+      </div>
+    </div>
+
+    <style>
+      .glossary-letter-group {
+        scroll-margin-top: var(--glossary-sticky-top, 165px);
+      }
+      .glossary-letter-heading {
+        position: sticky;
+        top: var(--glossary-sticky-top, 165px);
+        z-index: 1000;
+      }
+      .glossary-term-card {
+        scroll-margin-top: calc(var(--glossary-sticky-top, 165px) + 46px);
+        transition: border-color 0.2s ease, box-shadow 0.2s ease;
+      }
+      .glossary-term-card.glossary-highlight {
+        border-color: var(--bs-primary) !important;
+        box-shadow: 0 0 0 0.2rem rgba(var(--bs-primary-rgb), 0.25);
+      }
+      html.print-mode .glossary-letter-heading {
+        position: static;
+      }
+      @media print {
+        .glossary-letter-heading {
+          position: static;
+        }
+      }
+    </style>
+    <script src="{{ '/assets/js/course-glossary.js' | relative_url }}" defer></script>
+  {% else %}
+    <div class="card bg-body-tertiary border">
+      <div class="card-body text-center py-4">
+        <p class="fw-semibold mb-1">No glossary terms yet.</p>
+        <p class="small text-body-secondary mb-0">
+          Add terms to <code>_data/glossaries/{{ slug }}.yml</code> and they will appear here automatically.
+        </p>
+      </div>
+    </div>
+  {% endif %}
+</section>

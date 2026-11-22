@@ -45,6 +45,7 @@
   const resetProgressBtn = document.getElementById("resetCourseProgress");
   const reviewToggleBtn = document.getElementById("courseReviewToggleBtn");
   const pageStatusBadgeEl = document.getElementById("coursePageStatusBadge");
+  const articleEl = document.getElementById("courseArticleContent");
 
   const currentPageUrl = sidebar.dataset.currentUrl || window.location.pathname;
   const allPageUrls = pageLinks.map((el) => el.dataset.pageUrl).filter(Boolean);
@@ -211,6 +212,96 @@
     });
   });
 
+  let autoReviewTimer = null;
+  let autoReviewCancelled = false;
+
+  function stopAutoReview() {
+    if (autoReviewTimer !== null) {
+      window.clearInterval(autoReviewTimer);
+      autoReviewTimer = null;
+    }
+  }
+
+  function markCurrentPageReviewed() {
+    const currentLink = pageLinks.find((el) => el.dataset.pageUrl === currentPageUrl);
+    const currentRev = currentLink?.dataset.pageRev || reviewToggleBtn?.dataset.pageRev || "";
+
+    state.pages[currentPageUrl] = {
+      status: "reviewed",
+      reviewedRev: currentRev,
+      reviewedAt: new Date().toISOString()
+    };
+
+    if (!state.knownPages.includes(currentPageUrl)) {
+      state.knownPages.push(currentPageUrl);
+    }
+
+    CourseStateStore.save(courseSlug, state);
+    renderAllStatuses();
+  }
+
+  function startAutoReview() {
+    if (document.documentElement.classList.contains("print-mode")) return;
+    if (autoReviewCancelled) return;
+
+    const currentLink = pageLinks.find((el) => el.dataset.pageUrl === currentPageUrl);
+    if (!currentLink) return;
+
+    const currentRev = currentLink.dataset.pageRev || "";
+    const explicitNew = currentLink.dataset.pageNew === "true";
+    if (getPageStatus(currentPageUrl, currentRev, explicitNew) === "reviewed") {
+      return;
+    }
+
+    const customSeconds = Number(articleEl?.dataset.autoReviewSeconds);
+    let requiredSeconds;
+    if (Number.isFinite(customSeconds) && customSeconds > 0) {
+      requiredSeconds = customSeconds;
+    } else {
+      const text = (articleEl?.textContent || "").trim();
+      const wordCount = text ? text.split(/\s+/).length : 0;
+      const estimatedSeconds = Math.round((wordCount / 220) * 60 * 0.25);
+      requiredSeconds = Math.min(45, Math.max(5, estimatedSeconds));
+    }
+
+    let activeSeconds = 0;
+    let reachedReadingDepth = false;
+
+    function checkScrollDepth() {
+      const docHeight = document.documentElement.scrollHeight;
+      const viewportHeight = window.innerHeight;
+      if (docHeight <= viewportHeight + 80) {
+        reachedReadingDepth = true;
+        return;
+      }
+      const scrollProgress = (window.scrollY + viewportHeight) / docHeight;
+      if (scrollProgress >= 0.75) {
+        reachedReadingDepth = true;
+      }
+    }
+
+    function maybeComplete() {
+      if (autoReviewCancelled) {
+        stopAutoReview();
+        return;
+      }
+      checkScrollDepth();
+      if (activeSeconds >= requiredSeconds && reachedReadingDepth) {
+        stopAutoReview();
+        markCurrentPageReviewed();
+      }
+    }
+
+    checkScrollDepth();
+    window.addEventListener("scroll", maybeComplete, { passive: true });
+
+    autoReviewTimer = window.setInterval(() => {
+      if (document.hidden) return;
+      activeSeconds += 1;
+      maybeComplete();
+    }, 1000);
+  }
+
   if (reviewToggleBtn) {
     reviewToggleBtn.addEventListener("click", () => {
       const currentLink = pageLinks.find((el) => el.dataset.pageUrl === currentPageUrl);
@@ -222,21 +313,18 @@
         (!currentRev || existing.reviewedRev === currentRev);
 
       if (isAlreadyCurrentReviewed) {
+        autoReviewCancelled = true;
+        stopAutoReview();
         delete state.pages[currentPageUrl];
+        if (!state.knownPages.includes(currentPageUrl)) {
+          state.knownPages.push(currentPageUrl);
+        }
+        CourseStateStore.save(courseSlug, state);
+        renderAllStatuses();
       } else {
-        state.pages[currentPageUrl] = {
-          status: "reviewed",
-          reviewedRev: currentRev,
-          reviewedAt: new Date().toISOString()
-        };
+        stopAutoReview();
+        markCurrentPageReviewed();
       }
-
-      if (!state.knownPages.includes(currentPageUrl)) {
-        state.knownPages.push(currentPageUrl);
-      }
-
-      CourseStateStore.save(courseSlug, state);
-      renderAllStatuses();
     });
   }
 
@@ -245,6 +333,8 @@
       if (!window.confirm("Reset your saved progress and folder states for this course?")) {
         return;
       }
+      autoReviewCancelled = true;
+      stopAutoReview();
       CourseStateStore.reset(courseSlug);
       state = createFreshState();
       CourseStateStore.save(courseSlug, state);
@@ -260,4 +350,8 @@
 
   restoreFolderStates();
   renderAllStatuses();
+  startAutoReview();
+
+  const activeLink = sidebar.querySelector(".nav-link.active");
+  activeLink?.scrollIntoView({ block: "nearest" });
 })();

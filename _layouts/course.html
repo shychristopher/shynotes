@@ -59,21 +59,34 @@
     <style>
         @media (min-width: 992px) {
             .course-sidebar {
+                display: flex !important;
+                flex-direction: column;
                 flex: 0 0 280px !important;
                 width: 280px !important;
                 position: sticky !important;
                 top: 57px;
                 height: calc(100vh - 57px) !important;
-                overflow-y: auto;
+                overflow: hidden !important;
                 background-color: var(--bs-tertiary-bg) !important;
                 border-right: var(--bs-border-width) solid var(--bs-border-color) !important;
             }
             .course-sidebar .offcanvas-body {
                 width: 100%;
-                flex-grow: 1;
+                flex: 1 1 auto !important;
+                min-height: 0;
+                overflow: hidden !important;
             }
         }
         .course-sidebar .offcanvas-body {
+            display: flex;
+            flex-direction: column;
+            min-height: 0;
+            overflow: hidden;
+        }
+        .course-sidebar-scroll {
+            flex: 1 1 auto;
+            min-height: 0;
+            overflow-y: auto;
             overflow-x: hidden;
         }
         .course-sidebar .course-nav-folder,
@@ -161,8 +174,8 @@
     <div class="d-lg-flex">
         {% include components/navigation/course-nav-sidebar.html course_slug=course_slug course_meta=course_meta %}
 
-        <main class="flex-grow-1 p-4">
-            <div class="container-fluid" style="max-width: 960px; margin-left: 0;">
+        <main class="flex-grow-1 p-4" style="min-width: 0;">
+            <div class="container-fluid">
                 {% assign expected_course_index = "_courses/" | append: course_slug | append: "/index.md" %}
                 {% if course_meta and page.path == expected_course_index %}
                     <header class="mb-4 pb-3 border-bottom">
@@ -216,11 +229,30 @@
                     </header>
                 {% endif %}
 
-                {{ content }}
+                <article
+                    id="courseArticleContent"
+                    {% if page.auto_review_seconds %}data-auto-review-seconds="{{ page.auto_review_seconds }}"{% endif %}
+                >
+                    {{ content }}
+                    {% if page.glossary == true %}
+                        {% include components/course-glossary.html course_slug=course_slug course_meta=course_meta %}
+                    {% endif %}
+                </article>
 
-                {% assign _self_clean = content | strip_html | normalize_whitespace %}
-                {% assign _self_head = _self_clean | slice: 0, 32 | slugify %}
-                {% assign _self_auto_rev = _self_clean.size | append: "-" | append: _self_head %}
+                {% assign _self_auto_rev = "empty" %}
+                {% if page.glossary == true and site.data.glossaries %}
+                    {% assign _gl_data = site.data.glossaries[course_slug] %}
+                    {% if _gl_data %}
+                        {% assign _gl_json = _gl_data | jsonify %}
+                        {% assign _self_auto_rev = "glossary-" | append: _gl_data.size | append: "-" | append: _gl_json.size %}
+                    {% endif %}
+                {% else %}
+                    {% assign _self_clean = content | strip_html | normalize_whitespace %}
+                    {% if _self_clean != "" %}
+                        {% assign _self_head = _self_clean | slice: 0, 32 | slugify %}
+                        {% assign _self_auto_rev = _self_clean.size | append: "-" | append: _self_head %}
+                    {% endif %}
+                {% endif %}
                 {% assign _self_rev = page.revision | default: page.updated | default: _self_auto_rev %}
                 <footer class="mt-5 pt-3 border-top d-flex flex-wrap justify-content-between align-items-center gap-2 d-print-none">
                     <div class="d-flex align-items-center gap-2">

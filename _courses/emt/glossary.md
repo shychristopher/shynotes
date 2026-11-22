@@ -1,14 +1,6 @@
 ---
 title: Glossary
-section: Reference
-description: Key EMT terms, abbreviations, and definitions.
+description: Key EMT terms, abbreviations, and interconnected concepts.
 permalink: /courses/emt/glossary/
+glossary: true
 ---
-
-Add key EMT terminology, medical prefixes/suffixes, and common EMS abbreviations here.
-
-| Term / Abbreviation | Definition |
-| --- | --- |
-| **ABC** | Airway, Breathing, Circulation |
-| **BSI** | Body Substance Isolation |
-| **SAMPLE** | Signs/Symptoms, Allergies, Medications, Past pertinent history, Last oral intake, Events leading up |

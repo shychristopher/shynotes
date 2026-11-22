@@ -31,8 +31,12 @@
 
 {% if folder_index_doc and include.depth > 0 %}
   {% assign _clean = folder_index_doc.content | markdownify | strip_html | normalize_whitespace %}
-  {% assign _head = _clean | slice: 0, 32 | slugify %}
-  {% assign _auto_rev = _clean.size | append: "-" | append: _head %}
+  {% if _clean != "" %}
+    {% assign _head = _clean | slice: 0, 32 | slugify %}
+    {% assign _auto_rev = _clean.size | append: "-" | append: _head %}
+  {% else %}
+    {% assign _auto_rev = "empty" %}
+  {% endif %}
   {% assign _page_rev = folder_index_doc.revision | default: folder_index_doc.updated | default: _auto_rev %}
   <a
     class="nav-link d-flex align-items-start gap-2 py-1 px-2 small{% if page.url == folder_index_doc.url %} active fw-semibold{% endif %}"
@@ -53,8 +57,12 @@
 {% if include.depth > 0 %}
   {% for doc in sorted_files %}
     {% assign _clean = doc.content | markdownify | strip_html | normalize_whitespace %}
-    {% assign _head = _clean | slice: 0, 32 | slugify %}
-    {% assign _auto_rev = _clean.size | append: "-" | append: _head %}
+    {% if _clean != "" %}
+      {% assign _head = _clean | slice: 0, 32 | slugify %}
+      {% assign _auto_rev = _clean.size | append: "-" | append: _head %}
+    {% else %}
+      {% assign _auto_rev = "empty" %}
+    {% endif %}
     {% assign _page_rev = doc.revision | default: doc.updated | default: _auto_rev %}
     <a
       class="nav-link d-flex align-items-start gap-2 py-1 px-2 small{% if page.url == doc.url %} active fw-semibold{% endif %}"
