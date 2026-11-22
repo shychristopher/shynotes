@@ -4,11 +4,13 @@
 {% if page.hidden == true or page.suppressed == true %}
   {% assign is_page_hidden = true %}
 {% endif %}
+{% assign course_bundle = nil %}
 {% if page.collection == "courses" %}
   {% assign path_parts = page.path | split: "/" %}
   {% assign course_slug = page.course_slug | default: path_parts[1] %}
   {% if site.data.courses and course_slug %}
-    {% assign course_meta = site.data.courses[course_slug] %}
+    {% assign course_bundle = site.data.courses[course_slug] %}
+    {% assign course_meta = course_bundle.course | default: course_bundle %}
     {% if course_meta %}
       {% if course_meta.hidden == true or course_meta.suppressed == true %}
         {% assign is_page_hidden = true %}
@@ -22,12 +24,15 @@
   {% assign is_course_index = true %}
 {% endif %}
 {% assign course_has_glossary = false %}
-{% if site.data.glossaries and course_slug %}
-  {% if site.data.glossaries[course_slug] and site.data.glossaries[course_slug].size > 0 %}
+{% if course_slug %}
+  {% assign _own_gl = course_bundle.glossary | default: site.data.glossaries[course_slug] %}
+  {% if _own_gl and _own_gl.size > 0 %}
     {% assign course_has_glossary = true %}
   {% elsif course_meta and course_meta.glossary_includes %}
     {% for _inc_slug in course_meta.glossary_includes %}
-      {% if site.data.glossaries[_inc_slug] and site.data.glossaries[_inc_slug].size > 0 %}
+      {% assign _inc_bundle = site.data.courses[_inc_slug] %}
+      {% assign _inc_gl = _inc_bundle.glossary | default: site.data.glossaries[_inc_slug] %}
+      {% if _inc_gl and _inc_gl.size > 0 %}
         {% assign course_has_glossary = true %}
         {% break %}
       {% endif %}
@@ -36,10 +41,12 @@
 {% endif %}
 {% assign course_has_mindmaps = false %}
 {% if course_slug %}
-  {% if site.data.mindmaps and site.data.mindmaps[course_slug] %}
+  {% assign _own_mm = course_bundle.mindmaps | default: site.data.mindmaps[course_slug] %}
+  {% assign _own_ln = course_bundle.links | default: site.data.links[course_slug] %}
+  {% if _own_mm %}
     {% assign course_has_mindmaps = true %}
-  {% elsif site.data.links and site.data.links[course_slug] %}
-    {% for _lentry in site.data.links[course_slug] %}
+  {% elsif _own_ln %}
+    {% for _lentry in _own_ln %}
       {% if _lentry[1].type == "mindmap" %}
         {% assign course_has_mindmaps = true %}
         {% break %}
@@ -1076,8 +1083,8 @@
 
                 {% unless page.quick_reference == true %}
                     {% assign _self_auto_rev = "empty" %}
-                    {% if page.glossary == true and site.data.glossaries %}
-                        {% assign _gl_data = site.data.glossaries[course_slug] %}
+                    {% if page.glossary == true %}
+                        {% assign _gl_data = course_bundle.glossary | default: site.data.glossaries[course_slug] %}
                         {% if _gl_data %}
                             {% assign _gl_json = _gl_data | jsonify %}
                             {% assign _self_auto_rev = "glossary-" | append: _gl_data.size | append: "-" | append: _gl_json.size %}
@@ -1196,23 +1203,22 @@
     {% endif %}
     {% unless is_special_view %}
         {% assign _lookup_terms = "" | split: "" %}
-        {% if site.data.glossaries %}
-            {% if course_meta and course_meta.glossary_includes %}
-                {% for _inc_slug in course_meta.glossary_includes %}
-                    {% assign _inc_list = site.data.glossaries[_inc_slug] %}
-                    {% if _inc_list %}
-                        {% for _t in _inc_list %}
-                            {% assign _lookup_terms = _lookup_terms | push: _t %}
-                        {% endfor %}
-                    {% endif %}
-                {% endfor %}
-            {% endif %}
-            {% assign _own_list = site.data.glossaries[course_slug] %}
-            {% if _own_list %}
-                {% for _t in _own_list %}
-                    {% assign _lookup_terms = _lookup_terms | push: _t %}
-                {% endfor %}
-            {% endif %}
+        {% if course_meta and course_meta.glossary_includes %}
+            {% for _inc_slug in course_meta.glossary_includes %}
+                {% assign _inc_bundle = site.data.courses[_inc_slug] %}
+                {% assign _inc_list = _inc_bundle.glossary | default: site.data.glossaries[_inc_slug] %}
+                {% if _inc_list %}
+                    {% for _t in _inc_list %}
+                        {% assign _lookup_terms = _lookup_terms | push: _t %}
+                    {% endfor %}
+                {% endif %}
+            {% endfor %}
+        {% endif %}
+        {% assign _own_list = course_bundle.glossary | default: site.data.glossaries[course_slug] %}
+        {% if _own_list %}
+            {% for _t in _own_list %}
+                {% assign _lookup_terms = _lookup_terms | push: _t %}
+            {% endfor %}
         {% endif %}
         {% if _lookup_terms.size > 0 %}
             {% assign _empty_arr = "" | split: "" %}

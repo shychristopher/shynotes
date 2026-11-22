@@ -2,23 +2,23 @@
 {% assign course_meta = include.course_meta %}
 
 {% assign raw_terms = "" | split: "" %}
-{% if site.data.glossaries %}
-  {% if course_meta and course_meta.glossary_includes %}
-    {% for inc_slug in course_meta.glossary_includes %}
-      {% assign inc_terms = site.data.glossaries[inc_slug] %}
-      {% if inc_terms %}
-        {% for item in inc_terms %}
-          {% assign raw_terms = raw_terms | push: item %}
-        {% endfor %}
-      {% endif %}
-    {% endfor %}
-  {% endif %}
-  {% assign own_terms = site.data.glossaries[slug] %}
-  {% if own_terms %}
-    {% for item in own_terms %}
-      {% assign raw_terms = raw_terms | push: item %}
-    {% endfor %}
-  {% endif %}
+{% if course_meta and course_meta.glossary_includes %}
+  {% for inc_slug in course_meta.glossary_includes %}
+    {% assign _inc_bundle = site.data.courses[inc_slug] %}
+    {% assign inc_terms = _inc_bundle.glossary | default: site.data.glossaries[inc_slug] %}
+    {% if inc_terms %}
+      {% for item in inc_terms %}
+        {% assign raw_terms = raw_terms | push: item %}
+      {% endfor %}
+    {% endif %}
+  {% endfor %}
+{% endif %}
+{% assign _own_bundle = site.data.courses[slug] %}
+{% assign own_terms = _own_bundle.glossary | default: site.data.glossaries[slug] %}
+{% if own_terms %}
+  {% for item in own_terms %}
+    {% assign raw_terms = raw_terms | push: item %}
+  {% endfor %}
 {% endif %}
 
 {% assign all_categories = "" | split: "" %}

@@ -1,6 +1,6 @@
-# Supplemental external study links & mind map references for EMT.
+# Supplemental external study links & mind map references for this course.
 # Reference any key below inside a page's `links:` front matter list, or inside
-# `_data/courses/emt.yml` (`links:` for course overview, `glossary_links:` for Glossary).
+# `_data/courses/eemt/course.yml` (`links:` for course overview, `glossary_links:` for Glossary).
 
 airway_mindmap:
   type: mindmap

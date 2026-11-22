@@ -3,23 +3,23 @@
 {% assign glossary_back_url = include.base_glossary_url | default: page.url | relative_url %}
 
 {% assign raw_terms = "" | split: "" %}
-{% if site.data.glossaries %}
-  {% if course_meta and course_meta.glossary_includes %}
-    {% for inc_slug in course_meta.glossary_includes %}
-      {% assign inc_terms = site.data.glossaries[inc_slug] %}
-      {% if inc_terms %}
-        {% for item in inc_terms %}
-          {% assign raw_terms = raw_terms | push: item %}
-        {% endfor %}
-      {% endif %}
-    {% endfor %}
-  {% endif %}
-  {% assign own_terms = site.data.glossaries[slug] %}
-  {% if own_terms %}
-    {% for item in own_terms %}
-      {% assign raw_terms = raw_terms | push: item %}
-    {% endfor %}
-  {% endif %}
+{% if course_meta and course_meta.glossary_includes %}
+  {% for inc_slug in course_meta.glossary_includes %}
+    {% assign _inc_bundle = site.data.courses[inc_slug] %}
+    {% assign inc_terms = _inc_bundle.glossary | default: site.data.glossaries[inc_slug] %}
+    {% if inc_terms %}
+      {% for item in inc_terms %}
+        {% assign raw_terms = raw_terms | push: item %}
+      {% endfor %}
+    {% endif %}
+  {% endfor %}
+{% endif %}
+{% assign _own_bundle = site.data.courses[slug] %}
+{% assign own_terms = _own_bundle.glossary | default: site.data.glossaries[slug] %}
+{% if own_terms %}
+  {% for item in own_terms %}
+    {% assign raw_terms = raw_terms | push: item %}
+  {% endfor %}
 {% endif %}
 
 {% assign sorted_terms = "" | split: "" %}
@@ -1106,7 +1106,7 @@
       <div class="card-body text-center py-4">
         <p class="fw-semibold mb-1">No glossary terms yet.</p>
         <p class="small text-body-secondary mb-0">
-          Add terms to <code>_data/glossaries/{{ slug }}.yml</code> and they will appear here automatically.
+          Add terms to <code>_data/courses/{{ slug }}/glossary.yml</code> and they will appear here automatically.
         </p>
       </div>
     </div>

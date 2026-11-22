@@ -4,7 +4,8 @@
   {% assign path_parts = page.path | split: "/" %}
   {% assign course_slug = page.course_slug | default: path_parts[1] %}
   {% if site.data.courses and course_slug %}
-    {% assign course_meta = site.data.courses[course_slug] %}
+    {% assign _course_bundle = site.data.courses[course_slug] %}
+    {% assign course_meta = _course_bundle.course | default: _course_bundle %}
     {% if course_meta %}
       {% assign expected_course_index = "_courses/" | append: course_slug | append: "/index.md" %}
       {% if page.path == expected_course_index and course_meta.title %}

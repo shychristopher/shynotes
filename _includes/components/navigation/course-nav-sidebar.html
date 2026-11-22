@@ -37,17 +37,19 @@
 {% endif %}
 
 {% assign course_has_glossary = false %}
-{% if site.data.glossaries %}
-  {% if site.data.glossaries[slug] and site.data.glossaries[slug].size > 0 %}
-    {% assign course_has_glossary = true %}
-  {% elsif course_meta and course_meta.glossary_includes %}
-    {% for inc_slug in course_meta.glossary_includes %}
-      {% if site.data.glossaries[inc_slug] and site.data.glossaries[inc_slug].size > 0 %}
-        {% assign course_has_glossary = true %}
-        {% break %}
-      {% endif %}
-    {% endfor %}
-  {% endif %}
+{% assign _own_bundle = site.data.courses[slug] %}
+{% assign _own_gl = _own_bundle.glossary | default: site.data.glossaries[slug] %}
+{% if _own_gl and _own_gl.size > 0 %}
+  {% assign course_has_glossary = true %}
+{% elsif course_meta and course_meta.glossary_includes %}
+  {% for inc_slug in course_meta.glossary_includes %}
+    {% assign _inc_bundle = site.data.courses[inc_slug] %}
+    {% assign _inc_gl = _inc_bundle.glossary | default: site.data.glossaries[inc_slug] %}
+    {% if _inc_gl and _inc_gl.size > 0 %}
+      {% assign course_has_glossary = true %}
+      {% break %}
+    {% endif %}
+  {% endfor %}
 {% endif %}
 
 {% assign has_manual_glossary_doc = false %}

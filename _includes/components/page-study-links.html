@@ -1,14 +1,9 @@
 {% assign slug = include.course_slug %}
 {% assign link_refs = include.links %}
 {% if link_refs and link_refs.size > 0 %}
-  {% assign course_links_data = nil %}
-  {% if site.data.links and site.data.links[slug] %}
-    {% assign course_links_data = site.data.links[slug] %}
-  {% endif %}
-  {% assign course_mindmaps_data = nil %}
-  {% if site.data.mindmaps and site.data.mindmaps[slug] %}
-    {% assign course_mindmaps_data = site.data.mindmaps[slug] %}
-  {% endif %}
+  {% assign _course_bundle = site.data.courses[slug] %}
+  {% assign course_links_data = _course_bundle.links | default: site.data.links[slug] %}
+  {% assign course_mindmaps_data = _course_bundle.mindmaps | default: site.data.mindmaps[slug] %}
   {% assign mindmap_base_url = '/courses/' | append: slug | append: '/?view=mindmap' | relative_url %}
   {% assign return_from = include.from_url | default: page.url | relative_url %}
   {% assign return_label = include.from_label | default: page.title | default: "Lesson" %}

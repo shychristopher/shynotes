@@ -3,7 +3,8 @@
 {% if site.data.courses %}
   {% for entry in site.data.courses %}
     {% assign slug = entry[0] %}
-    {% assign meta = entry[1] %}
+    {% assign _bundle = entry[1] %}
+    {% assign meta = _bundle.course | default: _bundle %}
     {% unless meta.hidden == true or meta.suppressed == true %}
       {% assign visible_slugs = visible_slugs | push: slug %}
       {% if meta.tags %}
@@ -92,7 +93,8 @@
             {% assign tag_id = "filter-tag-" | append: forloop.index %}
             {% assign tag_count = 0 %}
             {% for slug in visible_slugs %}
-              {% assign meta = site.data.courses[slug] %}
+              {% assign _bundle = site.data.courses[slug] %}
+              {% assign meta = _bundle.course | default: _bundle %}
               {% if meta.tags contains tag %}
                 {% assign tag_count = tag_count | plus: 1 %}
               {% endif %}

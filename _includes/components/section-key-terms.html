@@ -1,18 +1,21 @@
 {% assign slug = include.course_slug %}
-{% if site.data.glossaries %}
-  {% assign has_glossary_terms = false %}
-  {% if site.data.glossaries[slug] and site.data.glossaries[slug].size > 0 %}
-    {% assign has_glossary_terms = true %}
-  {% elsif include.course_meta and include.course_meta.glossary_includes %}
-    {% for inc_slug in include.course_meta.glossary_includes %}
-      {% if site.data.glossaries[inc_slug] and site.data.glossaries[inc_slug].size > 0 %}
-        {% assign has_glossary_terms = true %}
-        {% break %}
-      {% endif %}
-    {% endfor %}
-  {% endif %}
+{% assign has_glossary_terms = false %}
+{% assign _own_bundle = site.data.courses[slug] %}
+{% assign _own_gl = _own_bundle.glossary | default: site.data.glossaries[slug] %}
+{% if _own_gl and _own_gl.size > 0 %}
+  {% assign has_glossary_terms = true %}
+{% elsif include.course_meta and include.course_meta.glossary_includes %}
+  {% for inc_slug in include.course_meta.glossary_includes %}
+    {% assign _inc_bundle = site.data.courses[inc_slug] %}
+    {% assign _inc_gl = _inc_bundle.glossary | default: site.data.glossaries[inc_slug] %}
+    {% if _inc_gl and _inc_gl.size > 0 %}
+      {% assign has_glossary_terms = true %}
+      {% break %}
+    {% endif %}
+  {% endfor %}
+{% endif %}
 
-  {% if has_glossary_terms %}
+{% if has_glossary_terms %}
     {% assign glossary_base_url = '/courses/' | append: slug | append: '/?view=glossary' | relative_url %}
     <section
       id="sectionKeyTerms"
@@ -54,5 +57,4 @@
         </div>
       </div>
     </section>
-  {% endif %}
 {% endif %}

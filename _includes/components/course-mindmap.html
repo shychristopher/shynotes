@@ -1,13 +1,8 @@
 {% assign slug = include.course_slug %}
 {% assign course_meta = include.course_meta %}
-{% assign course_mindmaps = nil %}
-{% if site.data.mindmaps and site.data.mindmaps[slug] %}
-  {% assign course_mindmaps = site.data.mindmaps[slug] %}
-{% endif %}
-{% assign course_links = nil %}
-{% if site.data.links and site.data.links[slug] %}
-  {% assign course_links = site.data.links[slug] %}
-{% endif %}
+{% assign _course_bundle = site.data.courses[slug] %}
+{% assign course_mindmaps = _course_bundle.mindmaps | default: site.data.mindmaps[slug] %}
+{% assign course_links = _course_bundle.links | default: site.data.links[slug] %}
 
 <section id="courseMindmapViewer" class="d-flex flex-column gap-3" data-course-slug="{{ slug | escape }}" data-course-url="{{ '/courses/' | append: slug | append: '/' | relative_url }}">
   <header class="pb-3 border-bottom">

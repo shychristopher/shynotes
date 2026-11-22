@@ -11,7 +11,8 @@ custom_js:
 {% if site.data.courses %}
   {% for entry in site.data.courses %}
     {% assign slug = entry[0] %}
-    {% assign meta = entry[1] %}
+    {% assign _bundle = entry[1] %}
+    {% assign meta = _bundle.course | default: _bundle %}
     {% unless meta.hidden == true or meta.suppressed == true %}
       {% assign sort_key = meta.title | default: slug | downcase | append: ":::" | append: slug %}
       {% assign sortable_courses = sortable_courses | push: sort_key %}
@@ -63,7 +64,8 @@ custom_js:
   <div class="row row-cols-1 row-cols-md-2 row-cols-xl-3 g-3" id="courseList">
     {% for key in sorted_course_keys %}
       {% assign slug = key | split: ":::" | last %}
-      {% assign course = site.data.courses[slug] %}
+      {% assign _bundle = site.data.courses[slug] %}
+      {% assign course = _bundle.course | default: _bundle %}
 
       {% assign course_url = "/courses/" | append: slug | append: "/" %}
       {% if site.courses and site.courses.size > 0 %}

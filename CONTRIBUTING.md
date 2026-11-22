@@ -12,7 +12,7 @@ When you add a course folder and metadata file, the site automatically generates
 - **Left course sidebar & nested folder navigation** (from your subfolders)
 - **Progress tracking & "Updated / New" indicators** (saved per-student in browser `localStorage`)
 - **Quick Reference page** (`Study Tools → Quick Reference` — for student bookmarks, "Return to" spots, and "Review later" flags)
-- **Glossary page & filter sidebar** (`Study Tools → Glossary` — appears automatically the moment you add `_data/glossaries/<slug>.yml`)
+- **Glossary page & filter sidebar** (`Study Tools → Glossary` — appears automatically the moment you add `_data/courses/<slug>/glossary.yml`)
 - **Inline term popovers & page Key Terms cards** (auto-matched from your glossary on every page that mentions those terms)
 - **Collapsible headings & section bookmarking** (auto-built from your `##` / `###` Markdown headings)
 - **Course & Glossary Print Preview Studios** (single page, whole section, or entire course + glossary appendix)
@@ -30,15 +30,13 @@ Pick a short, lowercase, URL-friendly **slug** for your course (no spaces—use 
 
 ```text
 _data/
-├── courses/
-│   └── <slug>.yml                 # REQUIRED: Course metadata (title, code, tags, summary)
-├── glossaries/
-│   └── <slug>.yml                 # OPTIONAL: Glossary terms (auto-enables Glossary & Key Terms)
-├── links/
-│   └── <slug>.yml                 # OPTIONAL: Quizlets, flashcards, videos & mind map link definitions
-└── mindmaps/
+└── courses/
     └── <slug>/
-        └── <map-id>.yml           # OPTIONAL: Markmap markdown mind map files (pan/zoom viewer)
+        ├── course.yml             # REQUIRED: Course metadata (title, code, tags, summary)
+        ├── glossary.yml           # OPTIONAL: Glossary terms (auto-enables Glossary & Key Terms)
+        ├── links.yml              # OPTIONAL: Quizlets, flashcards, videos & mind map link definitions
+        └── mindmaps/
+            └── <map-id>.yml       # OPTIONAL: Markmap markdown mind map files (pan/zoom viewer)
 
 _courses/
 └── <slug>/
@@ -61,7 +59,7 @@ _courses/
 
 ## Copy-Paste Templates
 
-### 1. Course Metadata — `_data/courses/<slug>.yml` (Required)
+### 1. Course Metadata — `_data/courses/<slug>/course.yml` (Required)
 
 ```yaml
 title: Biology 101
@@ -161,7 +159,7 @@ Ribosomes translate mRNA into polypeptide chains.
 
 ---
 
-### 5. Glossary Terms — `_data/glossaries/<slug>.yml` (Optional)
+### 5. Glossary Terms — `_data/courses/<slug>/glossary.yml` (Optional)
 
 The moment this file exists with at least one term, **Glossary** automatically appears under **Study Tools**, inline hover popovers activate across every lesson, and page-specific **Key Terms** cards appear on pages that mention those terms.
 
@@ -197,9 +195,9 @@ The moment this file exists with at least one term, **Glossary** automatically a
 
 ### 6. Study Links (Quizlets, Videos, Practice) & Mind Maps (Optional)
 
-Define links centrally under `_data/links/<slug>.yml` and interactive Markmap mind maps under `_data/mindmaps/<slug>/<map-id>.yml`, then attach whichever ones apply to any course overview, glossary, section, or lesson page!
+Define links centrally under `_data/courses/<slug>/links.yml` and interactive Markmap mind maps under `_data/courses/<slug>/mindmaps/<map-id>.yml`, then attach whichever ones apply to any course overview, glossary, section, or lesson page!
 
-**`_data/mindmaps/<slug>/airway-management.yml`:**
+**`_data/courses/<slug>/mindmaps/airway-management.yml`:**
 
 ```yaml
 title: Airway Management Mind Map
@@ -216,7 +214,7 @@ content: |
 
 *(You can also use `image: /assets/images/...` or `embed_url: https://...` instead of `content:` for static images or embeds like Miro/Excalidraw.)*
 
-**`_data/links/<slug>.yml`:**
+**`_data/courses/<slug>/links.yml`:**
 
 ```yaml
 quizlet_airway:
@@ -227,7 +225,7 @@ quizlet_airway:
 airway_mindmap:
   type: mindmap
   title: Airway Mind Map
-  map: airway-management # matches _data/mindmaps/<slug>/airway-management.yml
+  map: airway-management # matches _data/courses/<slug>/mindmaps/airway-management.yml
 ```
 
 **Attach to any page (Course Overview, Section Overview, or Lesson) via `links:` in front matter:**
@@ -241,7 +239,7 @@ links:
 ---
 ```
 
-*(You can also reference a mind map filename directly like `- airway-management` without adding it to `_data/links/`, or attach Glossary-specific links in `_data/courses/<slug>.yml` under `glossary_links:`.)*
+*(You can also reference a mind map filename directly like `- airway-management` without adding it to `links.yml`, or attach Glossary-specific links in `_data/courses/<slug>/course.yml` under `glossary_links:`.)*
 
 ---
 
