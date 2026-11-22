@@ -6,12 +6,6 @@ repo:
   name: shynotes
   url: https://github.com/shychristopher/shynotes
 
-exclude:
-  - docs
-  - docs/
-
-cdn_url: https://cdn.shynotes.org
-
 collections:
   courses:
     output: true
@@ -22,4 +16,4 @@ defaults:
       path: ""
       type: courses
     values:
-      layout: default
+      layout: course

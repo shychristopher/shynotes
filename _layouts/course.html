@@ -1,0 +1,251 @@
+{% assign course_meta = nil %}
+{% assign course_slug = nil %}
+{% assign is_page_hidden = false %}
+{% if page.hidden == true or page.suppressed == true %}
+  {% assign is_page_hidden = true %}
+{% endif %}
+{% if page.collection == "courses" %}
+  {% assign path_parts = page.path | split: "/" %}
+  {% assign course_slug = page.course_slug | default: path_parts[1] %}
+  {% if site.data.courses and course_slug %}
+    {% assign course_meta = site.data.courses[course_slug] %}
+    {% if course_meta %}
+      {% if course_meta.hidden == true or course_meta.suppressed == true %}
+        {% assign is_page_hidden = true %}
+      {% endif %}
+    {% endif %}
+  {% endif %}
+{% endif %}
+{% if is_page_hidden %}
+{% assign redirect_url = '/courses/?unavailable=1' | relative_url %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="robots" content="noindex, nofollow">
+    <title>Course Unavailable · {{ site.title }}</title>
+    <meta http-equiv="refresh" content="0; url={{ redirect_url }}">
+    <script>
+        window.location.replace({{ redirect_url | jsonify }});
+    </script>
+    {% include head/links.html %}
+</head>
+
+<body>
+    {% include components/navigation/navbar.html %}
+    <main class="container py-5">
+        <div class="card bg-body-tertiary text-center py-4 mx-auto" style="max-width: 32rem;">
+            <div class="card-body">
+                <h1 class="h5 fw-bold mb-2">Course Unavailable</h1>
+                <p class="small text-body-secondary mb-3">
+                    This course is no longer available. Redirecting you back to the courses catalog…
+                </p>
+                <a href="{{ redirect_url }}" class="btn btn-primary btn-sm">Back to Courses</a>
+            </div>
+        </div>
+    </main>
+</body>
+
+</html>
+{% else %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    {% include head/meta.html %}
+    {% include head/links.html %}
+    <style>
+        @media (min-width: 992px) {
+            .course-sidebar {
+                flex: 0 0 280px !important;
+                width: 280px !important;
+                position: sticky !important;
+                top: 57px;
+                height: calc(100vh - 57px) !important;
+                overflow-y: auto;
+                background-color: var(--bs-tertiary-bg) !important;
+                border-right: var(--bs-border-width) solid var(--bs-border-color) !important;
+            }
+            .course-sidebar .offcanvas-body {
+                width: 100%;
+                flex-grow: 1;
+            }
+        }
+        .course-sidebar .offcanvas-body {
+            overflow-x: hidden;
+        }
+        .course-sidebar .course-nav-folder,
+        .course-sidebar .nav-link,
+        .course-sidebar .course-nav-toggle {
+            min-width: 0;
+        }
+        .course-sidebar .nav-link {
+            line-height: 1.35;
+        }
+        .course-sidebar .nav-link:not(.active) {
+            color: var(--bs-body-color);
+        }
+        .course-sidebar .nav-link:not(.active):hover,
+        .course-sidebar .course-nav-toggle:hover {
+            background-color: var(--bs-secondary-bg);
+        }
+        .course-sidebar .nav-chevron {
+            display: inline-block;
+            font-size: 0.75rem;
+            transition: transform 0.15s ease;
+        }
+        .course-sidebar .course-nav-toggle[aria-expanded="true"] .nav-chevron {
+            transform: rotate(90deg);
+        }
+        .course-page-indicator-slot {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 16px;
+            height: 19px;
+            flex-shrink: 0;
+        }
+        .course-page-indicator {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 16px;
+            height: 16px;
+            border-radius: 999px;
+            font-size: 0.7rem;
+            line-height: 1;
+            font-weight: 700;
+        }
+        .course-page-indicator.indicator-reviewed {
+            background-color: var(--bs-success);
+            color: #fff;
+        }
+        .course-page-indicator.indicator-updated {
+            width: 10px;
+            height: 10px;
+            background-color: var(--bs-warning);
+            box-shadow: 0 0 0 2px var(--bs-warning-bg-subtle);
+        }
+        .course-page-indicator.indicator-new {
+            width: 10px;
+            height: 10px;
+            background-color: var(--bs-info);
+            box-shadow: 0 0 0 2px var(--bs-info-bg-subtle);
+        }
+        .course-page-indicator.indicator-unreviewed {
+            width: 10px;
+            height: 10px;
+            border: 1.75px solid var(--bs-secondary-color);
+            opacity: 0.65;
+        }
+        .nav-link.active .course-page-indicator.indicator-unreviewed {
+            border-color: rgba(255, 255, 255, 0.8);
+            opacity: 1;
+        }
+        .nav-link.active .course-page-indicator.indicator-reviewed {
+            background-color: rgba(255, 255, 255, 0.25);
+            color: #fff;
+        }
+        .nav-link.active .course-page-indicator.indicator-updated,
+        .nav-link.active .course-page-indicator.indicator-new {
+            box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.35);
+        }
+    </style>
+</head>
+
+<body>
+    {% include components/navigation/navbar.html sidebar_id="courseNavSidebar" %}
+
+    <div class="d-lg-flex">
+        {% include components/navigation/course-nav-sidebar.html course_slug=course_slug course_meta=course_meta %}
+
+        <main class="flex-grow-1 p-4">
+            <div class="container-fluid" style="max-width: 960px; margin-left: 0;">
+                {% assign expected_course_index = "_courses/" | append: course_slug | append: "/index.md" %}
+                {% if course_meta and page.path == expected_course_index %}
+                    <header class="mb-4 pb-3 border-bottom">
+                        <div class="d-flex flex-wrap align-items-center gap-2 mb-2">
+                            {% if course_meta.course_code %}
+                                <span class="badge {% if course_meta.deprecated %}text-bg-secondary{% else %}text-bg-primary{% endif %}">
+                                    {{ course_meta.course_code }}
+                                </span>
+                            {% endif %}
+                            {% if course_meta.term %}
+                                <span class="small text-body-secondary">{{ course_meta.term }}</span>
+                            {% endif %}
+                            {% if course_meta.deprecated %}
+                                <span class="badge text-bg-danger-subtle text-danger-emphasis border border-danger-subtle">
+                                    Deprecated
+                                </span>
+                            {% endif %}
+                        </div>
+                        <h1 class="h2 fw-bold mb-2">{{ course_meta.title }}</h1>
+                        {% if course_meta.summary %}
+                            <p class="text-body-secondary mb-3">{{ course_meta.summary }}</p>
+                        {% endif %}
+                        {% if course_meta.tags and course_meta.tags.size > 0 %}
+                            <div class="d-flex flex-wrap gap-1">
+                                {% for tag in course_meta.tags %}
+                                    <span class="badge rounded-pill text-bg-secondary-subtle text-secondary-emphasis border fw-normal">
+                                        {{ tag }}
+                                    </span>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </header>
+                {% elsif page.title %}
+                    <header class="mb-4 pb-3 border-bottom">
+                        {% if course_meta %}
+                            <div class="d-flex flex-wrap align-items-center gap-2 mb-2">
+                                {% if course_meta.course_code %}
+                                    <span class="badge {% if course_meta.deprecated %}text-bg-secondary{% else %}text-bg-primary{% endif %}">
+                                        {{ course_meta.course_code }}
+                                    </span>
+                                {% endif %}
+                                {% if page.section %}
+                                    <span class="small text-body-secondary">{{ page.section }}</span>
+                                {% endif %}
+                            </div>
+                        {% endif %}
+                        <h1 class="h2 fw-bold mb-1">{{ page.title }}</h1>
+                        {% if page.description %}
+                            <p class="text-body-secondary mb-0">{{ page.description }}</p>
+                        {% endif %}
+                    </header>
+                {% endif %}
+
+                {{ content }}
+
+                {% assign _self_clean = content | strip_html | normalize_whitespace %}
+                {% assign _self_head = _self_clean | slice: 0, 32 | slugify %}
+                {% assign _self_auto_rev = _self_clean.size | append: "-" | append: _self_head %}
+                {% assign _self_rev = page.revision | default: page.updated | default: _self_auto_rev %}
+                <footer class="mt-5 pt-3 border-top d-flex flex-wrap justify-content-between align-items-center gap-2 d-print-none">
+                    <div class="d-flex align-items-center gap-2">
+                        <span class="small text-body-secondary">Page status:</span>
+                        <span class="badge rounded-pill text-bg-secondary-subtle text-secondary-emphasis border" id="coursePageStatusBadge">
+                            Not reviewed
+                        </span>
+                    </div>
+                    <button
+                        type="button"
+                        class="btn btn-sm btn-outline-primary"
+                        id="courseReviewToggleBtn"
+                        data-page-rev="{{ _self_rev | escape }}"
+                        aria-pressed="false"
+                    >
+                        Mark as Reviewed
+                    </button>
+                </footer>
+            </div>
+        </main>
+    </div>
+
+    {% include body/scripts.html %}
+    <script src="{{ '/assets/js/course-progress.js' | relative_url }}"></script>
+</body>
+
+</html>
+{% endif %}

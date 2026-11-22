@@ -1,0 +1,99 @@
+---
+layout: courses
+title: Courses
+permalink: /courses/
+description: Browse and filter all available courses.
+custom_js:
+  - /assets/js/courses-dashboard.js
+---
+
+{% assign sortable_courses = "" | split: "" %}
+{% if site.data.courses %}
+  {% for entry in site.data.courses %}
+    {% assign slug = entry[0] %}
+    {% assign meta = entry[1] %}
+    {% unless meta.hidden == true or meta.suppressed == true %}
+      {% assign sort_key = meta.title | default: slug | downcase | append: ":::" | append: slug %}
+      {% assign sortable_courses = sortable_courses | push: sort_key %}
+    {% endunless %}
+  {% endfor %}
+{% endif %}
+{% assign sorted_course_keys = "" | split: "" %}
+{% if sortable_courses.size > 0 %}
+  {% assign sorted_course_keys = sortable_courses | sort_natural %}
+{% endif %}
+
+<div class="d-flex flex-wrap justify-content-between align-items-baseline gap-2 mb-3">
+  <div>
+    <h1 class="h2 fw-bold mb-1">Courses</h1>
+    <p class="text-body-secondary mb-0">Browse all courses or use the sidebar to filter.</p>
+  </div>
+  {% if sorted_course_keys.size > 0 %}
+    <span class="small text-body-secondary" id="courseResultCount">
+      Showing {{ sorted_course_keys.size }} {% if sorted_course_keys.size == 1 %}course{% else %}courses{% endif %}
+    </span>
+  {% endif %}
+</div>
+
+<!-- Sticky Search Bar -->
+<div
+  class="bg-body py-2 mb-3 border-bottom d-print-none"
+  style="position: sticky; top: 57px; z-index: 1010;"
+>
+  <div class="d-flex gap-2">
+    <input
+      type="search"
+      id="courseSearch"
+      class="form-control"
+      placeholder="Search courses by code, title, term, or tag..."
+      aria-label="Search courses"
+      autocomplete="off"
+    >
+    <button
+      type="button"
+      class="btn btn-outline-secondary flex-shrink-0 d-none"
+      id="quickResetCourseFilters"
+    >
+      Reset
+    </button>
+  </div>
+</div>
+
+{% if sorted_course_keys.size > 0 %}
+  <div class="row row-cols-1 row-cols-md-2 row-cols-xl-3 g-3" id="courseList">
+    {% for key in sorted_course_keys %}
+      {% assign slug = key | split: ":::" | last %}
+      {% assign course = site.data.courses[slug] %}
+
+      {% assign course_url = "/courses/" | append: slug | append: "/" %}
+      {% if site.courses and site.courses.size > 0 %}
+        {% assign expected_path = "_courses/" | append: slug | append: "/index.md" %}
+        {% assign course_doc = site.courses | where: "path", expected_path | first %}
+        {% if course_doc %}
+          {% assign course_url = course_doc.url %}
+        {% endif %}
+      {% endif %}
+
+      {% include components/cards/course-card.html slug=slug course=course course_url=course_url filterable=true %}
+    {% endfor %}
+  </div>
+
+  <div class="card bg-body-tertiary border d-none mt-3" id="noCourseMatches">
+    <div class="card-body text-center py-4">
+      <p class="fw-semibold mb-1">No matching courses.</p>
+      <p class="small text-body-secondary mb-3">Try clearing your search or adjusting the sidebar filters.</p>
+      <button type="button" class="btn btn-sm btn-outline-secondary" id="emptyResetCourseFilters">
+        Reset filters
+      </button>
+    </div>
+  </div>
+{% else %}
+  <div class="card bg-body-tertiary border">
+    <div class="card-body text-center py-5">
+      <p class="fw-semibold mb-1">No courses yet.</p>
+      <p class="small text-body-secondary mb-0">
+        Add course metadata files inside <code>_data/courses/</code> and content inside <code>_courses/</code>.
+      </p>
+    </div>
+  </div>
+{% endif %}

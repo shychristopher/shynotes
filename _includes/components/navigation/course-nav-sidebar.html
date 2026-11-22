@@ -1,0 +1,192 @@
+{% assign slug = include.course_slug %}
+{% assign course_meta = include.course_meta %}
+{% assign course_prefix = "_courses/" | append: slug | append: "/" %}
+{% assign overview_url = "/courses/" | append: slug | append: "/" %}
+{% assign overview_doc = nil %}
+
+{% assign all_course_docs = "" | split: "" %}
+{% assign root_general_docs = "" | split: "" %}
+{% assign has_subfolders = false %}
+
+{% if site.courses and site.courses.size > 0 %}
+  {% for doc in site.courses %}
+    {% assign path_check = doc.path | slice: 0, course_prefix.size %}
+    {% if path_check == course_prefix %}
+      {% unless doc.hidden == true or doc.suppressed == true or doc.nav_exclude == true %}
+        {% assign all_course_docs = all_course_docs | push: doc %}
+        {% assign rel_path = doc.path | remove_first: course_prefix %}
+        {% assign rel_parts = rel_path | split: "/" %}
+        {% if rel_parts.size == 1 %}
+          {% if doc.name == "index.md" %}
+            {% assign overview_url = doc.url %}
+            {% assign overview_doc = doc %}
+          {% else %}
+            {% assign root_general_docs = root_general_docs | push: doc %}
+          {% endif %}
+        {% elsif rel_parts.size > 1 %}
+          {% assign has_subfolders = true %}
+        {% endif %}
+      {% endunless %}
+    {% endif %}
+  {% endfor %}
+{% endif %}
+
+{% assign sorted_general_docs = "" | split: "" %}
+{% if root_general_docs.size > 0 %}
+  {% assign sorted_general_docs = root_general_docs | sort: "path" %}
+{% endif %}
+
+<aside
+  class="offcanvas-lg offcanvas-start course-sidebar bg-body-tertiary d-print-none"
+  tabindex="-1"
+  id="courseNavSidebar"
+  aria-labelledby="courseNavSidebarLabel"
+  data-course-slug="{{ slug | escape }}"
+  data-current-url="{{ page.url | relative_url }}"
+  style="--bs-offcanvas-width: 280px;"
+>
+  <div class="offcanvas-header border-bottom d-lg-none">
+    <h2 class="offcanvas-title h6 fw-semibold mb-0 text-truncate" id="courseNavSidebarLabel">
+      {{ course_meta.title | default: slug }}
+    </h2>
+    <button
+      type="button"
+      class="btn-close"
+      data-bs-dismiss="offcanvas"
+      data-bs-target="#courseNavSidebar"
+      aria-label="Close"
+    ></button>
+  </div>
+
+  <div class="offcanvas-body d-flex flex-column w-100 gap-3 p-3">
+    <!-- Back to Catalog + Course Header + Local Progress -->
+    <div class="pb-3 border-bottom px-2">
+      <a
+        href="{{ '/courses/' | relative_url }}"
+        class="small text-decoration-none text-body-secondary d-inline-flex align-items-center gap-1 mb-2"
+      >
+        <span aria-hidden="true">←</span>
+        <span>All Courses</span>
+      </a>
+
+      <div class="d-flex flex-wrap align-items-center gap-2 mb-1">
+        {% if course_meta.course_code %}
+          <span class="badge {% if course_meta.deprecated %}text-bg-secondary{% else %}text-bg-primary{% endif %}">
+            {{ course_meta.course_code }}
+          </span>
+        {% endif %}
+        {% if course_meta.term %}
+          <span class="small text-body-secondary">{{ course_meta.term }}</span>
+        {% endif %}
+      </div>
+
+      <div class="fw-semibold text-body mb-3">
+        {{ course_meta.title | default: slug }}
+      </div>
+
+      <div>
+        <div class="d-flex justify-content-between align-items-center mb-1" style="font-size: 0.75rem;">
+          <span class="text-body-secondary">Progress</span>
+          <span class="text-body-secondary fw-medium" id="courseProgressLabel">0 / 0 reviewed</span>
+        </div>
+        <div class="progress" style="height: 6px;">
+          <div
+            class="progress-bar bg-success"
+            id="courseProgressBar"
+            role="progressbar"
+            style="width: 0%;"
+            aria-valuenow="0"
+            aria-valuemin="0"
+            aria-valuemax="100"
+            aria-label="Course progress"
+          ></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- General Section (Overview + any root-level files like Glossary, Syllabus, etc.) -->
+    <div>
+      <div class="text-uppercase text-body-secondary fw-semibold px-2 mb-1" style="font-size: 0.72rem; letter-spacing: 0.05em;">
+        General
+      </div>
+      <nav class="nav nav-pills flex-column gap-1">
+        {% assign _ov_rev = "" %}
+        {% if overview_doc %}
+          {% assign _clean = overview_doc.content | markdownify | strip_html | normalize_whitespace %}
+          {% assign _head = _clean | slice: 0, 32 | slugify %}
+          {% assign _auto_rev = _clean.size | append: "-" | append: _head %}
+          {% assign _ov_rev = overview_doc.revision | default: overview_doc.updated | default: _auto_rev %}
+        {% endif %}
+        <a
+          class="nav-link d-flex align-items-start gap-2 py-1 px-2 small{% if page.url == overview_url %} active fw-semibold{% endif %}"
+          {% if page.url == overview_url %}aria-current="page"{% endif %}
+          href="{{ overview_url | relative_url }}"
+          data-course-page="true"
+          data-page-url="{{ overview_url | relative_url }}"
+          data-page-rev="{{ _ov_rev | escape }}"
+          data-page-new="{% if overview_doc and overview_doc.is_new == true %}true{% else %}false{% endif %}"
+        >
+          <span class="course-page-indicator-slot">
+            <span class="course-page-indicator"></span>
+          </span>
+          <span class="flex-grow-1">Overview</span>
+        </a>
+        {% for doc in sorted_general_docs %}
+          {% assign _clean = doc.content | markdownify | strip_html | normalize_whitespace %}
+          {% assign _head = _clean | slice: 0, 32 | slugify %}
+          {% assign _auto_rev = _clean.size | append: "-" | append: _head %}
+          {% assign _page_rev = doc.revision | default: doc.updated | default: _auto_rev %}
+          <a
+            class="nav-link d-flex align-items-start gap-2 py-1 px-2 small{% if page.url == doc.url %} active fw-semibold{% endif %}"
+            {% if page.url == doc.url %}aria-current="page"{% endif %}
+            href="{{ doc.url | relative_url }}"
+            data-course-page="true"
+            data-page-url="{{ doc.url | relative_url }}"
+            data-page-rev="{{ _page_rev | escape }}"
+            data-page-new="{% if doc.is_new == true %}true{% else %}false{% endif %}"
+          >
+            <span class="course-page-indicator-slot">
+              <span class="course-page-indicator"></span>
+            </span>
+            <span class="flex-grow-1">{{ doc.title }}</span>
+          </a>
+        {% endfor %}
+      </nav>
+    </div>
+
+    <!-- Dynamic Folder Tree (Auto-generated from subfolders inside _courses/<slug>/) -->
+    {% if has_subfolders %}
+      <div class="pt-2 border-top">
+        <div class="text-uppercase text-body-secondary fw-semibold px-2 mb-2" style="font-size: 0.72rem; letter-spacing: 0.05em;">
+          Content
+        </div>
+        <nav class="nav nav-pills flex-column gap-1" aria-label="Course content">
+          {% include components/navigation/course-nav-tree.html prefix=course_prefix docs=all_course_docs depth=0 id_prefix="course-tree" %}
+        </nav>
+      </div>
+    {% endif %}
+
+    <!-- Legend & Reset -->
+    <div class="mt-auto pt-3 border-top px-2">
+      <div class="d-flex flex-wrap gap-2 text-body-secondary mb-2" style="font-size: 0.7rem;">
+        <span class="d-inline-flex align-items-center gap-1">
+          <span class="course-page-indicator indicator-reviewed">✓</span> Reviewed
+        </span>
+        <span class="d-inline-flex align-items-center gap-1">
+          <span class="course-page-indicator indicator-updated"></span> Updated
+        </span>
+        <span class="d-inline-flex align-items-center gap-1">
+          <span class="course-page-indicator indicator-new"></span> New
+        </span>
+      </div>
+      <button
+        type="button"
+        class="btn btn-link btn-sm p-0 text-decoration-none text-body-secondary"
+        id="resetCourseProgress"
+        style="font-size: 0.75rem;"
+      >
+        Reset course progress
+      </button>
+    </div>
+  </div>
+</aside>

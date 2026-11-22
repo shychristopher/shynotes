@@ -1,0 +1,7 @@
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+    crossorigin="anonymous"></script>
+{% if page.custom_js %}
+  {% for script in page.custom_js %}
+    <script src="{{ script | relative_url }}" crossorigin="anonymous"></script>
+  {% endfor %}
+{% endif %}

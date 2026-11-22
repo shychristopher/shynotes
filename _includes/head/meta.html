@@ -1,0 +1,25 @@
+{% assign resolved_title = page.title %}
+{% assign resolved_description = page.description %}
+{% if page.collection == "courses" %}
+  {% assign path_parts = page.path | split: "/" %}
+  {% assign course_slug = page.course_slug | default: path_parts[1] %}
+  {% if site.data.courses and course_slug %}
+    {% assign course_meta = site.data.courses[course_slug] %}
+    {% if course_meta %}
+      {% assign expected_course_index = "_courses/" | append: course_slug | append: "/index.md" %}
+      {% if page.path == expected_course_index and course_meta.title %}
+        {% assign resolved_title = course_meta.title %}
+      {% else %}
+        {% assign resolved_title = page.title | default: course_meta.title %}
+      {% endif %}
+      {% assign resolved_description = page.description | default: course_meta.summary %}
+    {% endif %}
+  {% endif %}
+{% endif %}
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<title>{% if resolved_title %}{{ resolved_title }} · {{ site.title }}{% else %}{{ site.title }}{% endif %}</title>
+{% if resolved_description or site.description %}
+<meta name="description" content="{{ resolved_description | default: site.description }}">
+{% endif %}

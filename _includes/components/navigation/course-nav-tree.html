@@ -1,0 +1,146 @@
+{% assign direct_files = "" | split: "" %}
+{% assign child_folders = "" | split: "" %}
+{% assign folder_index_doc = nil %}
+
+{% for doc in include.docs %}
+  {% assign path_check = doc.path | slice: 0, include.prefix.size %}
+  {% if path_check == include.prefix %}
+    {% assign rel_path = doc.path | remove_first: include.prefix %}
+    {% assign parts = rel_path | split: "/" %}
+    {% if parts.size == 1 %}
+      {% if doc.name == "index.md" %}
+        {% assign folder_index_doc = doc %}
+      {% else %}
+        {% assign direct_files = direct_files | push: doc %}
+      {% endif %}
+    {% elsif parts.size > 1 %}
+      {% assign child_folders = child_folders | push: parts[0] %}
+    {% endif %}
+  {% endif %}
+{% endfor %}
+
+{% assign sorted_files = "" | split: "" %}
+{% if direct_files.size > 0 %}
+  {% assign sorted_files = direct_files | sort: "path" %}
+{% endif %}
+
+{% assign unique_folders = "" | split: "" %}
+{% if child_folders.size > 0 %}
+  {% assign unique_folders = child_folders | uniq | sort_natural %}
+{% endif %}
+
+{% if folder_index_doc and include.depth > 0 %}
+  {% assign _clean = folder_index_doc.content | markdownify | strip_html | normalize_whitespace %}
+  {% assign _head = _clean | slice: 0, 32 | slugify %}
+  {% assign _auto_rev = _clean.size | append: "-" | append: _head %}
+  {% assign _page_rev = folder_index_doc.revision | default: folder_index_doc.updated | default: _auto_rev %}
+  <a
+    class="nav-link d-flex align-items-start gap-2 py-1 px-2 small{% if page.url == folder_index_doc.url %} active fw-semibold{% endif %}"
+    {% if page.url == folder_index_doc.url %}aria-current="page"{% endif %}
+    href="{{ folder_index_doc.url | relative_url }}"
+    data-course-page="true"
+    data-page-url="{{ folder_index_doc.url | relative_url }}"
+    data-page-rev="{{ _page_rev | escape }}"
+    data-page-new="{% if folder_index_doc.is_new == true %}true{% else %}false{% endif %}"
+  >
+    <span class="course-page-indicator-slot">
+      <span class="course-page-indicator"></span>
+    </span>
+    <span class="flex-grow-1">{{ folder_index_doc.nav_title | default: "Overview" }}</span>
+  </a>
+{% endif %}
+
+{% if include.depth > 0 %}
+  {% for doc in sorted_files %}
+    {% assign _clean = doc.content | markdownify | strip_html | normalize_whitespace %}
+    {% assign _head = _clean | slice: 0, 32 | slugify %}
+    {% assign _auto_rev = _clean.size | append: "-" | append: _head %}
+    {% assign _page_rev = doc.revision | default: doc.updated | default: _auto_rev %}
+    <a
+      class="nav-link d-flex align-items-start gap-2 py-1 px-2 small{% if page.url == doc.url %} active fw-semibold{% endif %}"
+      {% if page.url == doc.url %}aria-current="page"{% endif %}
+      href="{{ doc.url | relative_url }}"
+      data-course-page="true"
+      data-page-url="{{ doc.url | relative_url }}"
+      data-page-rev="{{ _page_rev | escape }}"
+      data-page-new="{% if doc.is_new == true %}true{% else %}false{% endif %}"
+    >
+      <span class="course-page-indicator-slot">
+        <span class="course-page-indicator"></span>
+      </span>
+      <span class="flex-grow-1">{{ doc.title }}</span>
+    </a>
+  {% endfor %}
+{% endif %}
+
+{% for folder_name in unique_folders %}
+  {% assign child_prefix = include.prefix | append: folder_name | append: "/" %}
+  {% assign folder_key = child_prefix | remove_first: "_courses/" %}
+  {% assign collapse_id = include.id_prefix | append: "-" | append: forloop.index %}
+
+  {% comment %} Check if this folder contains the current page {% endcomment %}
+  {% assign page_prefix_check = page.path | slice: 0, child_prefix.size %}
+  {% assign has_active_page = false %}
+  {% if page_prefix_check == child_prefix %}
+    {% assign has_active_page = true %}
+  {% endif %}
+  {% assign is_open = false %}
+  {% if has_active_page or include.depth == 0 %}
+    {% assign is_open = true %}
+  {% endif %}
+
+  {% comment %} Check if child folder has an index.md with a custom title {% endcomment %}
+  {% assign child_index_path = child_prefix | append: "index.md" %}
+  {% assign child_index_doc = nil %}
+  {% for doc in include.docs %}
+    {% if doc.path == child_index_path %}
+      {% assign child_index_doc = doc %}
+      {% break %}
+    {% endif %}
+  {% endfor %}
+
+  {% assign folder_label = "" %}
+  {% if child_index_doc and child_index_doc.title and child_index_doc.title != "Index" %}
+    {% assign folder_label = child_index_doc.title %}
+  {% else %}
+    {% assign folder_words = folder_name | replace: "_", "-" | split: "-" %}
+    {% assign stripped_digits = folder_words[0] | remove: "0" | remove: "1" | remove: "2" | remove: "3" | remove: "4" | remove: "5" | remove: "6" | remove: "7" | remove: "8" | remove: "9" %}
+    {% assign label_words = "" | split: "" %}
+    {% for w in folder_words %}
+      {% if forloop.first and stripped_digits == "" and folder_words.size > 1 %}
+        {% continue %}
+      {% endif %}
+      {% assign cap_w = w | capitalize %}
+      {% assign label_words = label_words | push: cap_w %}
+    {% endfor %}
+    {% assign folder_label = label_words | join: " " %}
+  {% endif %}
+
+  {% assign next_depth = include.depth | plus: 1 %}
+
+  <div class="course-nav-folder{% if include.depth > 0 %} mt-1{% else %} mb-1{% endif %}">
+    <button
+      class="btn btn-sm w-100 text-start d-flex align-items-center justify-content-between gap-2 px-2 py-1 border-0 fw-semibold small text-body course-nav-toggle"
+      type="button"
+      data-bs-toggle="collapse"
+      data-bs-target="#{{ collapse_id }}"
+      aria-expanded="{% if is_open %}true{% else %}false{% endif %}"
+      aria-controls="{{ collapse_id }}"
+    >
+      <span class="text-truncate">{{ folder_label }}</span>
+      <span class="nav-chevron text-body-secondary flex-shrink-0" aria-hidden="true">▸</span>
+    </button>
+
+    <div
+      class="collapse course-folder-collapse{% if is_open %} show{% endif %}"
+      id="{{ collapse_id }}"
+      data-folder-key="{{ folder_key | escape }}"
+      data-has-active-page="{% if has_active_page %}true{% else %}false{% endif %}"
+      data-default-open="{% if is_open %}true{% else %}false{% endif %}"
+    >
+      <div class="nav nav-pills flex-column gap-1 ps-2 ms-2 mt-1 border-start">
+        {% include components/navigation/course-nav-tree.html prefix=child_prefix docs=include.docs depth=next_depth id_prefix=collapse_id %}
+      </div>
+    </div>
+  </div>
+{% endfor %}

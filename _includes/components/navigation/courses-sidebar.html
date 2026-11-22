@@ -1,0 +1,134 @@
+{% assign visible_slugs = "" | split: "" %}
+{% assign all_tags = "" | split: "" %}
+{% if site.data.courses %}
+  {% for entry in site.data.courses %}
+    {% assign slug = entry[0] %}
+    {% assign meta = entry[1] %}
+    {% unless meta.hidden == true or meta.suppressed == true %}
+      {% assign visible_slugs = visible_slugs | push: slug %}
+      {% if meta.tags %}
+        {% for tag in meta.tags %}
+          {% assign all_tags = all_tags | push: tag %}
+        {% endfor %}
+      {% endif %}
+    {% endunless %}
+  {% endfor %}
+{% endif %}
+{% assign unique_tags = "" | split: "" %}
+{% if all_tags.size > 0 %}
+  {% assign unique_tags = all_tags | uniq | sort_natural %}
+{% endif %}
+
+<aside
+  class="offcanvas-lg offcanvas-start dashboard-sidebar border-end bg-body-tertiary d-print-none flex-shrink-0"
+  tabindex="-1"
+  id="coursesSidebar"
+  aria-labelledby="coursesSidebarLabel"
+  style="--bs-offcanvas-width: 280px;"
+>
+  <div class="offcanvas-header border-bottom d-lg-none">
+    <h2 class="offcanvas-title h6 fw-semibold mb-0" id="coursesSidebarLabel">Filter Courses</h2>
+    <button
+      type="button"
+      class="btn-close"
+      data-bs-dismiss="offcanvas"
+      data-bs-target="#coursesSidebar"
+      aria-label="Close"
+    ></button>
+  </div>
+
+  <div class="offcanvas-body d-flex flex-column w-100 gap-4 p-3">
+    <div class="d-none d-lg-flex justify-content-between align-items-center">
+      <span class="small text-uppercase text-body-secondary fw-semibold">Filters</span>
+      <span class="badge text-bg-primary rounded-pill d-none" id="activeFilterCount">0</span>
+    </div>
+
+    <!-- Visibility / Status -->
+    <div>
+      <div class="small text-uppercase text-body-secondary fw-semibold mb-2">
+        Status
+      </div>
+      <div class="form-check form-switch mb-2">
+        <input class="form-check-input" type="checkbox" role="switch" id="filterFeaturedOnly">
+        <label class="form-check-label small" for="filterFeaturedOnly">
+          Featured only
+        </label>
+      </div>
+      <div class="form-check form-switch">
+        <input class="form-check-input" type="checkbox" role="switch" id="filterHideDeprecated">
+        <label class="form-check-label small" for="filterHideDeprecated">
+          Hide deprecated
+        </label>
+      </div>
+    </div>
+
+    <!-- Dynamic Tags -->
+    <div class="d-flex flex-column">
+      <div class="d-flex justify-content-between align-items-center mb-2">
+        <span class="small text-uppercase text-body-secondary fw-semibold">Tags</span>
+        <button
+          type="button"
+          class="btn btn-link btn-sm p-0 text-decoration-none d-none"
+          id="clearTagFilters"
+        >
+          Clear
+        </button>
+      </div>
+      {% if unique_tags.size > 0 %}
+        <input
+          type="search"
+          id="tagQuickFilter"
+          class="form-control form-control-sm mb-2"
+          placeholder="Filter tags..."
+          aria-label="Filter tags"
+          autocomplete="off"
+        >
+        <div
+          class="border rounded bg-body p-2 overflow-y-auto"
+          id="courseTagFilters"
+          style="max-height: 220px;"
+        >
+          {% for tag in unique_tags %}
+            {% assign tag_id = "filter-tag-" | append: forloop.index %}
+            {% assign tag_count = 0 %}
+            {% for slug in visible_slugs %}
+              {% assign meta = site.data.courses[slug] %}
+              {% if meta.tags contains tag %}
+                {% assign tag_count = tag_count | plus: 1 %}
+              {% endif %}
+            {% endfor %}
+            <div
+              class="form-check course-tag-option{% unless forloop.last %} mb-1{% endunless %}"
+              data-tag-label="{{ tag | downcase | escape }}"
+            >
+              <input
+                type="checkbox"
+                class="form-check-input course-tag-checkbox"
+                id="{{ tag_id }}"
+                value="{{ tag | downcase | escape }}"
+                autocomplete="off"
+              >
+              <label
+                class="form-check-label small d-flex justify-content-between align-items-center w-100"
+                for="{{ tag_id }}"
+              >
+                <span class="text-truncate">{{ tag }}</span>
+                <span class="text-body-secondary ms-2">{{ tag_count }}</span>
+              </label>
+            </div>
+          {% endfor %}
+          <p class="small text-body-secondary mb-0 d-none" id="noTagMatches">No matching tags.</p>
+        </div>
+      {% else %}
+        <p class="small text-body-secondary mb-0">Tags will appear once courses are added.</p>
+      {% endif %}
+    </div>
+
+    <!-- Reset -->
+    <div class="mt-auto pt-3 border-top">
+      <button type="button" class="btn btn-sm btn-outline-secondary w-100 d-none" id="resetCourseFilters">
+        Reset filters
+      </button>
+    </div>
+  </div>
+</aside>
