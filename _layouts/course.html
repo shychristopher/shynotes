@@ -192,6 +192,14 @@
         .nav-link.active .course-page-indicator.indicator-new {
             box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.35);
         }
+        @media print {
+            .course-layout-shell {
+                display: block !important;
+            }
+            .course-layout-main {
+                padding: 0 !important;
+            }
+        }
     </style>
 </head>
 
@@ -202,11 +210,11 @@
         {% include components/navigation/navbar.html sidebar_id="courseNavSidebar" %}
     {% endif %}
 
-    <div class="d-lg-flex">
+    <div class="d-lg-flex course-layout-shell">
         {% include components/navigation/course-nav-sidebar.html course_slug=course_slug course_meta=course_meta %}
 
-        <main class="flex-grow-1 p-4" style="min-width: 0;">
-            <div class="container-fluid">
+        <main class="flex-grow-1 p-4 course-layout-main{% if page.glossary == true %} glossary-layout-main{% endif %}" style="min-width: 0;">
+            <div class="container-fluid{% if page.glossary == true %} glossary-layout-container{% endif %}">
                 {% assign expected_course_index = "_courses/" | append: course_slug | append: "/index.md" %}
                 {% if course_meta and page.path == expected_course_index %}
                     <header class="mb-4 pb-3 border-bottom">
@@ -240,7 +248,7 @@
                         {% endif %}
                     </header>
                 {% elsif page.title %}
-                    <header class="mb-4 pb-3 border-bottom">
+                    <header class="mb-4 pb-3 border-bottom{% if page.glossary == true %} glossary-screen-header{% endif %}">
                         {% if course_meta %}
                             <div class="d-flex flex-wrap align-items-center gap-2 mb-2">
                                 {% if course_meta.course_code %}
@@ -253,10 +261,29 @@
                                 {% endif %}
                             </div>
                         {% endif %}
-                        <h1 class="h2 fw-bold mb-1">{{ page.title }}</h1>
-                        {% if page.description %}
-                            <p class="text-body-secondary mb-0">{{ page.description }}</p>
-                        {% endif %}
+                        <div class="d-flex justify-content-between align-items-start gap-2">
+                            <div>
+                                <h1 class="h2 fw-bold mb-1">{{ page.title }}</h1>
+                                {% if page.description %}
+                                    <p class="text-body-secondary mb-0">{{ page.description }}</p>
+                                {% endif %}
+                            </div>
+                            {% if page.glossary == true %}
+                                <a
+                                    href="?print=1"
+                                    id="glossaryPrintPreviewLink"
+                                    class="btn btn-sm btn-outline-secondary d-inline-flex align-items-center gap-1 flex-shrink-0 d-print-none"
+                                    title="Print preview & options"
+                                    aria-label="Open glossary print preview"
+                                >
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" fill="currentColor" viewBox="0 0 16 16" aria-hidden="true">
+                                        <path d="M2.5 8a.5.5 0 1 0 0-1 .5.5 0 0 0 0 1"/>
+                                        <path d="M5 1a2 2 0 0 0-2 2v2H2a2 2 0 0 0-2 2v3a2 2 0 0 0 2 2h1v1a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2v-1h1a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-1V3a2 2 0 0 0-2-2zM4 3a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v2H4zm1 5a2 2 0 0 0-2 2v1H2a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1h-1v-1a2 2 0 0 0-2-2zm7 2v3a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1v-3a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1"/>
+                                    </svg>
+                                    <span class="d-none d-sm-inline">Print</span>
+                                </a>
+                            {% endif %}
+                        </div>
                     </header>
                 {% endif %}
 

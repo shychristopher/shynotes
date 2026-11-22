@@ -46,151 +46,394 @@
   {% assign unique_letters = all_letters | uniq | sort %}
 {% endif %}
 
-<section id="courseGlossary" class="mt-3" data-course-slug="{{ slug | escape }}">
+<section
+  id="courseGlossary"
+  class="mt-3"
+  data-course-slug="{{ slug | escape }}"
+  data-course-title="{{ course_meta.title | default: slug | escape }}"
+  data-course-code="{{ course_meta.course_code | default: '' | escape }}"
+>
   {% if sorted_terms.size > 0 %}
-    <!-- Controls (hidden in print mode) -->
-    <div id="glossaryControls" class="bg-body py-2 mb-3 border-bottom d-print-none" style="position: sticky; top: 57px; z-index: 1005;">
-      <div class="d-flex flex-column flex-sm-row gap-2 mb-2">
-        <input
-          type="search"
-          id="glossarySearch"
-          class="form-control form-control-sm"
-          placeholder="Search terms, full names, or definitions..."
-          aria-label="Search glossary"
-          autocomplete="off"
-        >
-        <div class="d-flex align-items-center gap-2 flex-shrink-0">
-          <span class="small text-body-secondary text-nowrap" id="glossaryCount">
-            {{ sorted_terms.size }} {% if sorted_terms.size == 1 %}term{% else %}terms{% endif %}
-          </span>
-          <button
-            type="button"
-            class="btn btn-sm btn-outline-secondary d-none"
-            id="glossaryResetBtn"
-          >
-            Reset
-          </button>
-        </div>
-      </div>
-
-      <div class="d-flex flex-wrap gap-1" id="glossaryAlphaBar" aria-label="Jump to letter">
-        {% for letter in unique_letters %}
+    <div id="glossaryPrintWorkspace">
+      <!-- Left Print Settings Sidebar (shown ONLY on screen in ?print mode, never printed) -->
+      <aside id="glossaryPrintSidebar" class="d-none border-end bg-white text-dark flex-column">
+        <div class="p-3 border-bottom">
           <a
-            href="#glossary-letter-{{ letter }}"
-            class="btn btn-sm btn-outline-secondary py-0 px-2 glossary-letter-link"
-            data-letter="{{ letter }}"
-            style="font-size: 0.75rem;"
+            href="{{ page.url | relative_url }}"
+            class="small text-decoration-none text-secondary d-inline-flex align-items-center gap-1 mb-2"
           >
-            {{ letter }}
+            <span aria-hidden="true">←</span>
+            <span>Back to Glossary</span>
           </a>
-        {% endfor %}
-      </div>
-    </div>
+          <h2 class="h6 fw-bold mb-0">Print Settings</h2>
+        </div>
 
-    <!-- Alphabetical Term Groups -->
-    <div id="glossaryGroups" class="d-flex flex-column gap-4">
-      {% for letter in unique_letters %}
-        <div class="glossary-letter-group" id="glossary-letter-{{ letter }}" data-letter="{{ letter }}">
-          <h2 class="glossary-letter-heading h5 fw-bold text-body-secondary bg-body border-bottom py-2 mb-3">{{ letter }}</h2>
-
-          <div class="d-flex flex-column gap-3">
-            {% for item in sorted_terms %}
-              {% assign item_letter = item.term | slice: 0, 1 | upcase %}
-              {% if item_letter == letter %}
-                {% assign term_id = item.id | default: item.term | slugify %}
-                {% capture term_search %}
-                  {{ item.term }} {{ item.full }} {{ item.category }} {{ item.definition }} {{ item.aliases | join: " " }}
-                {% endcapture %}
-
-                <div
-                  class="card border glossary-term-card"
-                  id="term-{{ term_id }}"
-                  data-term-id="{{ term_id }}"
-                  data-category="{{ item.category | default: '' | downcase | escape }}"
-                  data-search="{{ term_search | strip_newlines | downcase | escape }}"
+        <div class="p-3 flex-grow-1 overflow-y-auto d-flex flex-column gap-4">
+          <!-- Visual Layout Picker -->
+          <div>
+            <div class="text-uppercase text-secondary fw-semibold mb-2" style="font-size: 0.72rem; letter-spacing: 0.05em;">
+              Layout
+            </div>
+            <div class="row g-2 mb-2" id="printLayoutPicker" role="radiogroup" aria-label="Print layout">
+              <div class="col-6">
+                <button
+                  type="button"
+                  class="print-layout-tile w-100 d-flex flex-column align-items-center gap-1 p-2 rounded border bg-white text-dark"
+                  role="radio"
+                  aria-checked="true"
+                  data-layout-value="1"
                 >
-                  <div class="card-body py-3 px-3">
-                    <div class="d-flex flex-wrap justify-content-between align-items-baseline gap-2 mb-1">
-                      <div>
-                        <h3 class="h6 fw-bold d-inline mb-0">{{ item.term }}</h3>
-                        {% if item.full %}
-                          <span class="small text-body-secondary ms-1">— {{ item.full }}</span>
-                        {% endif %}
-                      </div>
-                      {% if item.category %}
-                        <span class="badge rounded-pill text-bg-secondary-subtle text-secondary-emphasis border fw-normal">
-                          {{ item.category }}
-                        </span>
-                      {% endif %}
-                    </div>
+                  <svg width="48" height="34" viewBox="0 0 48 34" fill="none" aria-hidden="true">
+                    <rect x="3" y="4" width="12" height="2.5" rx="1" fill="currentColor" opacity="0.85"/>
+                    <rect x="17" y="4" width="28" height="2.5" rx="1" fill="currentColor" opacity="0.3"/>
+                    <rect x="3" y="8.5" width="38" height="2" rx="1" fill="currentColor" opacity="0.22"/>
+                    <rect x="3" y="15" width="10" height="2.5" rx="1" fill="currentColor" opacity="0.85"/>
+                    <rect x="15" y="15" width="30" height="2.5" rx="1" fill="currentColor" opacity="0.3"/>
+                    <rect x="3" y="19.5" width="34" height="2" rx="1" fill="currentColor" opacity="0.22"/>
+                    <rect x="3" y="26" width="14" height="2.5" rx="1" fill="currentColor" opacity="0.85"/>
+                    <rect x="19" y="26" width="26" height="2.5" rx="1" fill="currentColor" opacity="0.3"/>
+                  </svg>
+                  <span style="font-size: 0.74rem;">Single</span>
+                </button>
+              </div>
 
-                    <p class="small mb-0{% if item.builds_on or item.related %} mb-2{% endif %}">
-                      {{ item.definition }}
-                    </p>
+              <div class="col-6">
+                <button
+                  type="button"
+                  class="print-layout-tile w-100 d-flex flex-column align-items-center gap-1 p-2 rounded border bg-white text-dark"
+                  role="radio"
+                  aria-checked="false"
+                  data-layout-value="split"
+                >
+                  <svg width="48" height="34" viewBox="0 0 48 34" fill="none" aria-hidden="true">
+                    <line x1="17" y1="3" x2="17" y2="31" stroke="currentColor" stroke-opacity="0.35" stroke-width="1"/>
+                    <rect x="3" y="5" width="11" height="2.5" rx="1" fill="currentColor" opacity="0.85"/>
+                    <rect x="20" y="5" width="25" height="2.2" rx="1" fill="currentColor" opacity="0.3"/>
+                    <rect x="20" y="9" width="20" height="2" rx="1" fill="currentColor" opacity="0.22"/>
+                    <line x1="3" y1="14" x2="45" y2="14" stroke="currentColor" stroke-opacity="0.15" stroke-width="0.75"/>
+                    <rect x="3" y="17" width="9" height="2.5" rx="1" fill="currentColor" opacity="0.85"/>
+                    <rect x="20" y="17" width="24" height="2.2" rx="1" fill="currentColor" opacity="0.3"/>
+                    <rect x="20" y="21" width="17" height="2" rx="1" fill="currentColor" opacity="0.22"/>
+                    <line x1="3" y1="25.5" x2="45" y2="25.5" stroke="currentColor" stroke-opacity="0.15" stroke-width="0.75"/>
+                    <rect x="3" y="28" width="11" height="2.5" rx="1" fill="currentColor" opacity="0.85"/>
+                    <rect x="20" y="28" width="22" height="2.2" rx="1" fill="currentColor" opacity="0.3"/>
+                  </svg>
+                  <span style="font-size: 0.74rem;">Term | Def</span>
+                </button>
+              </div>
 
-                    {% if item.builds_on and item.builds_on.size > 0 %}
-                      <div class="d-flex flex-wrap align-items-center gap-1 mt-2">
-                        <span class="text-body-secondary me-1" style="font-size: 0.75rem;">Builds on:</span>
-                        {% for ref_id in item.builds_on %}
-                          {% assign ref_slug = ref_id | slugify %}
-                          {% assign ref_label = ref_id %}
-                          {% for target in sorted_terms %}
-                            {% assign target_id = target.id | default: target.term | slugify %}
-                            {% if target_id == ref_slug %}
-                              {% assign ref_label = target.term %}
-                              {% break %}
-                            {% endif %}
-                          {% endfor %}
-                          <a
-                            href="#term-{{ ref_slug }}"
-                            class="badge rounded-pill text-bg-primary-subtle text-primary-emphasis border border-primary-subtle text-decoration-none fw-normal glossary-ref-link"
-                            data-target-term="{{ ref_slug }}"
-                          >
-                            ↑ {{ ref_label }}
-                          </a>
-                        {% endfor %}
-                      </div>
-                    {% endif %}
+              <div class="col-6">
+                <button
+                  type="button"
+                  class="print-layout-tile w-100 d-flex flex-column align-items-center gap-1 p-2 rounded border bg-white text-dark"
+                  role="radio"
+                  aria-checked="false"
+                  data-layout-value="2"
+                >
+                  <svg width="48" height="34" viewBox="0 0 48 34" fill="none" aria-hidden="true">
+                    <line x1="24" y1="3" x2="24" y2="31" stroke="currentColor" stroke-opacity="0.25" stroke-width="1"/>
+                    <rect x="3" y="4" width="18" height="11" rx="1.5" fill="currentColor" opacity="0.18"/>
+                    <rect x="5" y="6" width="8" height="2" rx="0.8" fill="currentColor" opacity="0.8"/>
+                    <rect x="3" y="17.5" width="18" height="12.5" rx="1.5" fill="currentColor" opacity="0.18"/>
+                    <rect x="5" y="19.5" width="9" height="2" rx="0.8" fill="currentColor" opacity="0.8"/>
+                    <rect x="27" y="4" width="18" height="15" rx="1.5" fill="currentColor" opacity="0.18"/>
+                    <rect x="29" y="6" width="8" height="2" rx="0.8" fill="currentColor" opacity="0.8"/>
+                    <rect x="27" y="21.5" width="18" height="8.5" rx="1.5" fill="currentColor" opacity="0.18"/>
+                    <rect x="29" y="23.5" width="7" height="2" rx="0.8" fill="currentColor" opacity="0.8"/>
+                  </svg>
+                  <span style="font-size: 0.74rem;">2 Columns</span>
+                </button>
+              </div>
 
-                    {% if item.related and item.related.size > 0 %}
-                      <div class="d-flex flex-wrap align-items-center gap-1 mt-2">
-                        <span class="text-body-secondary me-1" style="font-size: 0.75rem;">Related:</span>
-                        {% for ref_id in item.related %}
-                          {% assign ref_slug = ref_id | slugify %}
-                          {% assign ref_label = ref_id %}
-                          {% for target in sorted_terms %}
-                            {% assign target_id = target.id | default: target.term | slugify %}
-                            {% if target_id == ref_slug %}
-                              {% assign ref_label = target.term %}
-                              {% break %}
-                            {% endif %}
-                          {% endfor %}
-                          <a
-                            href="#term-{{ ref_slug }}"
-                            class="badge rounded-pill bg-body-tertiary border text-body text-decoration-none fw-normal glossary-ref-link"
-                            data-target-term="{{ ref_slug }}"
-                          >
-                            {{ ref_label }}
-                          </a>
-                        {% endfor %}
-                      </div>
-                    {% endif %}
-                  </div>
-                </div>
-              {% endif %}
-            {% endfor %}
+              <div class="col-6">
+                <button
+                  type="button"
+                  class="print-layout-tile w-100 d-flex flex-column align-items-center gap-1 p-2 rounded border bg-white text-dark"
+                  role="radio"
+                  aria-checked="false"
+                  data-layout-value="3"
+                >
+                  <svg width="48" height="34" viewBox="0 0 48 34" fill="none" aria-hidden="true">
+                    <rect x="3" y="4" width="12" height="13" rx="1.5" fill="currentColor" opacity="0.18"/>
+                    <rect x="4.5" y="6" width="6" height="1.8" rx="0.7" fill="currentColor" opacity="0.8"/>
+                    <rect x="3" y="19" width="12" height="11" rx="1.5" fill="currentColor" opacity="0.18"/>
+                    <rect x="4.5" y="21" width="5" height="1.8" rx="0.7" fill="currentColor" opacity="0.8"/>
+                    <rect x="18" y="4" width="12" height="9.5" rx="1.5" fill="currentColor" opacity="0.18"/>
+                    <rect x="19.5" y="6" width="6" height="1.8" rx="0.7" fill="currentColor" opacity="0.8"/>
+                    <rect x="18" y="15.5" width="12" height="14.5" rx="1.5" fill="currentColor" opacity="0.18"/>
+                    <rect x="19.5" y="17.5" width="7" height="1.8" rx="0.7" fill="currentColor" opacity="0.8"/>
+                    <rect x="33" y="4" width="12" height="15" rx="1.5" fill="currentColor" opacity="0.18"/>
+                    <rect x="34.5" y="6" width="6" height="1.8" rx="0.7" fill="currentColor" opacity="0.8"/>
+                    <rect x="33" y="21" width="12" height="9" rx="1.5" fill="currentColor" opacity="0.18"/>
+                    <rect x="34.5" y="23" width="5" height="1.8" rx="0.7" fill="currentColor" opacity="0.8"/>
+                  </svg>
+                  <span style="font-size: 0.74rem;">3 Columns</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Contextual Layout Options (only shown for multi-column / split layouts) -->
+            <div id="printColSubOptions" class="d-none p-2 px-3 rounded border bg-light flex-column gap-2 mt-2">
+              <div class="text-uppercase text-secondary fw-semibold" id="printColSubHeading" style="font-size: 0.68rem; letter-spacing: 0.05em;">
+                Column Options
+              </div>
+              <div>
+                <label for="printOptColGap" class="form-label mb-1 text-secondary" style="font-size: 0.78rem;">Column spacing</label>
+                <select id="printOptColGap" class="form-select form-select-sm glossary-print-select" data-print-select="colGap">
+                  <option value="tight">Tight</option>
+                  <option value="normal" selected>Normal</option>
+                  <option value="wide">Wide</option>
+                </select>
+              </div>
+              <div class="form-check mb-0">
+                <input class="form-check-input glossary-print-opt" type="checkbox" id="printOptColDividers" data-print-opt="colDividers" checked>
+                <label class="form-check-label" id="printOptColDividersLabel" for="printOptColDividers" style="font-size: 0.78rem;">Column divider lines</label>
+              </div>
+            </div>
+          </div>
+
+          <!-- Content Options -->
+          <div>
+            <div class="text-uppercase text-secondary fw-semibold mb-2" style="font-size: 0.72rem; letter-spacing: 0.05em;">
+              Include
+            </div>
+            <div class="form-check mb-2">
+              <input class="form-check-input glossary-print-opt" type="checkbox" id="printOptSections" data-print-opt="sections">
+              <label class="form-check-label small" for="printOptSections">Letter sections (A, B, C…)</label>
+            </div>
+            <div class="form-check mb-2">
+              <input class="form-check-input glossary-print-opt" type="checkbox" id="printOptCategories" data-print-opt="categories">
+              <label class="form-check-label small" for="printOptCategories">Categories</label>
+            </div>
+            <div class="form-check mb-2">
+              <input class="form-check-input glossary-print-opt" type="checkbox" id="printOptRelated" data-print-opt="related">
+              <label class="form-check-label small" for="printOptRelated">Related &amp; prerequisite terms</label>
+            </div>
+            <div class="form-check">
+              <input class="form-check-input glossary-print-opt" type="checkbox" id="printOptCards" data-print-opt="cards">
+              <label class="form-check-label small" for="printOptCards">Card borders</label>
+            </div>
+          </div>
+
+          <!-- Typography & Spacing -->
+          <div>
+            <div class="text-uppercase text-secondary fw-semibold mb-2" style="font-size: 0.72rem; letter-spacing: 0.05em;">
+              Typography &amp; Density
+            </div>
+            <div class="row g-2">
+              <div class="col-6">
+                <label for="printOptFont" class="form-label mb-1 text-secondary" style="font-size: 0.78rem;">Font size</label>
+                <select id="printOptFont" class="form-select form-select-sm glossary-print-select" data-print-select="font">
+                  <option value="sm">Small</option>
+                  <option value="md" selected>Normal</option>
+                  <option value="lg">Large</option>
+                </select>
+              </div>
+              <div class="col-6">
+                <label for="printOptSpacing" class="form-label mb-1 text-secondary" style="font-size: 0.78rem;">Term spacing</label>
+                <select id="printOptSpacing" class="form-select form-select-sm glossary-print-select" data-print-select="spacing">
+                  <option value="compact">Compact</option>
+                  <option value="normal" selected>Normal</option>
+                  <option value="relaxed">Relaxed</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <!-- Active Filter Summary -->
+          <div class="d-none p-2 px-3 rounded border bg-light" id="glossaryPrintFilterNotice">
+            <div class="small fw-semibold mb-1">Active filters applied</div>
+            <p class="text-secondary mb-2" id="glossaryPrintFilterSummary" style="font-size: 0.78rem;"></p>
+            <button type="button" class="btn btn-sm btn-outline-secondary w-100" id="glossaryPrintShowAllBtn">
+              Include all terms
+            </button>
           </div>
         </div>
-      {% endfor %}
-    </div>
 
-    <div class="card bg-body-tertiary border d-none mt-3" id="glossaryNoMatches">
-      <div class="card-body text-center py-4">
-        <p class="fw-semibold mb-1">No matching terms.</p>
-        <p class="small text-body-secondary mb-3">Try clearing your search or switching categories.</p>
-        <button type="button" class="btn btn-sm btn-outline-secondary" id="glossaryEmptyResetBtn">
-          Reset glossary filters
-        </button>
+        <div class="p-3 border-top d-grid gap-2">
+          <button type="button" class="btn btn-dark btn-sm fw-semibold" id="glossaryPreviewPrintBtn">
+            Print Now
+          </button>
+          <a href="{{ page.url | relative_url }}" class="btn btn-outline-secondary btn-sm">
+            Exit Print Preview
+          </a>
+        </div>
+      </aside>
+
+      <!-- Main Glossary / Paper Preview Stage -->
+      <div id="glossaryPrintStage">
+        <div id="glossaryPrintSheet">
+          <!-- Print-Only Header (dynamic title reflects active filters) -->
+          <header id="glossaryPrintHeader" class="glossary-print-header d-none mb-3 pb-2 border-bottom border-dark">
+            {% if course_meta.course_code or course_meta.title %}
+              <div class="small text-muted mb-1" id="glossaryPrintCourseMeta">
+                {% if course_meta.course_code %}{{ course_meta.course_code }}{% endif %}{% if course_meta.course_code and course_meta.title %} · {% endif %}{% if course_meta.title %}{{ course_meta.title }}{% endif %}
+              </div>
+            {% endif %}
+            <div class="d-flex justify-content-between align-items-baseline gap-2">
+              <h1 class="h4 fw-bold mb-0" id="glossaryPrintTitle">Glossary</h1>
+              <span class="small text-muted" id="glossaryPrintCount">
+                {{ sorted_terms.size }} {% if sorted_terms.size == 1 %}term{% else %}terms{% endif %}
+              </span>
+            </div>
+          </header>
+
+          <!-- Controls (hidden in print mode) -->
+          <div id="glossaryControls" class="bg-body py-2 mb-3 border-bottom d-print-none" style="position: sticky; top: 57px; z-index: 1005;">
+            <div class="d-flex flex-column flex-sm-row gap-2 mb-2">
+              <input
+                type="search"
+                id="glossarySearch"
+                class="form-control form-control-sm"
+                placeholder="Search terms, full names, or definitions..."
+                aria-label="Search glossary"
+                autocomplete="off"
+              >
+              <div class="d-flex align-items-center gap-2 flex-shrink-0">
+                <span class="small text-body-secondary text-nowrap" id="glossaryCount">
+                  {{ sorted_terms.size }} {% if sorted_terms.size == 1 %}term{% else %}terms{% endif %}
+                </span>
+                <button
+                  type="button"
+                  class="btn btn-sm btn-outline-secondary d-none"
+                  id="glossaryResetBtn"
+                >
+                  Reset
+                </button>
+              </div>
+            </div>
+
+            <div class="d-flex flex-wrap gap-1" id="glossaryAlphaBar" aria-label="Jump to letter">
+              {% for letter in unique_letters %}
+                <a
+                  href="#glossary-letter-{{ letter }}"
+                  class="btn btn-sm btn-outline-secondary py-0 px-2 glossary-letter-link"
+                  data-letter="{{ letter }}"
+                  style="font-size: 0.75rem;"
+                >
+                  {{ letter }}
+                </a>
+              {% endfor %}
+            </div>
+          </div>
+
+          <!-- Alphabetical Term Groups -->
+          <div id="glossaryGroups" class="d-flex flex-column gap-4">
+            {% for letter in unique_letters %}
+              <div class="glossary-letter-group" id="glossary-letter-{{ letter }}" data-letter="{{ letter }}">
+                <h2 class="glossary-letter-heading h5 fw-bold text-body-secondary bg-body border-bottom py-2 mb-3">{{ letter }}</h2>
+
+                <div class="glossary-term-list d-flex flex-column gap-3">
+                  {% for item in sorted_terms %}
+                    {% assign item_letter = item.term | slice: 0, 1 | upcase %}
+                    {% if item_letter == letter %}
+                      {% assign term_id = item.id | default: item.term | slugify %}
+                      {% capture term_search %}
+                        {{ item.term }} {{ item.full }} {{ item.category }} {{ item.definition }} {{ item.aliases | join: " " }}
+                      {% endcapture %}
+
+                      <div
+                        class="card border glossary-term-card"
+                        id="term-{{ term_id }}"
+                        data-term-id="{{ term_id }}"
+                        data-category="{{ item.category | default: '' | downcase | escape }}"
+                        data-category-label="{{ item.category | default: '' | escape }}"
+                        data-search="{{ term_search | strip_newlines | downcase | escape }}"
+                      >
+                        <div class="card-body py-3 px-3">
+                          <div class="glossary-term-header d-flex flex-wrap justify-content-between align-items-baseline gap-2 mb-1">
+                            <div class="glossary-term-heading-wrap">
+                              <h3 class="glossary-term-title h6 fw-bold d-inline mb-0">{{ item.term }}</h3>
+                              {% if item.full %}
+                                <span class="glossary-term-full small text-body-secondary ms-1">— {{ item.full }}</span>
+                              {% endif %}
+                            </div>
+                            {% if item.category %}
+                              <span class="glossary-term-category badge rounded-pill text-bg-secondary-subtle text-secondary-emphasis border fw-normal">
+                                {{ item.category }}
+                              </span>
+                            {% endif %}
+                          </div>
+
+                          <div class="glossary-term-body">
+                            <p class="glossary-term-def small mb-0{% if item.builds_on or item.related %} mb-2{% endif %}">
+                              {{ item.definition }}
+                            </p>
+
+                            {% if item.builds_on or item.related %}
+                              <div class="glossary-term-links">
+                                {% if item.builds_on and item.builds_on.size > 0 %}
+                                  <div class="glossary-term-link-row d-flex flex-wrap align-items-center gap-1 mt-2">
+                                    <span class="glossary-link-label text-body-secondary me-1" style="font-size: 0.75rem;">Builds on:</span>
+                                    {% for ref_id in item.builds_on %}
+                                      {% assign ref_slug = ref_id | slugify %}
+                                      {% assign ref_label = ref_id %}
+                                      {% for target in sorted_terms %}
+                                        {% assign target_id = target.id | default: target.term | slugify %}
+                                        {% if target_id == ref_slug %}
+                                          {% assign ref_label = target.term %}
+                                          {% break %}
+                                        {% endif %}
+                                      {% endfor %}
+                                      <a
+                                        href="#term-{{ ref_slug }}"
+                                        class="badge rounded-pill text-bg-primary-subtle text-primary-emphasis border border-primary-subtle text-decoration-none fw-normal glossary-ref-link"
+                                        data-target-term="{{ ref_slug }}"
+                                      >
+                                        <span class="glossary-ref-arrow" aria-hidden="true">↑ </span>{{ ref_label }}
+                                      </a>
+                                    {% endfor %}
+                                  </div>
+                                {% endif %}
+
+                                {% if item.related and item.related.size > 0 %}
+                                  <div class="glossary-term-link-row d-flex flex-wrap align-items-center gap-1 mt-2">
+                                    <span class="glossary-link-label text-body-secondary me-1" style="font-size: 0.75rem;">Related:</span>
+                                    {% for ref_id in item.related %}
+                                      {% assign ref_slug = ref_id | slugify %}
+                                      {% assign ref_label = ref_id %}
+                                      {% for target in sorted_terms %}
+                                        {% assign target_id = target.id | default: target.term | slugify %}
+                                        {% if target_id == ref_slug %}
+                                          {% assign ref_label = target.term %}
+                                          {% break %}
+                                        {% endif %}
+                                      {% endfor %}
+                                      <a
+                                        href="#term-{{ ref_slug }}"
+                                        class="badge rounded-pill bg-body-tertiary border text-body text-decoration-none fw-normal glossary-ref-link"
+                                        data-target-term="{{ ref_slug }}"
+                                      >
+                                        {{ ref_label }}
+                                      </a>
+                                    {% endfor %}
+                                  </div>
+                                {% endif %}
+                              </div>
+                            {% endif %}
+                          </div>
+                        </div>
+                      </div>
+                    {% endif %}
+                  {% endfor %}
+                </div>
+              </div>
+            {% endfor %}
+          </div>
+
+          <!-- Multi-Column Print Masonry Container (populated dynamically when 2 or 3 columns selected) -->
+          <div id="glossaryPrintMasonry" class="d-none"></div>
+
+          <div class="card bg-body-tertiary border d-none mt-3 d-print-none" id="glossaryNoMatches">
+            <div class="card-body text-center py-4">
+              <p class="fw-semibold mb-1">No matching terms.</p>
+              <p class="small text-body-secondary mb-3">Try clearing your search or switching categories.</p>
+              <button type="button" class="btn btn-sm btn-outline-secondary" id="glossaryEmptyResetBtn">
+                Reset glossary filters
+              </button>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -211,12 +454,506 @@
         border-color: var(--bs-primary) !important;
         box-shadow: 0 0 0 0.2rem rgba(var(--bs-primary-rgb), 0.25);
       }
+
+      /* Visual layout picker tiles */
+      .print-layout-tile {
+        transition: border-color 0.15s ease, background-color 0.15s ease, color 0.15s ease, box-shadow 0.15s ease;
+        cursor: pointer;
+      }
+      .print-layout-tile:hover {
+        border-color: var(--bs-primary) !important;
+        background-color: #f8f9fa !important;
+      }
+      .print-layout-tile.active {
+        border-color: var(--bs-primary) !important;
+        background-color: var(--bs-primary-bg-subtle) !important;
+        color: var(--bs-primary-text-emphasis) !important;
+        font-weight: 600;
+        box-shadow: 0 0 0 1px var(--bs-primary);
+      }
+
+      /* Print size & spacing presets */
+      #courseGlossary.print-font-sm { --glossary-print-font: 0.78rem; }
+      #courseGlossary.print-font-md { --glossary-print-font: 0.9rem; }
+      #courseGlossary.print-font-lg { --glossary-print-font: 1.05rem; }
+      #courseGlossary.print-space-compact { --glossary-print-gap: 0.25rem; }
+      #courseGlossary.print-space-normal { --glossary-print-gap: 0.55rem; }
+      #courseGlossary.print-space-relaxed { --glossary-print-gap: 0.95rem; }
+      #courseGlossary.print-colgap-tight { --glossary-col-gap: 0.75rem; }
+      #courseGlossary.print-colgap-normal { --glossary-col-gap: 1.35rem; }
+      #courseGlossary.print-colgap-wide { --glossary-col-gap: 2.25rem; }
+
+      /* On-screen ?print preview studio (left settings sidebar + paper sheet on right) */
+      @media screen {
+        html.print-mode .glossary-layout-main,
+        html.print-mode .glossary-layout-container {
+          padding: 0 !important;
+        }
+        html.print-mode #courseGlossary {
+          margin-top: 0 !important;
+        }
+        html.print-mode #glossaryPrintWorkspace {
+          display: flex;
+          flex-direction: column;
+          min-height: 100vh;
+          background-color: #f1f3f5;
+        }
+        html.print-mode #glossaryPrintSidebar {
+          display: flex !important;
+          width: 100%;
+          flex-shrink: 0;
+        }
+        html.print-mode #glossaryPrintStage {
+          flex: 1 1 auto;
+          padding: 1.5rem;
+          overflow-y: auto;
+        }
+        html.print-mode #glossaryPrintSheet {
+          max-width: 8.5in;
+          margin: 0 auto;
+          background-color: #fff;
+          color: #000;
+          border: 1px solid #dee2e6;
+          border-radius: 0.375rem;
+          box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+          padding: 2rem 2.25rem;
+        }
+        @media (min-width: 992px) {
+          html.print-mode #glossaryPrintWorkspace {
+            flex-direction: row;
+          }
+          html.print-mode #glossaryPrintSidebar {
+            width: 280px;
+            position: sticky;
+            top: 0;
+            height: 100vh;
+          }
+          html.print-mode #glossaryPrintStage {
+            padding: 2rem;
+          }
+        }
+      }
+
+      /* On-screen ?print preview content styling */
+      html.print-mode .glossary-screen-header {
+        display: none !important;
+      }
+      html.print-mode #glossaryPrintHeader {
+        display: block !important;
+      }
       html.print-mode .glossary-letter-heading {
         position: static;
       }
+      html.print-mode #courseGlossary:not(.print-show-sections) .glossary-letter-heading {
+        display: none !important;
+      }
+      html.print-mode #courseGlossary:not(.print-show-categories) .glossary-term-category {
+        display: none !important;
+      }
+      html.print-mode #courseGlossary:not(.print-show-related) .glossary-term-links {
+        display: none !important;
+      }
+      html.print-mode #glossaryGroups,
+      html.print-mode .glossary-term-list {
+        display: block !important;
+      }
+      html.print-mode #courseGlossary.has-print-masonry #glossaryGroups {
+        display: none !important;
+      }
+      html.print-mode #courseGlossary.has-print-masonry #glossaryPrintMasonry {
+        display: grid !important;
+        align-items: start;
+      }
+      html.print-mode #courseGlossary.print-cols-2 #glossaryPrintMasonry {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        column-gap: var(--glossary-col-gap, 1.35rem);
+      }
+      html.print-mode #courseGlossary.print-cols-3 #glossaryPrintMasonry {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        column-gap: var(--glossary-col-gap, 1.35rem);
+      }
+      html.print-mode .glossary-masonry-col {
+        min-width: 0;
+      }
+      html.print-mode #courseGlossary.print-col-dividers .glossary-masonry-col:not(:first-child):not(:empty) {
+        border-left: 1px solid #dee2e6;
+        padding-left: var(--glossary-col-gap, 1.35rem);
+      }
+      html.print-mode #courseGlossary:not(.print-cols-split):not(.print-card-layout) .glossary-term-body {
+        display: inline !important;
+      }
+      /* Term | Definition aligned 2-column study sheet */
+      html.print-mode #courseGlossary.print-cols-split .glossary-term-card .card-body {
+        display: grid !important;
+        grid-template-columns: minmax(110px, 28%) minmax(0, 1fr);
+        column-gap: var(--glossary-col-gap, 1.35rem);
+        align-items: start;
+      }
+      html.print-mode #courseGlossary.print-cols-split:not(.print-card-layout) .glossary-term-card .card-body {
+        padding: 0 0 var(--glossary-print-gap, 0.55rem) 0 !important;
+      }
+      html.print-mode #courseGlossary.print-cols-split.print-col-dividers:not(.print-card-layout) .glossary-term-card {
+        border-bottom: 1px solid #e9ecef !important;
+        margin-bottom: var(--glossary-print-gap, 0.55rem) !important;
+      }
+      html.print-mode #courseGlossary.print-cols-split .glossary-term-header {
+        display: block !important;
+        min-width: 0;
+      }
+      html.print-mode #courseGlossary.print-cols-split .glossary-term-heading-wrap {
+        display: block !important;
+      }
+      html.print-mode #courseGlossary.print-cols-split .glossary-term-title {
+        display: block !important;
+      }
+      html.print-mode #courseGlossary.print-cols-split .glossary-term-full {
+        display: block !important;
+        margin-left: 0 !important;
+        margin-top: 0.1rem;
+        font-size: calc(var(--glossary-print-font, 0.9rem) * 0.85) !important;
+      }
+      html.print-mode #courseGlossary.print-cols-split.print-show-categories .glossary-term-category {
+        display: inline-block !important;
+        margin-left: 0 !important;
+        margin-top: 0.2rem;
+      }
+      html.print-mode #courseGlossary.print-cols-split .glossary-term-body {
+        display: block !important;
+        min-width: 0;
+      }
+      html.print-mode #courseGlossary.print-cols-split.print-col-dividers .glossary-term-body {
+        border-left: 1px solid #dee2e6;
+        padding-left: var(--glossary-col-gap, 1.35rem);
+      }
+      html.print-mode #courseGlossary.print-cols-split .glossary-term-def {
+        display: block !important;
+      }
+      html.print-mode #courseGlossary.print-cols-split .glossary-term-def::before {
+        content: none !important;
+      }
+      html.print-mode #courseGlossary.print-card-layout .glossary-term-card {
+        margin-bottom: var(--glossary-print-gap, 0.55rem) !important;
+      }
+      html.print-mode #courseGlossary.print-card-layout .glossary-term-title,
+      html.print-mode #courseGlossary.print-card-layout .glossary-term-def {
+        font-size: var(--glossary-print-font, 0.9rem) !important;
+      }
+      html.print-mode #courseGlossary:not(.print-card-layout) .glossary-letter-heading {
+        font-size: calc(var(--glossary-print-font, 0.9rem) * 1.1) !important;
+        color: #000 !important;
+        border-color: #000 !important;
+        padding: 0.5rem 0 0.2rem !important;
+        margin-bottom: 0.45rem !important;
+      }
+      html.print-mode .glossary-masonry-col > .glossary-letter-heading:first-child {
+        padding-top: 0 !important;
+      }
+      html.print-mode #courseGlossary:not(.print-card-layout) .glossary-term-card {
+        border: 0 !important;
+        border-radius: 0 !important;
+        box-shadow: none !important;
+        background: transparent !important;
+        margin-bottom: var(--glossary-print-gap, 0.55rem) !important;
+      }
+      html.print-mode #courseGlossary:not(.print-card-layout) .glossary-term-card .card-body {
+        padding: 0 !important;
+        line-height: 1.45;
+      }
+      html.print-mode #courseGlossary:not(.print-card-layout) .glossary-term-header,
+      html.print-mode #courseGlossary:not(.print-card-layout) .glossary-term-heading-wrap {
+        display: inline !important;
+        margin: 0 !important;
+      }
+      html.print-mode #courseGlossary:not(.print-card-layout) .glossary-term-title {
+        display: inline !important;
+        font-size: var(--glossary-print-font, 0.9rem) !important;
+        font-weight: 700 !important;
+        text-decoration: underline !important;
+        color: #000 !important;
+      }
+      html.print-mode #courseGlossary:not(.print-card-layout) .glossary-term-full {
+        display: inline !important;
+        font-size: calc(var(--glossary-print-font, 0.9rem) * 0.95) !important;
+        color: #333 !important;
+        margin-left: 0.15rem !important;
+      }
+      html.print-mode #courseGlossary.print-show-categories:not(.print-card-layout) .glossary-term-category {
+        display: inline !important;
+        background: transparent !important;
+        border: 0 !important;
+        padding: 0 !important;
+        margin-left: 0.35rem !important;
+        color: #555 !important;
+        font-size: calc(var(--glossary-print-font, 0.9rem) * 0.88) !important;
+        font-style: italic;
+      }
+      html.print-mode #courseGlossary.print-show-categories:not(.print-card-layout) .glossary-term-category::before {
+        content: "[";
+      }
+      html.print-mode #courseGlossary.print-show-categories:not(.print-card-layout) .glossary-term-category::after {
+        content: "]";
+      }
+      html.print-mode #courseGlossary:not(.print-card-layout) .glossary-term-def {
+        display: inline !important;
+        font-size: var(--glossary-print-font, 0.9rem) !important;
+        color: #000 !important;
+        margin: 0 !important;
+      }
+      html.print-mode #courseGlossary:not(.print-card-layout) .glossary-term-def::before {
+        content: ": ";
+        font-weight: 600;
+        margin-left: -0.2rem;
+      }
+      html.print-mode #courseGlossary.print-show-related:not(.print-card-layout) .glossary-term-links {
+        display: block !important;
+        margin-top: 0.15rem !important;
+      }
+      html.print-mode #courseGlossary:not(.print-card-layout) .glossary-term-link-row {
+        display: inline !important;
+        margin: 0 0.75rem 0 0 !important;
+        font-size: calc(var(--glossary-print-font, 0.9rem) * 0.88) !important;
+        color: #333 !important;
+      }
+      html.print-mode #courseGlossary:not(.print-card-layout) .glossary-link-label {
+        font-weight: 600;
+        color: #333 !important;
+      }
+      html.print-mode #courseGlossary:not(.print-card-layout) .glossary-ref-link {
+        background: transparent !important;
+        border: 0 !important;
+        padding: 0 !important;
+        color: #333 !important;
+        font-size: calc(var(--glossary-print-font, 0.9rem) * 0.88) !important;
+      }
+      html.print-mode #courseGlossary:not(.print-card-layout) .glossary-ref-link:not(:last-child)::after {
+        content: ",";
+      }
+      html.print-mode #courseGlossary:not(.print-card-layout) .glossary-ref-arrow {
+        display: none !important;
+      }
+
+      /* Native browser print (@media print) */
       @media print {
+        html.print-mode #glossaryPrintSidebar,
+        #glossaryPrintSidebar {
+          display: none !important;
+        }
+        html.print-mode #glossaryPrintWorkspace,
+        #glossaryPrintWorkspace,
+        html.print-mode #glossaryPrintStage,
+        #glossaryPrintStage,
+        html.print-mode #glossaryPrintSheet,
+        #glossaryPrintSheet {
+          display: block !important;
+          background: #fff !important;
+          border: 0 !important;
+          box-shadow: none !important;
+          padding: 0 !important;
+          margin: 0 !important;
+          max-width: none !important;
+        }
+        .glossary-screen-header {
+          display: none !important;
+        }
+        #glossaryPrintHeader {
+          display: block !important;
+        }
+        #glossaryGroups,
+        .glossary-letter-group,
+        .glossary-term-list {
+          display: block !important;
+        }
+        #courseGlossary.has-print-masonry #glossaryGroups {
+          display: none !important;
+        }
+        #courseGlossary.has-print-masonry #glossaryPrintMasonry {
+          display: grid !important;
+          align-items: start;
+        }
+        #courseGlossary.print-cols-2 #glossaryPrintMasonry {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+          column-gap: var(--glossary-col-gap, 1.35rem);
+        }
+        #courseGlossary.print-cols-3 #glossaryPrintMasonry {
+          grid-template-columns: repeat(3, minmax(0, 1fr));
+          column-gap: var(--glossary-col-gap, 1.35rem);
+        }
+        .glossary-masonry-col {
+          min-width: 0;
+        }
+        #courseGlossary.print-col-dividers .glossary-masonry-col:not(:first-child):not(:empty) {
+          border-left: 1px solid #dee2e6;
+          padding-left: var(--glossary-col-gap, 1.35rem);
+        }
+        #courseGlossary:not(.print-cols-split):not(.print-card-layout) .glossary-term-body {
+          display: inline !important;
+        }
+        /* Term | Definition aligned 2-column study sheet */
+        #courseGlossary.print-cols-split .glossary-term-card .card-body {
+          display: grid !important;
+          grid-template-columns: minmax(110px, 28%) minmax(0, 1fr);
+          column-gap: var(--glossary-col-gap, 1.35rem);
+          align-items: start;
+        }
+        #courseGlossary.print-cols-split:not(.print-card-layout) .glossary-term-card .card-body {
+          padding: 0 0 var(--glossary-print-gap, 0.55rem) 0 !important;
+        }
+        #courseGlossary.print-cols-split.print-col-dividers:not(.print-card-layout) .glossary-term-card {
+          border-bottom: 1px solid #e9ecef !important;
+          margin-bottom: var(--glossary-print-gap, 0.55rem) !important;
+        }
+        #courseGlossary.print-cols-split .glossary-term-header {
+          display: block !important;
+          min-width: 0;
+        }
+        #courseGlossary.print-cols-split .glossary-term-heading-wrap {
+          display: block !important;
+        }
+        #courseGlossary.print-cols-split .glossary-term-title {
+          display: block !important;
+        }
+        #courseGlossary.print-cols-split .glossary-term-full {
+          display: block !important;
+          margin-left: 0 !important;
+          margin-top: 0.1rem;
+          font-size: calc(var(--glossary-print-font, 0.9rem) * 0.85) !important;
+        }
+        #courseGlossary.print-cols-split.print-show-categories .glossary-term-category {
+          display: inline-block !important;
+          margin-left: 0 !important;
+          margin-top: 0.2rem;
+        }
+        #courseGlossary.print-cols-split .glossary-term-body {
+          display: block !important;
+          min-width: 0;
+        }
+        #courseGlossary.print-cols-split.print-col-dividers .glossary-term-body {
+          border-left: 1px solid #dee2e6;
+          padding-left: var(--glossary-col-gap, 1.35rem);
+        }
+        #courseGlossary.print-cols-split .glossary-term-def {
+          display: block !important;
+        }
+        #courseGlossary.print-cols-split .glossary-term-def::before {
+          content: none !important;
+        }
         .glossary-letter-heading {
           position: static;
+          break-after: avoid;
+          page-break-after: avoid;
+        }
+        .glossary-masonry-col > .glossary-letter-heading:first-child {
+          padding-top: 0 !important;
+        }
+        .glossary-term-card {
+          break-inside: avoid;
+          page-break-inside: avoid;
+        }
+        #courseGlossary:not(.print-show-sections) .glossary-letter-heading {
+          display: none !important;
+        }
+        #courseGlossary:not(.print-show-categories) .glossary-term-category {
+          display: none !important;
+        }
+        #courseGlossary:not(.print-show-related) .glossary-term-links {
+          display: none !important;
+        }
+        #courseGlossary.print-card-layout .glossary-term-card {
+          margin-bottom: var(--glossary-print-gap, 0.55rem) !important;
+        }
+        #courseGlossary.print-card-layout .glossary-term-title,
+        #courseGlossary.print-card-layout .glossary-term-def {
+          font-size: var(--glossary-print-font, 0.9rem) !important;
+        }
+        #courseGlossary:not(.print-card-layout) .glossary-letter-heading {
+          font-size: calc(var(--glossary-print-font, 0.9rem) * 1.1) !important;
+          color: #000 !important;
+          border-color: #000 !important;
+          padding: 0.5rem 0 0.2rem !important;
+          margin-bottom: 0.45rem !important;
+        }
+        #courseGlossary:not(.print-card-layout) .glossary-term-card {
+          border: 0 !important;
+          border-radius: 0 !important;
+          box-shadow: none !important;
+          background: transparent !important;
+          margin-bottom: var(--glossary-print-gap, 0.55rem) !important;
+        }
+        #courseGlossary:not(.print-card-layout) .glossary-term-card .card-body {
+          padding: 0 !important;
+          line-height: 1.45;
+        }
+        #courseGlossary:not(.print-card-layout) .glossary-term-header,
+        #courseGlossary:not(.print-card-layout) .glossary-term-heading-wrap {
+          display: inline !important;
+          margin: 0 !important;
+        }
+        #courseGlossary:not(.print-card-layout) .glossary-term-title {
+          display: inline !important;
+          font-size: var(--glossary-print-font, 0.9rem) !important;
+          font-weight: 700 !important;
+          text-decoration: underline !important;
+          color: #000 !important;
+        }
+        #courseGlossary:not(.print-card-layout) .glossary-term-full {
+          display: inline !important;
+          font-size: calc(var(--glossary-print-font, 0.9rem) * 0.95) !important;
+          color: #333 !important;
+          margin-left: 0.15rem !important;
+        }
+        #courseGlossary.print-show-categories:not(.print-card-layout) .glossary-term-category {
+          display: inline !important;
+          background: transparent !important;
+          border: 0 !important;
+          padding: 0 !important;
+          margin-left: 0.35rem !important;
+          color: #555 !important;
+          font-size: calc(var(--glossary-print-font, 0.9rem) * 0.88) !important;
+          font-style: italic;
+        }
+        #courseGlossary.print-show-categories:not(.print-card-layout) .glossary-term-category::before {
+          content: "[";
+        }
+        #courseGlossary.print-show-categories:not(.print-card-layout) .glossary-term-category::after {
+          content: "]";
+        }
+        #courseGlossary:not(.print-card-layout) .glossary-term-def {
+          display: inline !important;
+          font-size: var(--glossary-print-font, 0.9rem) !important;
+          color: #000 !important;
+          margin: 0 !important;
+        }
+        #courseGlossary:not(.print-card-layout) .glossary-term-def::before {
+          content: ": ";
+          font-weight: 600;
+          margin-left: -0.2rem;
+        }
+        #courseGlossary.print-show-related:not(.print-card-layout) .glossary-term-links {
+          display: block !important;
+          margin-top: 0.15rem !important;
+        }
+        #courseGlossary:not(.print-card-layout) .glossary-term-link-row {
+          display: inline !important;
+          margin: 0 0.75rem 0 0 !important;
+          font-size: calc(var(--glossary-print-font, 0.9rem) * 0.88) !important;
+          color: #333 !important;
+        }
+        #courseGlossary:not(.print-card-layout) .glossary-link-label {
+          font-weight: 600;
+          color: #333 !important;
+        }
+        #courseGlossary:not(.print-card-layout) .glossary-ref-link {
+          background: transparent !important;
+          border: 0 !important;
+          padding: 0 !important;
+          color: #333 !important;
+          font-size: calc(var(--glossary-print-font, 0.9rem) * 0.88) !important;
+        }
+        #courseGlossary:not(.print-card-layout) .glossary-ref-link:not(:last-child)::after {
+          content: ",";
+        }
+        #courseGlossary:not(.print-card-layout) .glossary-ref-arrow {
+          display: none !important;
         }
       }
     </style>
