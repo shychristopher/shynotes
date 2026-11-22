@@ -55,20 +55,38 @@
 >
   {% if sorted_terms.size > 0 %}
     <div id="glossaryPrintWorkspace">
-      <!-- Left Print Settings Sidebar (shown ONLY on screen in ?print mode, never printed) -->
-      <aside id="glossaryPrintSidebar" class="d-none border-end bg-white text-dark flex-column">
-        <div class="p-3 border-bottom">
-          <a
-            href="{{ page.url | relative_url }}"
-            class="small text-decoration-none text-secondary d-inline-flex align-items-center gap-1 mb-2"
-          >
-            <span aria-hidden="true">←</span>
-            <span>Back to Glossary</span>
-          </a>
-          <h2 class="h6 fw-bold mb-0">Print Settings</h2>
+      <!-- Left Print Settings Sidebar (pinned >= 992px, collapses to offcanvas drawer < 992px, never printed) -->
+      <aside
+        id="glossaryPrintSidebar"
+        class="offcanvas-lg offcanvas-start border-end bg-white text-dark"
+        tabindex="-1"
+        aria-labelledby="glossaryPrintSidebarLabel"
+        style="--bs-offcanvas-width: 280px;"
+      >
+        <div class="offcanvas-header border-bottom d-lg-none">
+          <h2 class="offcanvas-title h6 fw-bold mb-0" id="glossaryPrintSidebarLabel">Print Settings</h2>
+          <button
+            type="button"
+            class="btn-close"
+            data-bs-dismiss="offcanvas"
+            data-bs-target="#glossaryPrintSidebar"
+            aria-label="Close"
+          ></button>
         </div>
 
-        <div class="p-3 flex-grow-1 overflow-y-auto d-flex flex-column gap-4">
+        <div class="offcanvas-body d-flex flex-column w-100 p-0">
+          <div class="p-3 border-bottom d-none d-lg-block">
+            <a
+              href="{{ page.url | relative_url }}"
+              class="small text-decoration-none text-secondary d-inline-flex align-items-center gap-1 mb-2"
+            >
+              <span aria-hidden="true">←</span>
+              <span>Back to Glossary</span>
+            </a>
+            <h2 class="h6 fw-bold mb-0">Print Settings</h2>
+          </div>
+
+          <div class="p-3 flex-grow-1 overflow-y-auto d-flex flex-column gap-4">
           <!-- Visual Layout Picker -->
           <div>
             <div class="text-uppercase text-secondary fw-semibold mb-2" style="font-size: 0.72rem; letter-spacing: 0.05em;">
@@ -220,6 +238,21 @@
             <div class="text-uppercase text-secondary fw-semibold mb-2" style="font-size: 0.72rem; letter-spacing: 0.05em;">
               Typography &amp; Density
             </div>
+            <div class="mb-2">
+              <label for="glossaryPrintFontFamily" class="form-label mb-1 text-secondary" style="font-size: 0.78rem;">Font family</label>
+              <select id="glossaryPrintFontFamily" class="form-select form-select-sm print-font-family-select a11y-font-dropdown">
+                <option value="" data-site-font-option>Match website font</option>
+                <optgroup label="Web &amp; Accessibility Fonts">
+                  <option value="sans">System Sans-Serif</option>
+                  <option value="atkinson">Atkinson Hyperlegible</option>
+                  <option value="lexend">Lexend</option>
+                  <option value="opendyslexic">OpenDyslexic</option>
+                  <option value="serif">Serif (Georgia)</option>
+                  <option value="mono">Monospace</option>
+                </optgroup>
+                <optgroup label="System Fonts" class="a11y-system-fonts-group"></optgroup>
+              </select>
+            </div>
             <div class="row g-2">
               <div class="col-6">
                 <label for="printOptFont" class="form-label mb-1 text-secondary" style="font-size: 0.78rem;">Font size</label>
@@ -250,15 +283,44 @@
           </div>
         </div>
 
-        <div class="p-3 border-top d-grid gap-2">
-          <button type="button" class="btn btn-dark btn-sm fw-semibold" id="glossaryPreviewPrintBtn">
-            Print Now
-          </button>
-          <a href="{{ page.url | relative_url }}" class="btn btn-outline-secondary btn-sm">
-            Exit Print Preview
-          </a>
+          <div class="p-3 border-top d-grid gap-2 flex-shrink-0">
+            <button type="button" class="btn btn-dark btn-sm fw-semibold" id="glossaryPreviewPrintBtn">
+              Print Now
+            </button>
+            <a href="{{ page.url | relative_url }}" class="btn btn-outline-secondary btn-sm">
+              Exit Print Preview
+            </a>
+            <button type="button" class="btn btn-link btn-sm text-secondary text-decoration-none py-0" id="glossaryPrintResetBtn">
+              Reset to defaults
+            </button>
+          </div>
         </div>
       </aside>
+
+      <!-- Floating Mobile / Half-Screen Print Controls Button (hidden >= 992px and in @media print) -->
+      <div class="print-preview-fab d-none d-lg-none" id="glossaryPrintFab">
+        <button
+          type="button"
+          class="btn btn-dark btn-sm rounded-pill shadow d-inline-flex align-items-center gap-2 px-3 py-2"
+          data-bs-toggle="offcanvas"
+          data-bs-target="#glossaryPrintSidebar"
+          aria-controls="glossaryPrintSidebar"
+          aria-label="Open print settings"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" fill="currentColor" viewBox="0 0 16 16" aria-hidden="true">
+            <path d="M8 4.754a3.246 3.246 0 1 0 0 6.492 3.246 3.246 0 0 0 0-6.492M5.754 8a2.246 2.246 0 1 1 4.492 0 2.246 2.246 0 0 1-4.492 0"/>
+            <path d="M9.796 1.343c-.527-1.79-3.065-1.79-3.592 0l-.094.319a.873.873 0 0 1-1.255.52l-.292-.16c-1.64-.892-3.433.902-2.54 2.541l.159.292a.873.873 0 0 1-.52 1.255l-.319.094c-1.79.527-1.79 3.065 0 3.592l.319.094a.873.873 0 0 1 .52 1.255l-.16.292c-.892 1.64.901 3.434 2.541 2.54l.292-.159a.873.873 0 0 1 1.255.52l.094.319c.527 1.79 3.065 1.79 3.592 0l.094-.319a.873.873 0 0 1 1.255-.52l.292.16c1.64.893 3.434-.902 2.54-2.541l-.159-.292a.873.873 0 0 1 .52-1.255l.319-.094c1.79-.527 1.79-3.065 0-3.592l-.319-.094a.873.873 0 0 1-.52-1.255l.16-.292c.893-1.64-.902-3.433-2.541-2.54l-.292.159a.873.873 0 0 1-1.255-.52zm-2.633.283c.246-.835 1.428-.835 1.674 0l.094.319a1.873 1.873 0 0 0 2.693 1.115l.291-.16c.764-.415 1.6.42 1.184 1.185l-.159.292a1.873 1.873 0 0 0 1.116 2.692l.318.094c.835.246.835 1.428 0 1.674l-.319.094a1.873 1.873 0 0 0-1.115 2.693l.16.291c.415.764-.42 1.6-1.185 1.184l-.291-.159a1.873 1.873 0 0 0-2.693 1.116l-.094.318c-.246.835-1.428.835-1.674 0l-.094-.319a1.873 1.873 0 0 0-2.692-1.115l-.292.16c-.764.415-1.6-.42-1.184-1.185l.159-.291A1.873 1.873 0 0 0 1.945 8.93l-.319-.094c-.835-.246-.835-1.428 0-1.674l.319-.094A1.873 1.873 0 0 0 3.06 4.377l-.16-.292c-.415-.764.42-1.6 1.185-1.184l.292.159a1.873 1.873 0 0 0 2.692-1.115z"/>
+          </svg>
+          <span>Options</span>
+        </button>
+        <button
+          type="button"
+          class="btn btn-primary btn-sm rounded-pill shadow px-3 py-2"
+          id="glossaryFabPrintBtn"
+        >
+          Print
+        </button>
+      </div>
 
       <!-- Main Glossary / Paper Preview Stage -->
       <div id="glossaryPrintStage">
@@ -485,7 +547,13 @@
       #courseGlossary.print-colgap-normal { --glossary-col-gap: 1.35rem; }
       #courseGlossary.print-colgap-wide { --glossary-col-gap: 2.25rem; }
 
-      /* On-screen ?print preview studio (left settings sidebar + paper sheet on right) */
+      /* Hide print sidebar completely outside print-mode */
+      html:not(.print-mode) #glossaryPrintSidebar,
+      html:not(.print-mode) #glossaryPrintFab {
+        display: none !important;
+      }
+
+      /* On-screen ?print preview studio (left settings sidebar/drawer + paper sheet on right) */
       @media screen {
         html.print-mode .glossary-layout-main,
         html.print-mode .glossary-layout-container {
@@ -500,14 +568,24 @@
           min-height: 100vh;
           background-color: #f1f3f5;
         }
-        html.print-mode #glossaryPrintSidebar {
+        html.print-mode #glossaryPrintSidebar .offcanvas-body {
+          display: flex;
+          flex-direction: column;
+          min-height: 0;
+          overflow: hidden;
+        }
+        html.print-mode #glossaryPrintFab {
+          position: fixed;
+          right: 1.25rem;
+          bottom: 1.25rem;
+          z-index: 1030;
           display: flex !important;
-          width: 100%;
-          flex-shrink: 0;
+          gap: 0.5rem;
         }
         html.print-mode #glossaryPrintStage {
           flex: 1 1 auto;
-          padding: 1.5rem;
+          padding: 1.25rem;
+          padding-bottom: 5rem;
           overflow-y: auto;
         }
         html.print-mode #glossaryPrintSheet {
@@ -515,6 +593,7 @@
           margin: 0 auto;
           background-color: #fff;
           color: #000;
+          font-family: var(--print-sheet-font, var(--a11y-font-family, var(--bs-body-font-family))) !important;
           border: 1px solid #dee2e6;
           border-radius: 0.375rem;
           box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
@@ -525,10 +604,25 @@
             flex-direction: row;
           }
           html.print-mode #glossaryPrintSidebar {
-            width: 280px;
-            position: sticky;
+            display: flex !important;
+            flex-direction: column;
+            flex: 0 0 280px !important;
+            width: 280px !important;
+            position: sticky !important;
             top: 0;
-            height: 100vh;
+            height: 100vh !important;
+            overflow: hidden !important;
+            background-color: #fff !important;
+            border-right: 1px solid #dee2e6 !important;
+          }
+          html.print-mode #glossaryPrintSidebar .offcanvas-body {
+            flex: 1 1 auto !important;
+            width: 100%;
+            min-height: 0;
+            overflow: hidden !important;
+          }
+          html.print-mode #glossaryPrintFab {
+            display: none !important;
           }
           html.print-mode #glossaryPrintStage {
             padding: 2rem;
@@ -737,8 +831,14 @@
       /* Native browser print (@media print) */
       @media print {
         html.print-mode #glossaryPrintSidebar,
-        #glossaryPrintSidebar {
+        #glossaryPrintSidebar,
+        html.print-mode #glossaryPrintFab,
+        #glossaryPrintFab {
           display: none !important;
+        }
+        html.print-mode #glossaryPrintSheet,
+        #glossaryPrintSheet {
+          font-family: var(--print-sheet-font, var(--a11y-font-family, var(--bs-body-font-family))) !important;
         }
         html.print-mode #glossaryPrintWorkspace,
         #glossaryPrintWorkspace,

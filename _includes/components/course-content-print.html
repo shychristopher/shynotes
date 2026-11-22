@@ -95,10 +95,12 @@
   {% endif %}
 {% endif %}
 
-<!-- Left Print Settings Sidebar (shown ONLY on screen in ?print mode, never printed) -->
+<!-- Left Print Settings Sidebar (pinned >= 992px, collapses to offcanvas drawer < 992px, never printed) -->
 <aside
   id="contentPrintSidebar"
-  class="d-none border-end bg-white text-dark flex-column"
+  class="offcanvas-lg offcanvas-start border-end bg-white text-dark"
+  tabindex="-1"
+  aria-labelledby="contentPrintSidebarLabel"
   data-course-slug="{{ slug | escape }}"
   data-current-url="{{ page.url | relative_url }}"
   data-current-title="{{ current_page_title | escape }}"
@@ -107,19 +109,32 @@
   data-page-tags="{{ _page_tags_list | uniq | join: '|' | downcase | escape }}"
   data-section-tags="{{ _section_tags_list | uniq | join: '|' | downcase | escape }}"
   data-default-scope="{% if is_section_overview and has_multi_scope %}section{% else %}page{% endif %}"
+  style="--bs-offcanvas-width: 280px;"
 >
-  <div class="p-3 border-bottom">
-    <a
-      href="{{ page.url | relative_url }}"
-      class="small text-decoration-none text-secondary d-inline-flex align-items-center gap-1 mb-2"
-    >
-      <span aria-hidden="true">←</span>
-      <span>Back to Lesson</span>
-    </a>
-    <h2 class="h6 fw-bold mb-0">Print Settings</h2>
+  <div class="offcanvas-header border-bottom d-lg-none">
+    <h2 class="offcanvas-title h6 fw-bold mb-0" id="contentPrintSidebarLabel">Print Settings</h2>
+    <button
+      type="button"
+      class="btn-close"
+      data-bs-dismiss="offcanvas"
+      data-bs-target="#contentPrintSidebar"
+      aria-label="Close"
+    ></button>
   </div>
 
-  <div class="p-3 flex-grow-1 overflow-y-auto d-flex flex-column gap-4">
+  <div class="offcanvas-body d-flex flex-column w-100 p-0">
+    <div class="p-3 border-bottom d-none d-lg-block">
+      <a
+        href="{{ page.url | relative_url }}"
+        class="small text-decoration-none text-secondary d-inline-flex align-items-center gap-1 mb-2"
+      >
+        <span aria-hidden="true">←</span>
+        <span>Back to Lesson</span>
+      </a>
+      <h2 class="h6 fw-bold mb-0">Print Settings</h2>
+    </div>
+
+    <div class="p-3 flex-grow-1 overflow-y-auto d-flex flex-column gap-4">
     {% if has_multi_scope %}
       <!-- Scope Selector (Current Page vs Whole Section / Course) -->
       <div>
@@ -154,17 +169,17 @@
             <span class="small">
               <strong class="d-block">{% if is_course_root %}Entire course{% else %}Whole section{% endif %}</strong>
               <span class="text-secondary" style="font-size: 0.75rem;">
-                {{ scope_label }} ({{ section_docs.size }} pages)
+                {{ scope_label }} ({{ section_docs.size }} {% if section_docs.size == 1 %}topic{% else %}topics{% endif %})
               </span>
             </span>
           </label>
         </div>
 
-        <!-- Per-page selection checklist (visible when Whole Section / Course is active) -->
+        <!-- Per-topic selection checklist (visible when Whole Section / Course is active) -->
         <div id="contentPrintPagePicker" class="d-none mt-2 p-2 rounded border bg-light">
           <div class="d-flex justify-content-between align-items-center mb-1">
             <span class="text-uppercase text-secondary fw-semibold" style="font-size: 0.68rem; letter-spacing: 0.05em;">
-              Included Pages
+              Included Topics
             </span>
             <button
               type="button"
@@ -265,6 +280,21 @@
       <div class="text-uppercase text-secondary fw-semibold mb-2" style="font-size: 0.72rem; letter-spacing: 0.05em;">
         Typography &amp; Density
       </div>
+      <div class="mb-2">
+        <label for="contentPrintFontFamily" class="form-label mb-1 text-secondary" style="font-size: 0.78rem;">Font family</label>
+        <select id="contentPrintFontFamily" class="form-select form-select-sm print-font-family-select a11y-font-dropdown">
+          <option value="" data-site-font-option>Match website font</option>
+          <optgroup label="Web &amp; Accessibility Fonts">
+            <option value="sans">System Sans-Serif</option>
+            <option value="atkinson">Atkinson Hyperlegible</option>
+            <option value="lexend">Lexend</option>
+            <option value="opendyslexic">OpenDyslexic</option>
+            <option value="serif">Serif (Georgia)</option>
+            <option value="mono">Monospace</option>
+          </optgroup>
+          <optgroup label="System Fonts" class="a11y-system-fonts-group"></optgroup>
+        </select>
+      </div>
       <div class="row g-2">
         <div class="col-6">
           <label for="contentPrintFont" class="form-label mb-1 text-secondary" style="font-size: 0.78rem;">Font size</label>
@@ -286,19 +316,48 @@
     </div>
 
     <div id="contentPrintLoading" class="d-none small text-secondary">
-      Loading section pages…
+      Loading section topics…
     </div>
   </div>
 
-  <div class="p-3 border-top d-grid gap-2">
-    <button type="button" class="btn btn-dark btn-sm fw-semibold" id="contentPreviewPrintBtn">
-      Print Now
-    </button>
-    <a href="{{ page.url | relative_url }}" class="btn btn-outline-secondary btn-sm">
-      Exit Print Preview
-    </a>
+    <div class="p-3 border-top d-grid gap-2 flex-shrink-0">
+      <button type="button" class="btn btn-dark btn-sm fw-semibold" id="contentPreviewPrintBtn">
+        Print Now
+      </button>
+      <a href="{{ page.url | relative_url }}" class="btn btn-outline-secondary btn-sm">
+        Exit Print Preview
+      </a>
+      <button type="button" class="btn btn-link btn-sm text-secondary text-decoration-none py-0" id="contentPrintResetBtn">
+        Reset to defaults
+      </button>
+    </div>
   </div>
 </aside>
+
+<!-- Floating Mobile / Half-Screen Print Controls Button (hidden >= 992px and in @media print) -->
+<div class="print-preview-fab d-none d-lg-none" id="contentPrintFab">
+  <button
+    type="button"
+    class="btn btn-dark btn-sm rounded-pill shadow d-inline-flex align-items-center gap-2 px-3 py-2"
+    data-bs-toggle="offcanvas"
+    data-bs-target="#contentPrintSidebar"
+    aria-controls="contentPrintSidebar"
+    aria-label="Open print settings"
+  >
+    <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" fill="currentColor" viewBox="0 0 16 16" aria-hidden="true">
+      <path d="M8 4.754a3.246 3.246 0 1 0 0 6.492 3.246 3.246 0 0 0 0-6.492M5.754 8a2.246 2.246 0 1 1 4.492 0 2.246 2.246 0 0 1-4.492 0"/>
+      <path d="M9.796 1.343c-.527-1.79-3.065-1.79-3.592 0l-.094.319a.873.873 0 0 1-1.255.52l-.292-.16c-1.64-.892-3.433.902-2.54 2.541l.159.292a.873.873 0 0 1-.52 1.255l-.319.094c-1.79.527-1.79 3.065 0 3.592l.319.094a.873.873 0 0 1 .52 1.255l-.16.292c-.892 1.64.901 3.434 2.541 2.54l.292-.159a.873.873 0 0 1 1.255.52l.094.319c.527 1.79 3.065 1.79 3.592 0l.094-.319a.873.873 0 0 1 1.255-.52l.292.16c1.64.893 3.434-.902 2.54-2.541l-.159-.292a.873.873 0 0 1 .52-1.255l.319-.094c1.79-.527 1.79-3.065 0-3.592l-.319-.094a.873.873 0 0 1-.52-1.255l.16-.292c.893-1.64-.902-3.433-2.541-2.54l-.292.159a.873.873 0 0 1-1.255-.52zm-2.633.283c.246-.835 1.428-.835 1.674 0l.094.319a1.873 1.873 0 0 0 2.693 1.115l.291-.16c.764-.415 1.6.42 1.184 1.185l-.159.292a1.873 1.873 0 0 0 1.116 2.692l.318.094c.835.246.835 1.428 0 1.674l-.319.094a1.873 1.873 0 0 0-1.115 2.693l.16.291c.415.764-.42 1.6-1.185 1.184l-.291-.159a1.873 1.873 0 0 0-2.693 1.116l-.094.318c-.246.835-1.428.835-1.674 0l-.094-.319a1.873 1.873 0 0 0-2.692-1.115l-.292.16c-.764.415-1.6-.42-1.184-1.185l.159-.291A1.873 1.873 0 0 0 1.945 8.93l-.319-.094c-.835-.246-.835-1.428 0-1.674l.319-.094A1.873 1.873 0 0 0 3.06 4.377l-.16-.292c-.415-.764.42-1.6 1.185-1.184l.292.159a1.873 1.873 0 0 0 2.692-1.115z"/>
+    </svg>
+    <span>Options</span>
+  </button>
+  <button
+    type="button"
+    class="btn btn-primary btn-sm rounded-pill shadow px-3 py-2"
+    id="contentFabPrintBtn"
+  >
+    Print
+  </button>
+</div>
 
 {% if has_multi_scope %}
 {% assign _scope_index_path = scope_prefix | append: "index.md" %}

@@ -1,5 +1,7 @@
+{% include components/display-settings-modal.html %}
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
     crossorigin="anonymous"></script>
+<script src="{{ '/assets/js/display-settings.js' | relative_url }}"></script>
 {% if page.custom_js %}
   {% for script in page.custom_js %}
     <script src="{{ script | relative_url }}" crossorigin="anonymous"></script>

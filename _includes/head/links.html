@@ -4,6 +4,111 @@
   crossorigin="anonymous"
 >
 <style>
+  /* Display & Accessibility (ADA) font families */
+  html[data-a11y-font="sans"] {
+    --a11y-font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  }
+  html[data-a11y-font="atkinson"] {
+    --a11y-font-family: "Atkinson Hyperlegible", system-ui, -apple-system, sans-serif;
+  }
+  html[data-a11y-font="lexend"] {
+    --a11y-font-family: "Lexend", system-ui, -apple-system, sans-serif;
+  }
+  html[data-a11y-font="opendyslexic"] {
+    --a11y-font-family: "Open-Dyslexic", "OpenDyslexic", "Open Dyslexic", system-ui, -apple-system, sans-serif;
+  }
+  html[data-a11y-font="serif"] {
+    --a11y-font-family: Georgia, "Iowan Old Style", "Times New Roman", Times, serif;
+  }
+  html[data-a11y-font="mono"] {
+    --a11y-font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  }
+  html[data-a11y-font] {
+    --bs-body-font-family: var(--a11y-font-family);
+    --bs-font-sans-serif: var(--a11y-font-family);
+  }
+
+  /* Typography & reading spacing */
+  html {
+    font-size: calc(16px * var(--a11y-font-scale, 1));
+  }
+  body {
+    font-family: var(--a11y-font-family, var(--bs-body-font-family)) !important;
+    line-height: var(--a11y-line-height, 1.55);
+    word-spacing: var(--a11y-word-spacing, normal);
+    letter-spacing: var(--a11y-letter-spacing, normal);
+  }
+
+  /* High Contrast Light */
+  html[data-bs-theme="light"][data-a11y-contrast="high"] {
+    --bs-body-bg: #ffffff;
+    --bs-body-color: #000000;
+    --bs-secondary-color: #1f2328;
+    --bs-tertiary-bg: #f3f4f6;
+    --bs-secondary-bg: #e5e7eb;
+    --bs-border-color: #000000;
+    --bs-link-color: #0038b8;
+    --bs-link-hover-color: #002277;
+    --bs-primary: #0038b8;
+    --bs-primary-rgb: 0, 56, 184;
+  }
+  html[data-bs-theme="light"][data-a11y-contrast="high"] .card,
+  html[data-bs-theme="light"][data-a11y-contrast="high"] .form-control,
+  html[data-bs-theme="light"][data-a11y-contrast="high"] .form-select,
+  html[data-bs-theme="light"][data-a11y-contrast="high"] .btn-outline-secondary {
+    border-color: #000000 !important;
+    color: #000000;
+  }
+  html[data-bs-theme="light"][data-a11y-contrast="high"] a:not(.btn):not(.navbar-brand):not(.nav-link) {
+    text-decoration: underline !important;
+  }
+
+  /* High Contrast Dark */
+  html[data-bs-theme="dark"][data-a11y-contrast="high"] {
+    --bs-body-bg: #000000;
+    --bs-body-color: #ffffff;
+    --bs-secondary-color: #e5e7eb;
+    --bs-tertiary-bg: #111111;
+    --bs-secondary-bg: #1f1f1f;
+    --bs-border-color: #ffffff;
+    --bs-link-color: #ffe066;
+    --bs-link-hover-color: #fff3bf;
+    --bs-primary: #4dabf7;
+    --bs-primary-rgb: 77, 171, 247;
+  }
+  html[data-bs-theme="dark"][data-a11y-contrast="high"] .card,
+  html[data-bs-theme="dark"][data-a11y-contrast="high"] .form-control,
+  html[data-bs-theme="dark"][data-a11y-contrast="high"] .form-select,
+  html[data-bs-theme="dark"][data-a11y-contrast="high"] .btn-outline-secondary {
+    border-color: #ffffff !important;
+    color: #ffffff;
+  }
+  html[data-bs-theme="dark"][data-a11y-contrast="high"] a:not(.btn):not(.navbar-brand):not(.nav-link) {
+    text-decoration: underline !important;
+  }
+  html[data-a11y-contrast="high"] :focus-visible {
+    outline: 3px solid var(--bs-link-color) !important;
+    outline-offset: 2px;
+  }
+
+  /* Always underline links */
+  html[data-a11y-links="underline"] main a:not(.btn):not(.badge) {
+    text-decoration: underline !important;
+    text-underline-offset: 2px;
+  }
+
+  /* Reduce motion */
+  html[data-a11y-motion="reduce"],
+  html[data-a11y-motion="reduce"] *,
+  html[data-a11y-motion="reduce"] *::before,
+  html[data-a11y-motion="reduce"] *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  /* Print mode */
   html.print-mode {
     color-scheme: light;
   }
@@ -18,29 +123,230 @@
     body {
       background: #fff !important;
       color: #000 !important;
+      font-family: var(--a11y-font-family, var(--bs-body-font-family)) !important;
+      word-spacing: var(--a11y-word-spacing, normal);
+      letter-spacing: var(--a11y-letter-spacing, normal);
     }
   }
 </style>
 <script>
   (() => {
+    const STORAGE_KEY = "shynotes.display.prefs.v1";
+    const DEFAULTS = {
+      theme: "system",
+      font: "sans",
+      fontScale: "1",
+      lineHeight: "1.55",
+      wordSpacing: "normal",
+      letterSpacing: "normal",
+      underlineLinks: false,
+      reduceMotion: false
+    };
+
+    const BUILTIN_FONT_FAMILIES = {
+      sans: 'system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
+      atkinson: '"Atkinson Hyperlegible", system-ui, -apple-system, sans-serif',
+      lexend: '"Lexend", system-ui, -apple-system, sans-serif',
+      opendyslexic: '"Open-Dyslexic", "OpenDyslexic", "Open Dyslexic", system-ui, -apple-system, sans-serif',
+      serif: 'Georgia, "Iowan Old Style", "Times New Roman", Times, serif',
+      mono: 'ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace'
+    };
+
+    const BUILTIN_FONT_LABELS = {
+      sans: "Sans-Serif",
+      atkinson: "Atkinson Hyperlegible",
+      lexend: "Lexend",
+      opendyslexic: "OpenDyslexic",
+      serif: "Serif",
+      mono: "Monospace"
+    };
+
+    const FONT_STYLESHEETS = {
+      atkinson: [
+        "https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400;1,700&display=swap"
+      ],
+      lexend: [
+        "https://fonts.googleapis.com/css2?family=Lexend:wght@400;500;600;700&display=swap"
+      ],
+      opendyslexic: [
+        "https://fonts.cdnfonts.com/css/open-dyslexic"
+      ]
+    };
+
     const params = new URLSearchParams(window.location.search);
     const printParam = params.get("print");
     const isPrintMode = params.has("print") && printParam !== "false" && printParam !== "0";
     const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
 
-    const applyTheme = (isDark) => {
-      document.documentElement.setAttribute("data-bs-theme", isDark ? "dark" : "light");
-    };
+    function loadPrefs() {
+      try {
+        const raw = window.localStorage.getItem(STORAGE_KEY);
+        if (!raw) return { ...DEFAULTS };
+        const parsed = JSON.parse(raw);
+        return { ...DEFAULTS, ...(parsed && typeof parsed === "object" ? parsed : {}) };
+      } catch (_) {
+        return { ...DEFAULTS };
+      }
+    }
+
+    function savePrefs(prefs) {
+      try {
+        window.localStorage.setItem(STORAGE_KEY, JSON.stringify(prefs));
+      } catch (_) {
+        // Ignore storage errors
+      }
+    }
+
+    function ensureWebFontLoaded(fontKey) {
+      const urls = FONT_STYLESHEETS[fontKey];
+      if (!urls) return;
+      urls.forEach((href) => {
+        if (document.querySelector(`link[data-a11y-font-href="${href}"]`)) return;
+        const link = document.createElement("link");
+        link.rel = "stylesheet";
+        link.href = href;
+        link.dataset.a11yFontHref = href;
+        document.head.appendChild(link);
+      });
+    }
+
+    let currentPrefs = loadPrefs();
+    let isNativePrinting = false;
+
+    function applyPrefs(prefs) {
+      currentPrefs = { ...DEFAULTS, ...prefs };
+      const root = document.documentElement;
+
+      // Theme & contrast (forced to standard light during ?print or native print)
+      if (isPrintMode || isNativePrinting) {
+        root.setAttribute("data-bs-theme", "light");
+        root.removeAttribute("data-a11y-contrast");
+      } else {
+        const theme = currentPrefs.theme || "system";
+        if (theme === "hc-light") {
+          root.setAttribute("data-bs-theme", "light");
+          root.setAttribute("data-a11y-contrast", "high");
+        } else if (theme === "hc-dark") {
+          root.setAttribute("data-bs-theme", "dark");
+          root.setAttribute("data-a11y-contrast", "high");
+        } else if (theme === "dark") {
+          root.setAttribute("data-bs-theme", "dark");
+          root.removeAttribute("data-a11y-contrast");
+        } else if (theme === "light") {
+          root.setAttribute("data-bs-theme", "light");
+          root.removeAttribute("data-a11y-contrast");
+        } else {
+          root.setAttribute("data-bs-theme", mediaQuery.matches ? "dark" : "light");
+          root.removeAttribute("data-a11y-contrast");
+        }
+      }
+
+      // Font family (built-in preset OR "system:<Installed Font Name>", kept active in screen and print!)
+      const font = currentPrefs.font || "sans";
+      if (font.startsWith("system:")) {
+        const customName = font.slice("system:".length).replace(/["'\\;{}]/g, "").trim();
+        if (customName) {
+          root.setAttribute("data-a11y-font", "custom");
+          root.style.setProperty(
+            "--a11y-font-family",
+            `"${customName}", system-ui, -apple-system, sans-serif`
+          );
+        } else {
+          root.style.removeProperty("--a11y-font-family");
+          root.setAttribute("data-a11y-font", "sans");
+        }
+      } else {
+        root.style.removeProperty("--a11y-font-family");
+        root.setAttribute("data-a11y-font", font);
+        ensureWebFontLoaded(font);
+      }
+
+      // Typography metrics
+      root.style.setProperty("--a11y-font-scale", String(currentPrefs.fontScale || "1"));
+      root.style.setProperty("--a11y-line-height", String(currentPrefs.lineHeight || "1.55"));
+      root.style.setProperty("--a11y-word-spacing", String(currentPrefs.wordSpacing || "normal"));
+      root.style.setProperty("--a11y-letter-spacing", String(currentPrefs.letterSpacing || "normal"));
+
+      // Extra ADA flags
+      if (currentPrefs.underlineLinks) {
+        root.setAttribute("data-a11y-links", "underline");
+      } else {
+        root.removeAttribute("data-a11y-links");
+      }
+
+      if (currentPrefs.reduceMotion) {
+        root.setAttribute("data-a11y-motion", "reduce");
+      } else {
+        root.removeAttribute("data-a11y-motion");
+      }
+    }
 
     if (isPrintMode) {
       document.documentElement.classList.add("print-mode");
-      applyTheme(false);
-    } else {
-      applyTheme(mediaQuery.matches);
-      mediaQuery.addEventListener("change", (event) => applyTheme(event.matches));
-      window.addEventListener("beforeprint", () => applyTheme(false));
-      window.addEventListener("afterprint", () => applyTheme(mediaQuery.matches));
     }
+
+    applyPrefs(currentPrefs);
+
+    mediaQuery.addEventListener("change", () => {
+      if (currentPrefs.theme === "system") {
+        applyPrefs(currentPrefs);
+      }
+    });
+
+    window.addEventListener("beforeprint", () => {
+      isNativePrinting = true;
+      applyPrefs(currentPrefs);
+    });
+    window.addEventListener("afterprint", () => {
+      isNativePrinting = false;
+      applyPrefs(currentPrefs);
+    });
+
+    function resolveFontFamily(fontKey) {
+      const key = String(fontKey || "sans");
+      if (key.startsWith("system:")) {
+        const customName = key.slice("system:".length).replace(/["'\\;{}]/g, "").trim();
+        return customName
+          ? `"${customName}", system-ui, -apple-system, sans-serif`
+          : BUILTIN_FONT_FAMILIES.sans;
+      }
+      ensureWebFontLoaded(key);
+      return BUILTIN_FONT_FAMILIES[key] || BUILTIN_FONT_FAMILIES.sans;
+    }
+
+    function getFontLabel(fontKey) {
+      const key = String(fontKey || "sans");
+      if (key.startsWith("system:")) {
+        return key.slice("system:".length).trim() || "System Font";
+      }
+      return BUILTIN_FONT_LABELS[key] || BUILTIN_FONT_LABELS.sans;
+    }
+
+    window.ShyNotesDisplay = {
+      DEFAULTS,
+      resolveFontFamily,
+      getFontLabel,
+      get() {
+        return { ...currentPrefs };
+      },
+      update(patch) {
+        const next = { ...currentPrefs, ...patch };
+        savePrefs(next);
+        applyPrefs(next);
+        window.dispatchEvent(new CustomEvent("shynotes:display-change", { detail: next }));
+        return next;
+      },
+      reset() {
+        try {
+          window.localStorage.removeItem(STORAGE_KEY);
+        } catch (_) {
+          // Ignore
+        }
+        applyPrefs({ ...DEFAULTS });
+        window.dispatchEvent(new CustomEvent("shynotes:display-change", { detail: { ...DEFAULTS } }));
+        return { ...DEFAULTS };
+      }
+    };
   })();
 </script>
 {% if page.custom_css %}

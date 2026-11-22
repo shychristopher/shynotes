@@ -17,6 +17,7 @@
   const defaultScope = sidebar.dataset.defaultScope === "section" ? "section" : "page";
 
   const printHeaderEl = document.getElementById("contentPrintHeader");
+  const printSheetEl = document.getElementById("contentPrintSheet");
   const printTitleEl = document.getElementById("contentPrintTitle");
   const printSubtitleEl = document.getElementById("contentPrintSubtitle");
   const singleArticleEl = document.getElementById("courseArticleContent");
@@ -33,6 +34,9 @@
   const selectAllBtn = document.getElementById("contentPrintSelectAllBtn");
   const loadingEl = document.getElementById("contentPrintLoading");
   const printNowBtn = document.getElementById("contentPreviewPrintBtn");
+  const fabPrintBtn = document.getElementById("contentFabPrintBtn");
+  const printResetBtn = document.getElementById("contentPrintResetBtn");
+  const printFontFamilySelect = document.getElementById("contentPrintFontFamily");
 
   const scopeRadios = Array.from(document.querySelectorAll('input[name="contentPrintScope"]'));
   const pageCheckboxes = Array.from(document.querySelectorAll(".content-print-page-cb"));
@@ -293,6 +297,22 @@
   const urlParams = new URLSearchParams(window.location.search);
   const urlScope = urlParams.get("scope");
 
+  function getDefaultOpts() {
+    return {
+      scope: manifest.length > 1 ? defaultScope : "page",
+      pageBreaks: false,
+      includeGlossary: true,
+      termStyle: "dotted",
+      termThickness: "thin",
+      termColor: "ink",
+      showHeader: true,
+      font: "md",
+      fontFamily: "",
+      spacing: "normal"
+    };
+  }
+
+  const defaults = getDefaultOpts();
   const opts = {
     scope:
       manifest.length > 1
@@ -301,14 +321,56 @@
           : defaultScope
         : "page",
     pageBreaks: Boolean(saved.pageBreaks),
-    includeGlossary: saved.includeGlossary !== undefined ? Boolean(saved.includeGlossary) : true,
-    termStyle: validTermStyles.includes(saved.termStyle) ? saved.termStyle : "dotted",
-    termThickness: validTermThicknesses.includes(saved.termThickness) ? saved.termThickness : "thin",
-    termColor: validTermColors.includes(saved.termColor) ? saved.termColor : "ink",
-    showHeader: saved.showHeader !== undefined ? Boolean(saved.showHeader) : true,
-    font: validFonts.includes(saved.font) ? saved.font : "md",
-    spacing: validSpacings.includes(saved.spacing) ? saved.spacing : "normal"
+    includeGlossary: saved.includeGlossary !== undefined ? Boolean(saved.includeGlossary) : defaults.includeGlossary,
+    termStyle: validTermStyles.includes(saved.termStyle) ? saved.termStyle : defaults.termStyle,
+    termThickness: validTermThicknesses.includes(saved.termThickness) ? saved.termThickness : defaults.termThickness,
+    termColor: validTermColors.includes(saved.termColor) ? saved.termColor : defaults.termColor,
+    showHeader: saved.showHeader !== undefined ? Boolean(saved.showHeader) : defaults.showHeader,
+    font: validFonts.includes(saved.font) ? saved.font : defaults.font,
+    fontFamily: typeof saved.fontFamily === "string" ? saved.fontFamily : "",
+    spacing: validSpacings.includes(saved.spacing) ? saved.spacing : defaults.spacing
   };
+
+  function getEffectivePrintFontFamily() {
+    // Only inherit the website font when the user hasn't picked a print-specific font
+    if (opts.fontFamily) {
+      return opts.fontFamily;
+    }
+    return window.ShyNotesDisplay?.get?.().font || "sans";
+  }
+
+  function applyPrintSheetFontFamily() {
+    const webFont = window.ShyNotesDisplay?.get?.().font || "sans";
+    const chosenKey = getEffectivePrintFontFamily();
+
+    if (printSheetEl && window.ShyNotesDisplay?.resolveFontFamily) {
+      printSheetEl.style.setProperty(
+        "--print-sheet-font",
+        window.ShyNotesDisplay.resolveFontFamily(chosenKey)
+      );
+    }
+
+    if (printFontFamilySelect) {
+      const siteOpt = printFontFamilySelect.querySelector("option[data-site-font-option]");
+      if (siteOpt) {
+        const label = window.ShyNotesDisplay?.getFontLabel?.(webFont) || "Sans-Serif";
+        siteOpt.textContent = `Match website font (${label})`;
+      }
+
+      if (opts.fontFamily && opts.fontFamily.startsWith("system:")) {
+        const group = printFontFamilySelect.querySelector(".a11y-system-fonts-group");
+        if (group && !Array.from(group.children).some((o) => o.value === opts.fontFamily)) {
+          const opt = document.createElement("option");
+          opt.value = opts.fontFamily;
+          opt.textContent = opts.fontFamily.slice("system:".length);
+          group.appendChild(opt);
+          group.classList.remove("d-none");
+        }
+      }
+
+      printFontFamilySelect.value = opts.fontFamily || "";
+    }
+  }
 
   // Cache fetched page HTML fragments keyed by URL
   const fetchedHtmlCache = new Map();
@@ -389,6 +451,7 @@
         termColor: opts.termColor,
         showHeader: opts.showHeader,
         font: opts.font,
+        fontFamily: opts.fontFamily,
         spacing: opts.spacing
       });
     }
@@ -427,15 +490,15 @@
 
     if (printTitleEl) printTitleEl.textContent = scopeLabel || currentTitle;
     if (printSubtitleEl) {
-      printSubtitleEl.textContent = `${chosenDocs.length} ${chosenDocs.length === 1 ? "page" : "pages"}`;
-      printSubtitleEl.classList.remove("d-none");
+      printSubtitleEl.textContent = "";
+      printSubtitleEl.classList.add("d-none");
     }
 
     if (!chosenDocs.length) {
       singleArticleEl?.classList.add("d-none");
       compiledEl?.classList.remove("d-none");
       if (compiledEl) {
-        compiledEl.innerHTML = '<p class="text-secondary small">Select at least one page from the sidebar to preview.</p>';
+        compiledEl.innerHTML = '<p class="text-secondary small">Select at least one topic from the sidebar to preview.</p>';
       }
       renderGlossaryAppendix("");
       return;
@@ -529,8 +592,36 @@
     });
   });
 
-  printNowBtn?.addEventListener("click", () => window.print());
+  [printNowBtn, fabPrintBtn].forEach((btn) => {
+    btn?.addEventListener("click", () => window.print());
+  });
+
+  printFontFamilySelect?.addEventListener("change", () => {
+    opts.fontFamily = printFontFamilySelect.value || "";
+    applyVisualOptions(true);
+    applyPrintSheetFontFamily();
+  });
+
+  printResetBtn?.addEventListener("click", () => {
+    Object.assign(opts, getDefaultOpts());
+    pageCheckboxes.forEach((cb) => {
+      cb.checked = true;
+    });
+    try {
+      window.localStorage.removeItem(STORAGE_KEY);
+    } catch (_) {
+      // Ignore storage errors
+    }
+    window.history.replaceState(null, "", `${window.location.pathname}?print=1`);
+    applyVisualOptions(false);
+    applyPrintSheetFontFamily();
+    renderScopeContent();
+  });
+
+  window.addEventListener("shynotes:system-fonts-ready", applyPrintSheetFontFamily);
+  window.addEventListener("shynotes:display-change", applyPrintSheetFontFamily);
 
   applyVisualOptions(false);
+  applyPrintSheetFontFamily();
   renderScopeContent();
 })();

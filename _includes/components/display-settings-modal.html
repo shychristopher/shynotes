@@ -1,0 +1,164 @@
+<div
+  class="modal fade d-print-none"
+  id="displaySettingsModal"
+  tabindex="-1"
+  aria-labelledby="displaySettingsModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+    <div class="modal-content">
+      <div class="modal-header">
+        <div>
+          <h2 class="modal-title h5 fw-bold mb-0" id="displaySettingsModalLabel">Display &amp; Accessibility</h2>
+          <p class="small text-body-secondary mb-0">Customize theme, font, and reading spacing across the site and printouts.</p>
+        </div>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+
+      <div class="modal-body d-flex flex-column gap-4">
+        <!-- Theme Selector -->
+        <div>
+          <label for="displayThemeSelect" class="form-label small text-uppercase text-body-secondary fw-semibold mb-2">
+            Theme
+          </label>
+          <select id="displayThemeSelect" class="form-select form-select-sm display-pref-select" data-display-key="theme">
+            <option value="system">System (Match OS)</option>
+            <option value="light">Light</option>
+            <option value="dark">Dark</option>
+            <option value="hc-light">High Contrast Light</option>
+            <option value="hc-dark">High Contrast Dark</option>
+          </select>
+        </div>
+
+        <!-- Font Family -->
+        <div>
+          <div class="d-flex justify-content-between align-items-center mb-2">
+            <label for="displayFontSelect" class="form-label small text-uppercase text-body-secondary fw-semibold mb-0">
+              Font Family
+            </label>
+            <button
+              type="button"
+              class="btn btn-link btn-sm p-0 text-decoration-none d-none"
+              id="displayLoadAllFontsBtn"
+              style="font-size: 0.75rem;"
+            >
+              Load all installed fonts…
+            </button>
+          </div>
+          <select id="displayFontSelect" class="form-select form-select-sm display-pref-select a11y-font-dropdown" data-display-key="font">
+            <optgroup label="Web &amp; Accessibility Fonts">
+              <option value="sans">System Sans-Serif (Default)</option>
+              <option value="atkinson">Atkinson Hyperlegible (Low-Vision)</option>
+              <option value="lexend">Lexend (Reading Fluency)</option>
+              <option value="opendyslexic">OpenDyslexic (Dyslexia Friendly)</option>
+              <option value="serif">Serif (Georgia / Book)</option>
+              <option value="mono">Monospace</option>
+            </optgroup>
+            <optgroup label="System Fonts" class="a11y-system-fonts-group"></optgroup>
+          </select>
+
+          <div class="mt-2">
+            <button
+              type="button"
+              class="btn btn-link btn-sm p-0 text-decoration-none text-body-secondary"
+              id="displayToggleCustomFontBtn"
+              style="font-size: 0.75rem;"
+            >
+              + Enter a specific installed font name
+            </button>
+            <div id="displayCustomFontRow" class="d-none gap-2 mt-2">
+              <input
+                type="text"
+                id="displayCustomFontInput"
+                class="form-control form-control-sm"
+                placeholder="e.g. Avenir Next, Verdana, Comic Sans MS"
+                aria-label="Installed font family name"
+              >
+              <button type="button" class="btn btn-sm btn-outline-primary flex-shrink-0" id="displayApplyCustomFontBtn">
+                Apply
+              </button>
+            </div>
+            <p class="text-body-secondary mb-0 mt-1 d-none" id="displayFontStatusMsg" style="font-size: 0.72rem;"></p>
+          </div>
+        </div>
+
+        <!-- Typography Metrics -->
+        <div>
+          <div class="small text-uppercase text-body-secondary fw-semibold mb-2">
+            Text &amp; Spacing
+          </div>
+          <div class="row g-2">
+            <div class="col-6">
+              <label for="displayFontScale" class="form-label small mb-1 text-body-secondary">Text size</label>
+              <select id="displayFontScale" class="form-select form-select-sm display-pref-select" data-display-key="fontScale">
+                <option value="0.9">Small (90%)</option>
+                <option value="1">Default (100%)</option>
+                <option value="1.12">Large (112%)</option>
+                <option value="1.25">Extra Large (125%)</option>
+              </select>
+            </div>
+            <div class="col-6">
+              <label for="displayLineHeight" class="form-label small mb-1 text-body-secondary">Line height</label>
+              <select id="displayLineHeight" class="form-select form-select-sm display-pref-select" data-display-key="lineHeight">
+                <option value="1.35">Compact (1.35)</option>
+                <option value="1.55">Default (1.55)</option>
+                <option value="1.85">Relaxed (1.85)</option>
+                <option value="2.1">Extra Roomy (2.1)</option>
+              </select>
+            </div>
+            <div class="col-6">
+              <label for="displayWordSpacing" class="form-label small mb-1 text-body-secondary">Word spacing</label>
+              <select id="displayWordSpacing" class="form-select form-select-sm display-pref-select" data-display-key="wordSpacing">
+                <option value="normal">Normal</option>
+                <option value="0.12em">Wide</option>
+                <option value="0.25em">Extra Wide</option>
+              </select>
+            </div>
+            <div class="col-6">
+              <label for="displayLetterSpacing" class="form-label small mb-1 text-body-secondary">Letter spacing</label>
+              <select id="displayLetterSpacing" class="form-select form-select-sm display-pref-select" data-display-key="letterSpacing">
+                <option value="normal">Normal</option>
+                <option value="0.03em">Slightly Wide</option>
+                <option value="0.07em">Wide</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <!-- Additional ADA Toggles -->
+        <div>
+          <div class="small text-uppercase text-body-secondary fw-semibold mb-2">
+            Accessibility
+          </div>
+          <div class="form-check form-switch mb-2">
+            <input class="form-check-input display-pref-switch" type="checkbox" role="switch" id="displayUnderlineLinks" data-display-key="underlineLinks">
+            <label class="form-check-label small" for="displayUnderlineLinks">Always underline links</label>
+          </div>
+          <div class="form-check form-switch">
+            <input class="form-check-input display-pref-switch" type="checkbox" role="switch" id="displayReduceMotion" data-display-key="reduceMotion">
+            <label class="form-check-label small" for="displayReduceMotion">Reduce motion &amp; animations</label>
+          </div>
+        </div>
+
+        <!-- Live Sample Preview -->
+        <div class="p-3 rounded border bg-body-tertiary">
+          <div class="small text-uppercase text-body-secondary fw-semibold mb-1" style="font-size: 0.7rem;">
+            Live Preview
+          </div>
+          <p class="mb-0 small">
+            <strong>Perfusion:</strong> Continuous circulation of oxygenated blood through capillary beds. Distinguish <code>Il1</code> and <code>O0</code> clearly while studying.
+          </p>
+        </div>
+      </div>
+
+      <div class="modal-footer justify-content-between">
+        <button type="button" class="btn btn-sm btn-outline-secondary" id="displaySettingsResetBtn">
+          Reset to defaults
+        </button>
+        <button type="button" class="btn btn-sm btn-primary" data-bs-dismiss="modal">
+          Done
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

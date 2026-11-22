@@ -29,6 +29,18 @@
         Courses
       </a>
 
+      <button
+        type="button"
+        class="btn btn-sm btn-outline-secondary d-inline-flex align-items-center gap-1"
+        data-bs-toggle="modal"
+        data-bs-target="#displaySettingsModal"
+        title="Display & accessibility settings"
+        aria-label="Open display and accessibility settings"
+      >
+        <span class="fw-semibold" aria-hidden="true">Aa</span>
+        <span class="d-none d-md-inline">Display</span>
+      </button>
+
       {% if site.repo.url %}
         <a
           href="{{ site.repo.url }}"
