@@ -2,7 +2,8 @@
   if (document.documentElement.classList.contains("print-mode")) return;
   if (
     document.documentElement.classList.contains("course-view-glossary") ||
-    document.documentElement.classList.contains("course-view-quickref")
+    document.documentElement.classList.contains("course-view-quickref") ||
+    document.documentElement.classList.contains("course-view-mindmap")
   ) {
     return;
   }

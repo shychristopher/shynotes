@@ -28,6 +28,24 @@
     --bs-font-sans-serif: var(--a11y-font-family);
   }
 
+  /* Uniform icon-only navbar action buttons */
+  .nav-icon-btn {
+    width: 34px;
+    height: 34px;
+    padding: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    line-height: 1;
+  }
+  @media (max-width: 420px) {
+    .nav-icon-btn {
+      width: 31px;
+      height: 31px;
+    }
+  }
+
   /* Typography & reading spacing */
   html {
     font-size: calc(16px * var(--a11y-font-scale, 1));
@@ -596,6 +614,8 @@
       document.documentElement.classList.add("course-view-glossary");
     } else if (viewParam === "quick-reference") {
       document.documentElement.classList.add("course-view-quickref");
+    } else if (viewParam === "mindmap") {
+      document.documentElement.classList.add("course-view-mindmap");
     }
 
     applyPrefs(currentPrefs);

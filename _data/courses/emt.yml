@@ -8,3 +8,10 @@ tags:
   - EMS
   - Medical
 summary: Study notes, reference sheets, and exam prep for EMT.
+
+# Optional course-level & glossary-level links (keys from _data/links/emt.yml or _data/mindmaps/emt/)
+# links:
+#   - quizlet_emt_mega
+# glossary_links:
+#   - quizlet_glossary
+

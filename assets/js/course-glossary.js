@@ -779,16 +779,24 @@
   function updateStickyOffset() {
     if (!controlsEl) return;
     const navbar = document.querySelector(".navbar.sticky-top");
-    const navHeight = navbar ? navbar.getBoundingClientRect().height : 57;
-    const controlsHeight = controlsEl.getBoundingClientRect().height;
-    root.style.setProperty("--glossary-sticky-top", `${Math.ceil(navHeight + controlsHeight)}px`);
+    const navHeight = navbar ? Math.floor(navbar.getBoundingClientRect().height) : 55;
+    const controlsHeight = Math.floor(controlsEl.getBoundingClientRect().height);
+    // Subtract 1px so subpixel rounding never leaves a hairline gap between sticky layers
+    root.style.setProperty("--glossary-nav-height", `${Math.max(0, navHeight - 1)}px`);
+    root.style.setProperty("--glossary-sticky-top", `${Math.max(0, navHeight + controlsHeight - 2)}px`);
   }
 
   if (controlsEl && "ResizeObserver" in window) {
     const ro = new window.ResizeObserver(updateStickyOffset);
     ro.observe(controlsEl);
+    const navbar = document.querySelector(".navbar.sticky-top");
+    if (navbar) ro.observe(navbar);
   }
   window.addEventListener("resize", updateStickyOffset);
+  window.addEventListener("shynotes:display-change", () => {
+    window.requestAnimationFrame(updateStickyOffset);
+  });
+  window.requestAnimationFrame(updateStickyOffset);
 
   window.addEventListener("beforeprint", () => syncPrintMasonry(true));
   window.addEventListener("afterprint", () => syncPrintMasonry(false));

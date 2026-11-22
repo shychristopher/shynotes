@@ -32,8 +32,13 @@ Pick a short, lowercase, URL-friendly **slug** for your course (no spaces—use 
 _data/
 ├── courses/
 │   └── <slug>.yml                 # REQUIRED: Course metadata (title, code, tags, summary)
-└── glossaries/
-    └── <slug>.yml                 # OPTIONAL: Glossary terms (auto-enables Glossary & Key Terms)
+├── glossaries/
+│   └── <slug>.yml                 # OPTIONAL: Glossary terms (auto-enables Glossary & Key Terms)
+├── links/
+│   └── <slug>.yml                 # OPTIONAL: Quizlets, flashcards, videos & mind map link definitions
+└── mindmaps/
+    └── <slug>/
+        └── <map-id>.yml           # OPTIONAL: Markmap markdown mind map files (pan/zoom viewer)
 
 _courses/
 └── <slug>/
@@ -187,6 +192,56 @@ The moment this file exists with at least one term, **Glossary** automatically a
 - **`category`** *(optional)*: Powers the Glossary filter sidebar checkboxes.
 - **`aliases`** *(optional)*: Alternate spellings/phrases that also match for inline popovers and Key Terms.
 - **`builds_on`** & **`related`** *(optional)*: List of other term `id`s to cross-link concepts.
+
+---
+
+### 6. Study Links (Quizlets, Videos, Practice) & Mind Maps (Optional)
+
+Define links centrally under `_data/links/<slug>.yml` and interactive Markmap mind maps under `_data/mindmaps/<slug>/<map-id>.yml`, then attach whichever ones apply to any course overview, glossary, section, or lesson page!
+
+**`_data/mindmaps/<slug>/airway-management.yml`:**
+
+```yaml
+title: Airway Management Mind Map
+description: Visual breakdown of airway maneuvers, adjuncts, and oxygen delivery.
+content: |
+  # Airway Management
+  ## Manual Maneuvers
+  - Head-Tilt, Chin-Lift (medical)
+  - Jaw-Thrust (suspected trauma)
+  ## Airway Adjuncts
+  - OPA (unresponsive, no gag reflex)
+  - NPA (intact gag reflex)
+```
+
+*(You can also use `image: /assets/images/...` or `embed_url: https://...` instead of `content:` for static images or embeds like Miro/Excalidraw.)*
+
+**`_data/links/<slug>.yml`:**
+
+```yaml
+quizlet_airway:
+  type: quizlet          # quizlet | anki | flashcards | video | practice | link | mindmap
+  title: Airway Flashcards (Quizlet)
+  url: https://quizlet.com/your-set-url
+
+airway_mindmap:
+  type: mindmap
+  title: Airway Mind Map
+  map: airway-management # matches _data/mindmaps/<slug>/airway-management.yml
+```
+
+**Attach to any page (Course Overview, Section Overview, or Lesson) via `links:` in front matter:**
+
+```yaml
+---
+title: Airway Management
+links:
+  - airway_mindmap
+  - quizlet_airway
+---
+```
+
+*(You can also reference a mind map filename directly like `- airway-management` without adding it to `_data/links/`, or attach Glossary-specific links in `_data/courses/<slug>.yml` under `glossary_links:`.)*
 
 ---
 

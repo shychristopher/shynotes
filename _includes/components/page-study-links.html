@@ -1,0 +1,96 @@
+{% assign slug = include.course_slug %}
+{% assign link_refs = include.links %}
+{% if link_refs and link_refs.size > 0 %}
+  {% assign course_links_data = nil %}
+  {% if site.data.links and site.data.links[slug] %}
+    {% assign course_links_data = site.data.links[slug] %}
+  {% endif %}
+  {% assign course_mindmaps_data = nil %}
+  {% if site.data.mindmaps and site.data.mindmaps[slug] %}
+    {% assign course_mindmaps_data = site.data.mindmaps[slug] %}
+  {% endif %}
+  {% assign mindmap_base_url = '/courses/' | append: slug | append: '/?view=mindmap' | relative_url %}
+  {% assign return_from = include.from_url | default: page.url | relative_url %}
+  {% assign return_label = include.from_label | default: page.title | default: "Lesson" %}
+
+  {% capture rendered_buttons %}
+    {% for ref in link_refs %}
+      {% assign item = nil %}
+      {% assign resolved_map_id = "" %}
+
+      {% if ref.url or ref.map or ref.content or ref.image or ref.embed_url %}
+        {% assign item = ref %}
+        {% if ref.map %}{% assign resolved_map_id = ref.map %}{% endif %}
+      {% else %}
+        {% if course_links_data and course_links_data[ref] %}
+          {% assign item = course_links_data[ref] %}
+          {% if item.type == "mindmap" %}
+            {% assign resolved_map_id = item.map | default: ref %}
+          {% endif %}
+        {% elsif course_mindmaps_data and course_mindmaps_data[ref] %}
+          {% assign item = course_mindmaps_data[ref] %}
+          {% assign resolved_map_id = ref %}
+        {% endif %}
+      {% endif %}
+
+      {% if item %}
+        {% assign item_type = item.type | default: "" | downcase %}
+        {% if resolved_map_id != "" and item_type == "" %}
+          {% assign item_type = "mindmap" %}
+        {% endif %}
+        {% assign item_title = item.title | default: resolved_map_id %}
+
+        {% if item_type == "mindmap" and resolved_map_id != "" %}
+          <a
+            href="{{ mindmap_base_url }}&amp;map={{ resolved_map_id | url_encode }}&amp;from={{ return_from | url_encode }}&amp;from_label={{ return_label | url_encode }}"
+            class="btn btn-sm btn-outline-primary d-inline-flex align-items-center gap-1 study-link-pill"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" fill="currentColor" viewBox="0 0 16 16" aria-hidden="true">
+              <path fill-rule="evenodd" d="M6 3.5A1.5 1.5 0 0 1 7.5 2h1A1.5 1.5 0 0 1 10 3.5v1A1.5 1.5 0 0 1 8.5 6v1H14a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-1 0V8h-5v.5a.5.5 0 0 1-1 0V8h-5v.5a.5.5 0 0 1-1 0v-1A.5.5 0 0 1 2 7h5.5V6A1.5 1.5 0 0 1 6 4.5zm-6 8A1.5 1.5 0 0 1 1.5 10h1A1.5 1.5 0 0 1 4 11.5v1A1.5 1.5 0 0 1 2.5 14h-1A1.5 1.5 0 0 1 0 12.5zm6 0A1.5 1.5 0 0 1 7.5 10h1a1.5 1.5 0 0 1 1.5 1.5v1A1.5 1.5 0 0 1 8.5 14h-1A1.5 1.5 0 0 1 6 12.5zm6 0a1.5 1.5 0 0 1 1.5-1.5h1a1.5 1.5 0 0 1 1.5 1.5v1a1.5 1.5 0 0 1-1.5 1.5h-1a1.5 1.5 0 0 1-1.5-1.5z"/>
+            </svg>
+            <span>{{ item_title }}</span>
+          </a>
+        {% elsif item.url %}
+          <a
+            href="{{ item.url }}"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="btn btn-sm btn-outline-secondary d-inline-flex align-items-center gap-1 study-link-pill"
+          >
+            {% if item_type == "quizlet" or item_type == "anki" or item_type == "flashcards" %}
+              <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" fill="currentColor" viewBox="0 0 16 16" aria-hidden="true">
+                <path d="M1 2.5A1.5 1.5 0 0 1 2.5 1h11A1.5 1.5 0 0 1 15 2.5v8A1.5 1.5 0 0 1 13.5 12h-11A1.5 1.5 0 0 1 1 10.5zM2.5 2a.5.5 0 0 0-.5.5v8a.5.5 0 0 0 .5.5h11a.5.5 0 0 0 .5-.5v-8a.5.5 0 0 0-.5-.5z"/>
+                <path d="M3 14.5a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5"/>
+              </svg>
+            {% elsif item_type == "video" %}
+              <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" fill="currentColor" viewBox="0 0 16 16" aria-hidden="true">
+                <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16"/>
+                <path d="M6.271 5.055a.5.5 0 0 1 .52.038l3.5 2.5a.5.5 0 0 1 0 .814l-3.5 2.5A.5.5 0 0 1 6 10.5v-5a.5.5 0 0 1 .271-.445"/>
+              </svg>
+            {% elsif item_type == "practice" or item_type == "quiz" %}
+              <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" fill="currentColor" viewBox="0 0 16 16" aria-hidden="true">
+                <path d="M10.854 7.854a.5.5 0 0 0-.708-.708L7.5 9.793 6.354 8.646a.5.5 0 1 0-.708.708l1.5 1.5a.5.5 0 0 0 .708 0z"/>
+                <path d="M4 1.5H3a2 2 0 0 0-2 2V14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3.5a2 2 0 0 0-2-2h-1v1h1a1 1 0 0 1 1 1V14a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V3.5a1 1 0 0 1 1-1h1z"/>
+                <path d="M9.5 1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5v-1a.5.5 0 0 1 .5-.5zm-3-1A1.5 1.5 0 0 0 5 1.5v1A1.5 1.5 0 0 0 6.5 4h3A1.5 1.5 0 0 0 11 2.5v-1A1.5 1.5 0 0 0 9.5 0z"/>
+              </svg>
+            {% else %}
+              <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="currentColor" viewBox="0 0 16 16" aria-hidden="true">
+                <path fill-rule="evenodd" d="M8.636 3.5a.5.5 0 0 0-.5-.5H1.5A1.5 1.5 0 0 0 0 4.5v10A1.5 1.5 0 0 0 1.5 16h10a1.5 1.5 0 0 0 1.5-1.5V7.864a.5.5 0 0 0-1 0V14.5a.5.5 0 0 1-.5.5h-10a.5.5 0 0 1-.5-.5v-10a.5.5 0 0 1 .5-.5h6.636a.5.5 0 0 0 .5-.5"/>
+                <path fill-rule="evenodd" d="M16 .5a.5.5 0 0 0-.5-.5h-5a.5.5 0 0 0 0 1h3.793L6.146 9.146a.5.5 0 1 0 .708.708L15 1.707V5.5a.5.5 0 0 0 1 0z"/>
+              </svg>
+            {% endif %}
+            <span>{{ item_title }}</span>
+            <span aria-hidden="true" style="font-size: 0.72rem; opacity: 0.75;">↗</span>
+          </a>
+        {% endif %}
+      {% endif %}
+    {% endfor %}
+  {% endcapture %}
+
+  {% assign clean_buttons = rendered_buttons | strip %}
+  {% if clean_buttons != "" %}
+    <div class="d-flex flex-wrap align-items-center gap-2 mt-3 d-print-none" aria-label="Study links and mind maps">
+      {{ clean_buttons }}
+    </div>
+  {% endif %}
+{% endif %}

@@ -34,6 +34,19 @@
     {% endfor %}
   {% endif %}
 {% endif %}
+{% assign course_has_mindmaps = false %}
+{% if course_slug %}
+  {% if site.data.mindmaps and site.data.mindmaps[course_slug] %}
+    {% assign course_has_mindmaps = true %}
+  {% elsif site.data.links and site.data.links[course_slug] %}
+    {% for _lentry in site.data.links[course_slug] %}
+      {% if _lentry[1].type == "mindmap" %}
+        {% assign course_has_mindmaps = true %}
+        {% break %}
+      {% endif %}
+    {% endfor %}
+  {% endif %}
+{% endif %}
 {% if is_page_hidden %}
 {% assign redirect_url = '/courses/?unavailable=1' | relative_url %}
 <!DOCTYPE html>
@@ -476,6 +489,27 @@
             margin-bottom: 1rem;
             font-size: 0.92em;
         }
+        .course-table-scroll {
+            width: 100%;
+            max-width: 100%;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            margin-bottom: 1rem;
+        }
+        #courseArticleContent .course-table-scroll > table,
+        .quickref-preview-body .course-table-scroll > table,
+        .course-table-scroll > table {
+            margin-bottom: 0 !important;
+            min-width: 100%;
+            width: max-content;
+            max-width: none;
+        }
+        .course-table-scroll th {
+            white-space: nowrap;
+        }
+        .course-table-scroll td {
+            min-width: 7.5rem;
+        }
         #courseArticleContent th,
         #courseArticleContent td,
         #contentPrintCompiled th,
@@ -537,19 +571,37 @@
             transform: scale(1.12);
         }
 
-        /* Synchronous view switching for auto-generated Glossary & Quick Reference on every course */
+        /* Synchronous view switching for auto-generated Glossary, Quick Reference & Mind Map on every course */
         html:not(.course-view-glossary) .course-view-only-glossary,
         html:not(.course-view-glossary) .glossary-view-only,
         html:not(.course-view-quickref) .course-view-only-quickref,
+        html:not(.course-view-mindmap) .course-view-only-mindmap,
         html.course-view-glossary .course-view-default,
-        html.course-view-quickref .course-view-default {
+        html.course-view-quickref .course-view-default,
+        html.course-view-mindmap .course-view-default {
             display: none !important;
+        }
+        .mindmap-stage {
+            height: 70vh;
+            min-height: 420px;
+        }
+        .mindmap-stage:fullscreen {
+            height: 100vh;
+            border: 0 !important;
+            border-radius: 0 !important;
+            background-color: var(--bs-body-bg) !important;
+        }
+        #mindmapSvg .markmap-foreign {
+            color: var(--bs-body-color);
+            font-family: var(--a11y-font-family, var(--bs-body-font-family));
         }
         @media print {
             html:not(.course-view-glossary) .course-view-only-glossary,
             html:not(.course-view-quickref) .course-view-only-quickref,
+            html:not(.course-view-mindmap) .course-view-only-mindmap,
             html.course-view-glossary .course-view-default,
-            html.course-view-quickref .course-view-default {
+            html.course-view-quickref .course-view-default,
+            html.course-view-mindmap .course-view-default {
                 display: none !important;
             }
         }
@@ -768,6 +820,18 @@
                 display: block !important;
                 padding: 0 !important;
             }
+            .course-table-scroll {
+                overflow: visible !important;
+            }
+            .course-table-scroll > table {
+                width: 100% !important;
+                min-width: 0 !important;
+            }
+            .course-table-scroll th,
+            .course-table-scroll td {
+                white-space: normal !important;
+                min-width: 0 !important;
+            }
             #contentPrintHeader {
                 display: block !important;
             }
@@ -945,6 +1009,8 @@
                                 {% endfor %}
                             </div>
                         {% endif %}
+                        {% assign _overview_links = page.links | default: course_meta.links %}
+                        {% include components/page-study-links.html course_slug=course_slug links=_overview_links from_label=course_meta.title %}
                     </header>
                 {% elsif page.title %}
                     <header class="mb-4 pb-3 border-bottom{% if page.glossary == true %} glossary-screen-header{% else %} content-screen-header{% endif %}">
@@ -983,6 +1049,7 @@
                                 </a>
                             {% endunless %}
                         </div>
+                        {% include components/page-study-links.html course_slug=course_slug links=page.links from_label=page.title %}
                     </header>
                 {% endif %}
 
@@ -1076,8 +1143,15 @@
                                     <span class="d-none d-sm-inline">Print</span>
                                 </a>
                             </div>
+                            {% include components/page-study-links.html course_slug=course_slug links=course_meta.glossary_links from_url=glossary_view_url from_label="Glossary" %}
                         </header>
                         {% include components/course-glossary.html course_slug=course_slug course_meta=course_meta base_glossary_url=glossary_view_url %}
+                    </div>
+                {% endif %}
+
+                {% if is_course_index and course_has_mindmaps %}
+                    <div class="course-view-only-mindmap">
+                        {% include components/course-mindmap.html course_slug=course_slug course_meta=course_meta %}
                     </div>
                 {% endif %}
 
@@ -1116,6 +1190,9 @@
     <script src="{{ '/assets/js/course-progress.js' | relative_url }}"></script>
     {% if page.quick_reference == true or is_course_index %}
         <script src="{{ '/assets/js/course-quick-reference.js' | relative_url }}"></script>
+    {% endif %}
+    {% if is_course_index and course_has_mindmaps %}
+        <script src="{{ '/assets/js/course-mindmap.js' | relative_url }}" defer></script>
     {% endif %}
     {% unless is_special_view %}
         {% assign _lookup_terms = "" | split: "" %}

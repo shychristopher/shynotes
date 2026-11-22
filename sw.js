@@ -24,6 +24,7 @@ const CORE_ASSETS = [
   {{ '/assets/js/course-glossary.js' | relative_url | jsonify }},
   {{ '/assets/js/course-glossary-lookup.js' | relative_url | jsonify }},
   {{ '/assets/js/course-quick-reference.js' | relative_url | jsonify }},
+  {{ '/assets/js/course-mindmap.js' | relative_url | jsonify }},
   {{ '/assets/js/course-content-print.js' | relative_url | jsonify }},
   {{ '/assets/js/pwa.js' | relative_url | jsonify }},
   "https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css",

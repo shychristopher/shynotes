@@ -379,14 +379,15 @@
     const remainingMs = Math.max(0, MANUAL_COOLDOWN_MS - (Date.now() - meta.lastSyncedAt));
     const remainingSec = Math.ceil(remainingMs / 1000);
 
-    if (navLabel && navDot) {
+    if (navBtn && navDot) {
       if (currentUser) {
-        const displayName = (currentUser.displayName || currentUser.email || "Account").split(/[@\s]/)[0];
-        navLabel.textContent = displayName.slice(0, 12);
+        const displayName = currentUser.displayName || currentUser.email || "Account";
+        const statusHint = !navigator.onLine ? "Offline" : dirty ? "Unsaved changes" : "Synced";
+        navBtn.title = `${displayName} (${statusHint})`;
         navDot.classList.remove("d-none", "bg-success", "bg-warning", "bg-secondary");
         navDot.classList.add(!navigator.onLine ? "bg-secondary" : dirty ? "bg-warning" : "bg-success");
       } else {
-        navLabel.textContent = "Sign in";
+        navBtn.title = "Sign in & cloud sync";
         navDot.classList.add("d-none");
       }
     }

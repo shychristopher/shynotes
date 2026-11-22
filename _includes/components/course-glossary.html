@@ -342,8 +342,8 @@
           </header>
 
           <!-- Controls (hidden in print mode) -->
-          <div id="glossaryControls" class="bg-body py-2 mb-3 border-bottom d-print-none" style="position: sticky; top: 57px; z-index: 1005;">
-            <div class="d-flex flex-column flex-sm-row gap-2 mb-2">
+          <div id="glossaryControls" class="bg-body py-2 mb-3 border-bottom d-print-none">
+            <div class="d-flex align-items-center gap-2 mb-2">
               <input
                 type="search"
                 id="glossarySearch"
@@ -352,25 +352,23 @@
                 aria-label="Search glossary"
                 autocomplete="off"
               >
-              <div class="d-flex align-items-center gap-2 flex-shrink-0">
-                <span class="small text-body-secondary text-nowrap" id="glossaryCount">
-                  {{ sorted_terms.size }} {% if sorted_terms.size == 1 %}term{% else %}terms{% endif %}
-                </span>
-                <button
-                  type="button"
-                  class="btn btn-sm btn-outline-secondary d-none"
-                  id="glossaryResetBtn"
-                >
-                  Reset
-                </button>
-              </div>
+              <span class="small text-body-secondary text-nowrap flex-shrink-0" id="glossaryCount">
+                {{ sorted_terms.size }} {% if sorted_terms.size == 1 %}term{% else %}terms{% endif %}
+              </span>
+              <button
+                type="button"
+                class="btn btn-sm btn-outline-secondary d-none flex-shrink-0"
+                id="glossaryResetBtn"
+              >
+                Reset
+              </button>
             </div>
 
-            <div class="d-flex flex-wrap gap-1" id="glossaryAlphaBar" aria-label="Jump to letter">
+            <div class="d-flex flex-nowrap flex-md-wrap gap-1 overflow-x-auto pb-1 pb-md-0" id="glossaryAlphaBar" aria-label="Jump to letter">
               {% for letter in unique_letters %}
                 <a
                   href="#glossary-letter-{{ letter }}"
-                  class="btn btn-sm btn-outline-secondary py-0 px-2 glossary-letter-link"
+                  class="btn btn-sm btn-outline-secondary py-0 px-2 flex-shrink-0 glossary-letter-link"
                   data-letter="{{ letter }}"
                   style="font-size: 0.75rem;"
                 >
@@ -503,16 +501,27 @@
     </div>
 
     <style>
+      #glossaryControls {
+        position: sticky;
+        top: var(--glossary-nav-height, 55px);
+        z-index: 1005;
+      }
+      #glossaryAlphaBar {
+        scrollbar-width: none;
+      }
+      #glossaryAlphaBar::-webkit-scrollbar {
+        display: none;
+      }
       .glossary-letter-group {
-        scroll-margin-top: var(--glossary-sticky-top, 165px);
+        scroll-margin-top: var(--glossary-sticky-top, 140px);
       }
       .glossary-letter-heading {
         position: sticky;
-        top: var(--glossary-sticky-top, 165px);
+        top: var(--glossary-sticky-top, 140px);
         z-index: 1000;
       }
       .glossary-term-card {
-        scroll-margin-top: calc(var(--glossary-sticky-top, 165px) + 46px);
+        scroll-margin-top: calc(var(--glossary-sticky-top, 140px) + 46px);
         transition: border-color 0.2s ease, box-shadow 0.2s ease;
       }
       .glossary-term-card.glossary-highlight {

@@ -186,6 +186,13 @@
       previewBody.dataset.loaded = "loading";
       const html = await fetchSectionHtml(bm.url, bm.sectionId, bm.sectionTitle);
       previewBody.innerHTML = html;
+      Array.from(previewBody.querySelectorAll("table")).forEach((table) => {
+        if (table.closest(".course-table-scroll")) return;
+        const wrap = document.createElement("div");
+        wrap.className = "course-table-scroll";
+        table.parentNode.insertBefore(wrap, table);
+        wrap.appendChild(table);
+      });
       previewBody.dataset.loaded = "true";
     }
 

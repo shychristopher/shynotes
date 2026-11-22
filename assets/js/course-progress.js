@@ -65,17 +65,20 @@
 
   const isGlossaryView = document.documentElement.classList.contains("course-view-glossary");
   const isQuickRefView = document.documentElement.classList.contains("course-view-quickref");
+  const isMindmapView = document.documentElement.classList.contains("course-view-mindmap");
 
-  if (isGlossaryView || isQuickRefView) {
+  if (isGlossaryView || isQuickRefView || isMindmapView) {
     overviewNavLink?.classList.remove("active", "fw-semibold");
     overviewNavLink?.removeAttribute("aria-current");
-    const targetNav = isGlossaryView ? glossaryNavLink : quickRefNavLink;
-    targetNav?.classList.add("active", "fw-semibold");
-    targetNav?.setAttribute("aria-current", "page");
-    const baseTitle = document.title;
-    const prefix = isGlossaryView ? "Glossary" : "Quick Reference";
-    if (!baseTitle.startsWith(prefix)) {
-      document.title = `${prefix} · ${baseTitle}`;
+    if (isGlossaryView || isQuickRefView) {
+      const targetNav = isGlossaryView ? glossaryNavLink : quickRefNavLink;
+      targetNav?.classList.add("active", "fw-semibold");
+      targetNav?.setAttribute("aria-current", "page");
+      const baseTitle = document.title;
+      const prefix = isGlossaryView ? "Glossary" : "Quick Reference";
+      if (!baseTitle.startsWith(prefix)) {
+        document.title = `${prefix} · ${baseTitle}`;
+      }
     }
   }
 
@@ -378,7 +381,7 @@
 
   function startAutoReview() {
     if (document.documentElement.classList.contains("print-mode")) return;
-    if (isGlossaryView || isQuickRefView) return;
+    if (isGlossaryView || isQuickRefView || isMindmapView) return;
     if (autoReviewCancelled) return;
 
     const currentLink = pageLinks.find((el) => el.dataset.pageUrl === currentPageUrl);

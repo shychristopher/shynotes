@@ -1,0 +1,27 @@
+title: Airway Management Mind Map
+description: Visual decision tree for manual maneuvers, airway adjuncts, and oxygen delivery.
+content: |
+  # Airway Management
+  ## Manual Maneuvers
+  - Head-Tilt, Chin-Lift
+    - Medical / non-trauma patients
+    - Primary airway opening technique
+  - Jaw-Thrust Maneuver
+    - Suspected cervical spine trauma
+    - Keeps C-spine neutral
+  ## Suctioning
+  - Rigid (Yankauer) — oropharynx, thick secretions
+  - Soft (French) — nasopharynx / stomas
+  - Max 15 sec adults · 10 sec children · 5 sec infants
+  ## Airway Adjuncts
+  - OPA (Oropharyngeal)
+    - Unresponsive, **no gag reflex**
+    - Measure corner of mouth → earlobe
+  - NPA (Nasopharyngeal)
+    - Responsive or semiconscious with gag reflex
+    - Measure tip of nose → earlobe
+    - Avoid in suspected basilar skull fracture
+  ## Oxygen Delivery
+  - Nasal Cannula (1–6 L/min, 24–44%)
+  - Non-Rebreather Mask (10–15 L/min, up to 90%)
+  - BVM (15 L/min — apneic or inadequate breathing)

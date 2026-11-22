@@ -3,6 +3,9 @@ title: Airway Management
 description: Opening, maintaining, suctioning, and oxygenating the airway.
 tags: [Airway]
 permalink: /courses/emt/04-airway-management/
+links:
+  - airway_mindmap
+  - quizlet_airway
 ---
 
 Airway patency and adequate ventilation always come first. Use the subtopics in this section to review manual maneuvers, adjunct sizing/contraindications, and oxygen delivery devices.

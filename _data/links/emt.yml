@@ -1,0 +1,14 @@
+# Supplemental external study links & mind map references for EMT.
+# Reference any key below inside a page's `links:` front matter list, or inside
+# `_data/courses/emt.yml` (`links:` for course overview, `glossary_links:` for Glossary).
+
+airway_mindmap:
+  type: mindmap
+  title: Airway Mind Map
+  map: airway-management
+
+quizlet_airway:
+  type: quizlet
+  title: Airway Quizlet (Example)
+  url: https://quizlet.com/
+

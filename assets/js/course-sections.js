@@ -2,7 +2,8 @@
   if (document.documentElement.classList.contains("print-mode")) return;
   if (
     document.documentElement.classList.contains("course-view-glossary") ||
-    document.documentElement.classList.contains("course-view-quickref")
+    document.documentElement.classList.contains("course-view-quickref") ||
+    document.documentElement.classList.contains("course-view-mindmap")
   ) {
     return;
   }
@@ -139,6 +140,18 @@
     keyTermsToggle?.setAttribute("aria-expanded", collapsed ? "false" : "true");
   }
 
+  function wrapResponsiveTables(container) {
+    if (!container) return;
+    Array.from(container.querySelectorAll("table")).forEach((table) => {
+      if (table.closest(".course-table-scroll")) return;
+      const wrap = document.createElement("div");
+      wrap.className = "course-table-scroll";
+      table.parentNode.insertBefore(wrap, table);
+      wrap.appendChild(table);
+    });
+  }
+
+  wrapResponsiveTables(articleEl);
   populatePageKeyTerms();
 
   // 2. Wrap article headings into collapsible sections with multi-option Bookmarks
