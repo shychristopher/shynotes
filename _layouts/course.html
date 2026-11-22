@@ -131,13 +131,35 @@
         .course-sidebar .course-nav-toggle:hover {
             background-color: var(--bs-secondary-bg);
         }
-        .course-sidebar .nav-chevron {
+        .course-sidebar .nav-chevron,
+        .section-terms-toggle .nav-chevron {
             display: inline-block;
             font-size: 0.75rem;
             transition: transform 0.15s ease;
         }
-        .course-sidebar .course-nav-toggle[aria-expanded="true"] .nav-chevron {
+        .course-sidebar .course-nav-toggle[aria-expanded="true"] .nav-chevron,
+        .section-terms-toggle[aria-expanded="true"] .nav-chevron {
             transform: rotate(90deg);
+        }
+        .glossary-lookup-term {
+            border-bottom: 1.5px dotted var(--bs-primary);
+            cursor: help;
+            border-radius: 2px;
+            transition: background-color 0.15s ease;
+        }
+        .glossary-lookup-term:hover,
+        .glossary-lookup-term:focus {
+            background-color: var(--bs-primary-bg-subtle);
+            outline: none;
+        }
+        .glossary-lookup-popover {
+            max-width: 320px;
+        }
+        @media print {
+            .glossary-lookup-term {
+                border-bottom: 0 !important;
+                background: transparent !important;
+            }
         }
         .course-page-indicator-slot {
             display: inline-flex;
@@ -192,12 +214,316 @@
         .nav-link.active .course-page-indicator.indicator-new {
             box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.35);
         }
+        /* Markdown tables & readability inside course articles */
+        #courseArticleContent table,
+        #contentPrintCompiled table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 1rem;
+            font-size: 0.92em;
+        }
+        #courseArticleContent th,
+        #courseArticleContent td,
+        #contentPrintCompiled th,
+        #contentPrintCompiled td {
+            border: 1px solid var(--bs-border-color);
+            padding: 0.45rem 0.65rem;
+            text-align: left;
+        }
+        #courseArticleContent thead th,
+        #contentPrintCompiled thead th {
+            background-color: var(--bs-tertiary-bg);
+            font-weight: 600;
+        }
+
+        /* Course Content Print Studio (?print=1 + @media print) */
+        .content-scope-option {
+            cursor: pointer;
+            transition: border-color 0.15s ease, background-color 0.15s ease;
+        }
+        .content-scope-option:hover {
+            border-color: var(--bs-primary) !important;
+        }
+        .content-scope-option.active {
+            border-color: var(--bs-primary) !important;
+            background-color: var(--bs-primary-bg-subtle) !important;
+        }
+        #contentPrintWorkspace.content-font-sm { --content-print-font: 0.82rem; }
+        #contentPrintWorkspace.content-font-md { --content-print-font: 0.95rem; }
+        #contentPrintWorkspace.content-font-lg { --content-print-font: 1.08rem; }
+        #contentPrintWorkspace.content-space-compact { --content-print-gap: 0.65rem; --content-print-lh: 1.38; }
+        #contentPrintWorkspace.content-space-normal { --content-print-gap: 1.1rem; --content-print-lh: 1.55; }
+        #contentPrintWorkspace.content-space-relaxed { --content-print-gap: 1.65rem; --content-print-lh: 1.75; }
+
+        /* Term emphasis presets (color & thickness tokens) */
+        #contentPrintWorkspace.term-color-ink { --term-mark-stroke: #212529; --term-mark-bg: #e9ecef; }
+        #contentPrintWorkspace.term-color-yellow { --term-mark-stroke: #b45309; --term-mark-bg: #fff3a1; }
+        #contentPrintWorkspace.term-color-blue { --term-mark-stroke: #0d6efd; --term-mark-bg: #cfe2ff; }
+        #contentPrintWorkspace.term-color-green { --term-mark-stroke: #198754; --term-mark-bg: #d1e7dd; }
+        #contentPrintWorkspace.term-color-pink { --term-mark-stroke: #d63384; --term-mark-bg: #f8d7da; }
+        #contentPrintWorkspace.term-thick-thin { --term-mark-width: 1px; }
+        #contentPrintWorkspace.term-thick-medium { --term-mark-width: 1.75px; }
+        #contentPrintWorkspace.term-thick-thick { --term-mark-width: 2.5px; }
+
+        .term-color-swatch {
+            width: 20px;
+            height: 20px;
+            border-radius: 999px;
+            border: 2px solid #fff;
+            box-shadow: 0 0 0 1px #adb5bd;
+            padding: 0;
+            cursor: pointer;
+            transition: transform 0.12s ease, box-shadow 0.12s ease;
+        }
+        .term-color-swatch:hover {
+            transform: scale(1.1);
+        }
+        .term-color-swatch.active {
+            box-shadow: 0 0 0 2px #212529;
+            transform: scale(1.12);
+        }
+
+        @media screen {
+            html.print-mode .content-layout-main,
+            html.print-mode .content-layout-container {
+                padding: 0 !important;
+            }
+            html.print-mode #contentPrintWorkspace {
+                display: flex;
+                flex-direction: column;
+                min-height: 100vh;
+                background-color: #f1f3f5;
+            }
+            html.print-mode #contentPrintSidebar {
+                display: flex !important;
+                width: 100%;
+                flex-shrink: 0;
+            }
+            html.print-mode #contentPrintStage {
+                flex: 1 1 auto;
+                padding: 1.5rem;
+                overflow-y: auto;
+            }
+            html.print-mode #contentPrintSheet {
+                max-width: 8.5in;
+                margin: 0 auto;
+                background-color: #fff;
+                color: #000;
+                border: 1px solid #dee2e6;
+                border-radius: 0.375rem;
+                box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+                padding: 2rem 2.25rem;
+            }
+            @media (min-width: 992px) {
+                html.print-mode #contentPrintWorkspace {
+                    flex-direction: row;
+                }
+                html.print-mode #contentPrintSidebar {
+                    width: 280px;
+                    position: sticky;
+                    top: 0;
+                    height: 100vh;
+                }
+                html.print-mode #contentPrintStage {
+                    padding: 2rem;
+                }
+            }
+            html.print-mode #contentPrintWorkspace.content-page-breaks .content-print-doc:not(:first-child) {
+                border-top: 2px dashed #ced4da;
+                padding-top: 1.5rem;
+                margin-top: 2rem;
+            }
+        }
+
+        html.print-mode .content-screen-header {
+            display: none !important;
+        }
+        html.print-mode #contentPrintHeader {
+            display: block !important;
+        }
+        html.print-mode #contentPrintWorkspace.content-hide-header #contentPrintHeader {
+            display: none !important;
+        }
+        html.print-mode #sectionKeyTerms {
+            display: none !important;
+        }
+        html.print-mode #contentPrintWorkspace.content-hide-glossary #contentPrintGlossary {
+            display: none !important;
+        }
+        html.print-mode #contentPrintWorkspace #courseArticleContent,
+        html.print-mode #contentPrintWorkspace #contentPrintCompiled,
+        html.print-mode #contentPrintWorkspace #contentPrintGlossary {
+            font-size: var(--content-print-font, 0.95rem);
+            line-height: var(--content-print-lh, 1.55);
+            color: #000;
+        }
+        html.print-mode #contentPrintWorkspace .content-print-doc:not(:first-child) {
+            margin-top: var(--content-print-gap, 1.1rem);
+            padding-top: var(--content-print-gap, 1.1rem);
+            border-top: 1px solid #dee2e6;
+        }
+        html.print-mode #contentPrintWorkspace .content-print-doc-title,
+        html.print-mode #contentPrintGlossary .content-print-glossary-heading {
+            font-size: calc(var(--content-print-font, 0.95rem) * 1.25);
+            font-weight: 700;
+            margin-bottom: 0.6rem;
+        }
+        html.print-mode #contentPrintWorkspace.content-page-breaks #contentPrintGlossary {
+            border-top: 2px dashed #ced4da !important;
+            padding-top: 1.5rem !important;
+            margin-top: 2rem !important;
+        }
+        html.print-mode .content-print-glossary-item {
+            margin-bottom: 0.45rem;
+        }
+        html.print-mode .content-print-glossary-term {
+            font-weight: 700;
+            text-decoration: underline;
+        }
+        html.print-mode .content-print-glossary-full {
+            color: #333;
+        }
+        html.print-mode #contentPrintWorkspace:not(.content-hide-glossary).term-style-dotted .content-print-term-mark {
+            border-bottom: var(--term-mark-width, 1px) dotted var(--term-mark-stroke, #212529);
+        }
+        html.print-mode #contentPrintWorkspace:not(.content-hide-glossary).term-style-solid .content-print-term-mark {
+            border-bottom: var(--term-mark-width, 1px) solid var(--term-mark-stroke, #212529);
+        }
+        html.print-mode #contentPrintWorkspace:not(.content-hide-glossary).term-style-box .content-print-term-mark {
+            border: var(--term-mark-width, 1px) solid var(--term-mark-stroke, #212529);
+            border-radius: 999px;
+            padding: 0 0.32em;
+            box-decoration-break: clone;
+            -webkit-box-decoration-break: clone;
+        }
+        html.print-mode #contentPrintWorkspace:not(.content-hide-glossary).term-style-highlight .content-print-term-mark {
+            background-color: var(--term-mark-bg, #fff3a1);
+            border-radius: 3px;
+            padding: 0 0.2em;
+            box-decoration-break: clone;
+            -webkit-box-decoration-break: clone;
+        }
+        html.print-mode #contentPrintWorkspace:not(.content-hide-glossary).term-style-bold .content-print-term-mark {
+            font-weight: 700;
+            font-style: italic;
+            color: var(--term-mark-stroke, #212529);
+        }
+
         @media print {
             .course-layout-shell {
                 display: block !important;
             }
-            .course-layout-main {
+            .course-layout-main,
+            .content-layout-container {
                 padding: 0 !important;
+            }
+            html.print-mode #contentPrintSidebar,
+            #contentPrintSidebar {
+                display: none !important;
+            }
+            html.print-mode #contentPrintWorkspace,
+            #contentPrintWorkspace,
+            html.print-mode #contentPrintStage,
+            #contentPrintStage,
+            html.print-mode #contentPrintSheet,
+            #contentPrintSheet {
+                display: block !important;
+                background: #fff !important;
+                border: 0 !important;
+                box-shadow: none !important;
+                padding: 0 !important;
+                margin: 0 !important;
+                max-width: none !important;
+            }
+            .content-screen-header,
+            #sectionKeyTerms {
+                display: none !important;
+            }
+            #contentPrintHeader {
+                display: block !important;
+            }
+            #contentPrintWorkspace.content-hide-header #contentPrintHeader {
+                display: none !important;
+            }
+            #contentPrintWorkspace.content-hide-glossary #contentPrintGlossary {
+                display: none !important;
+            }
+            #contentPrintWorkspace #courseArticleContent,
+            #contentPrintWorkspace #contentPrintCompiled,
+            #contentPrintWorkspace #contentPrintGlossary {
+                font-size: var(--content-print-font, 0.95rem);
+                line-height: var(--content-print-lh, 1.55);
+                color: #000;
+            }
+            #contentPrintWorkspace .content-print-doc:not(:first-child) {
+                margin-top: var(--content-print-gap, 1.1rem);
+                padding-top: var(--content-print-gap, 1.1rem);
+                border-top: 1px solid #dee2e6;
+            }
+            #contentPrintWorkspace.content-page-breaks .content-print-doc:not(:first-child),
+            #contentPrintWorkspace.content-page-breaks #contentPrintGlossary {
+                break-before: page;
+                page-break-before: always;
+                border-top: 0 !important;
+                margin-top: 0 !important;
+                padding-top: 0 !important;
+            }
+            #contentPrintWorkspace .content-print-doc-title,
+            #contentPrintGlossary .content-print-glossary-heading {
+                font-size: calc(var(--content-print-font, 0.95rem) * 1.25);
+                font-weight: 700;
+                margin-bottom: 0.6rem;
+                break-after: avoid;
+                page-break-after: avoid;
+            }
+            #contentPrintWorkspace h2,
+            #contentPrintWorkspace h3 {
+                break-after: avoid;
+                page-break-after: avoid;
+            }
+            #contentPrintWorkspace table,
+            .content-print-glossary-item {
+                break-inside: avoid;
+                page-break-inside: avoid;
+            }
+            .content-print-glossary-item {
+                margin-bottom: 0.45rem;
+            }
+            .content-print-glossary-term {
+                font-weight: 700;
+                text-decoration: underline;
+            }
+            .content-print-glossary-full {
+                color: #333;
+            }
+            .content-print-term-mark {
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+            #contentPrintWorkspace:not(.content-hide-glossary).term-style-dotted .content-print-term-mark {
+                border-bottom: var(--term-mark-width, 1px) dotted var(--term-mark-stroke, #212529);
+            }
+            #contentPrintWorkspace:not(.content-hide-glossary).term-style-solid .content-print-term-mark {
+                border-bottom: var(--term-mark-width, 1px) solid var(--term-mark-stroke, #212529);
+            }
+            #contentPrintWorkspace:not(.content-hide-glossary).term-style-box .content-print-term-mark {
+                border: var(--term-mark-width, 1px) solid var(--term-mark-stroke, #212529);
+                border-radius: 999px;
+                padding: 0 0.32em;
+                box-decoration-break: clone;
+                -webkit-box-decoration-break: clone;
+            }
+            #contentPrintWorkspace:not(.content-hide-glossary).term-style-highlight .content-print-term-mark {
+                background-color: var(--term-mark-bg, #fff3a1);
+                border-radius: 3px;
+                padding: 0 0.2em;
+                box-decoration-break: clone;
+                -webkit-box-decoration-break: clone;
+            }
+            #contentPrintWorkspace:not(.content-hide-glossary).term-style-bold .content-print-term-mark {
+                font-weight: 700;
+                font-style: italic;
+                color: var(--term-mark-stroke, #212529);
             }
         }
     </style>
@@ -213,25 +539,63 @@
     <div class="d-lg-flex course-layout-shell">
         {% include components/navigation/course-nav-sidebar.html course_slug=course_slug course_meta=course_meta %}
 
-        <main class="flex-grow-1 p-4 course-layout-main{% if page.glossary == true %} glossary-layout-main{% endif %}" style="min-width: 0;">
-            <div class="container-fluid{% if page.glossary == true %} glossary-layout-container{% endif %}">
+        <main class="flex-grow-1 p-4 course-layout-main{% if page.glossary == true %} glossary-layout-main{% else %} content-layout-main{% endif %}" style="min-width: 0;">
+            <div class="container-fluid{% if page.glossary == true %} glossary-layout-container{% else %} content-layout-container{% endif %}">
                 {% assign expected_course_index = "_courses/" | append: course_slug | append: "/index.md" %}
+                {% if page.glossary != true %}
+                    <div id="contentPrintWorkspace">
+                        {% include components/course-content-print.html course_slug=course_slug course_meta=course_meta %}
+                        <div id="contentPrintStage">
+                            <div id="contentPrintSheet">
+                                <header
+                                    id="contentPrintHeader"
+                                    class="d-none mb-3 pb-2 border-bottom border-dark"
+                                    data-page-description="{{ page.description | default: course_meta.summary | default: '' | escape }}"
+                                >
+                                    {% if course_meta.course_code or course_meta.title %}
+                                        <div class="small text-muted mb-1">
+                                            {% if course_meta.course_code %}{{ course_meta.course_code }}{% endif %}{% if course_meta.course_code and course_meta.title %} · {% endif %}{% if course_meta.title %}{{ course_meta.title }}{% endif %}
+                                        </div>
+                                    {% endif %}
+                                    <div class="d-flex justify-content-between align-items-baseline gap-2">
+                                        <h1 class="h4 fw-bold mb-0" id="contentPrintTitle">
+                                            {% if course_meta and page.path == expected_course_index %}{{ course_meta.title }}{% else %}{{ page.title }}{% endif %}
+                                        </h1>
+                                        <span class="small text-muted d-none" id="contentPrintSubtitle"></span>
+                                    </div>
+                                </header>
+                {% endif %}
+
                 {% if course_meta and page.path == expected_course_index %}
-                    <header class="mb-4 pb-3 border-bottom">
-                        <div class="d-flex flex-wrap align-items-center gap-2 mb-2">
-                            {% if course_meta.course_code %}
-                                <span class="badge {% if course_meta.deprecated %}text-bg-secondary{% else %}text-bg-primary{% endif %}">
-                                    {{ course_meta.course_code }}
-                                </span>
-                            {% endif %}
-                            {% if course_meta.term %}
-                                <span class="small text-body-secondary">{{ course_meta.term }}</span>
-                            {% endif %}
-                            {% if course_meta.deprecated %}
-                                <span class="badge text-bg-danger-subtle text-danger-emphasis border border-danger-subtle">
-                                    Deprecated
-                                </span>
-                            {% endif %}
+                    <header class="mb-4 pb-3 border-bottom content-screen-header">
+                        <div class="d-flex flex-wrap justify-content-between align-items-start gap-2 mb-2">
+                            <div class="d-flex flex-wrap align-items-center gap-2">
+                                {% if course_meta.course_code %}
+                                    <span class="badge {% if course_meta.deprecated %}text-bg-secondary{% else %}text-bg-primary{% endif %}">
+                                        {{ course_meta.course_code }}
+                                    </span>
+                                {% endif %}
+                                {% if course_meta.term %}
+                                    <span class="small text-body-secondary">{{ course_meta.term }}</span>
+                                {% endif %}
+                                {% if course_meta.deprecated %}
+                                    <span class="badge text-bg-danger-subtle text-danger-emphasis border border-danger-subtle">
+                                        Deprecated
+                                    </span>
+                                {% endif %}
+                            </div>
+                            <a
+                                href="?print=1"
+                                class="btn btn-sm btn-outline-secondary d-inline-flex align-items-center gap-1 flex-shrink-0 d-print-none"
+                                title="Print preview & options"
+                                aria-label="Open print preview"
+                            >
+                                <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" fill="currentColor" viewBox="0 0 16 16" aria-hidden="true">
+                                    <path d="M2.5 8a.5.5 0 1 0 0-1 .5.5 0 0 0 0 1"/>
+                                    <path d="M5 1a2 2 0 0 0-2 2v2H2a2 2 0 0 0-2 2v3a2 2 0 0 0 2 2h1v1a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2v-1h1a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-1V3a2 2 0 0 0-2-2zM4 3a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v2H4zm1 5a2 2 0 0 0-2 2v1H2a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1h-1v-1a2 2 0 0 0-2-2zm7 2v3a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1v-3a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1"/>
+                                </svg>
+                                <span class="d-none d-sm-inline">Print</span>
+                            </a>
                         </div>
                         <h1 class="h2 fw-bold mb-2">{{ course_meta.title }}</h1>
                         {% if course_meta.summary %}
@@ -248,7 +612,7 @@
                         {% endif %}
                     </header>
                 {% elsif page.title %}
-                    <header class="mb-4 pb-3 border-bottom{% if page.glossary == true %} glossary-screen-header{% endif %}">
+                    <header class="mb-4 pb-3 border-bottom{% if page.glossary == true %} glossary-screen-header{% else %} content-screen-header{% endif %}">
                         {% if course_meta %}
                             <div class="d-flex flex-wrap align-items-center gap-2 mb-2">
                                 {% if course_meta.course_code %}
@@ -268,21 +632,19 @@
                                     <p class="text-body-secondary mb-0">{{ page.description }}</p>
                                 {% endif %}
                             </div>
-                            {% if page.glossary == true %}
-                                <a
-                                    href="?print=1"
-                                    id="glossaryPrintPreviewLink"
-                                    class="btn btn-sm btn-outline-secondary d-inline-flex align-items-center gap-1 flex-shrink-0 d-print-none"
-                                    title="Print preview & options"
-                                    aria-label="Open glossary print preview"
-                                >
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" fill="currentColor" viewBox="0 0 16 16" aria-hidden="true">
-                                        <path d="M2.5 8a.5.5 0 1 0 0-1 .5.5 0 0 0 0 1"/>
-                                        <path d="M5 1a2 2 0 0 0-2 2v2H2a2 2 0 0 0-2 2v3a2 2 0 0 0 2 2h1v1a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2v-1h1a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-1V3a2 2 0 0 0-2-2zM4 3a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v2H4zm1 5a2 2 0 0 0-2 2v1H2a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1h-1v-1a2 2 0 0 0-2-2zm7 2v3a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1v-3a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1"/>
-                                    </svg>
-                                    <span class="d-none d-sm-inline">Print</span>
-                                </a>
-                            {% endif %}
+                            <a
+                                href="?print=1"
+                                {% if page.glossary == true %}id="glossaryPrintPreviewLink"{% endif %}
+                                class="btn btn-sm btn-outline-secondary d-inline-flex align-items-center gap-1 flex-shrink-0 d-print-none"
+                                title="Print preview & options"
+                                aria-label="Open print preview"
+                            >
+                                <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" fill="currentColor" viewBox="0 0 16 16" aria-hidden="true">
+                                    <path d="M2.5 8a.5.5 0 1 0 0-1 .5.5 0 0 0 0 1"/>
+                                    <path d="M5 1a2 2 0 0 0-2 2v2H2a2 2 0 0 0-2 2v3a2 2 0 0 0 2 2h1v1a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2v-1h1a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-1V3a2 2 0 0 0-2-2zM4 3a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v2H4zm1 5a2 2 0 0 0-2 2v1H2a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1h-1v-1a2 2 0 0 0-2-2zm7 2v3a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1v-3a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1"/>
+                                </svg>
+                                <span class="d-none d-sm-inline">Print</span>
+                            </a>
                         </div>
                     </header>
                 {% endif %}
@@ -296,6 +658,15 @@
                         {% include components/course-glossary.html course_slug=course_slug course_meta=course_meta %}
                     {% endif %}
                 </article>
+
+                {% if page.glossary != true %}
+                    <div id="contentPrintCompiled" class="d-none"></div>
+                    <section id="contentPrintGlossary" class="d-none mt-4 pt-3 border-top border-dark-subtle"></section>
+                    {% include components/section-key-terms.html course_slug=course_slug course_meta=course_meta %}
+                            </div>
+                        </div>
+                    </div>
+                {% endif %}
 
                 {% assign _self_auto_rev = "empty" %}
                 {% if page.glossary == true and site.data.glossaries %}
@@ -339,6 +710,55 @@
 
     {% include body/scripts.html %}
     <script src="{{ '/assets/js/course-progress.js' | relative_url }}"></script>
+    {% if page.glossary != true %}
+        <script src="{{ '/assets/js/course-content-print.js' | relative_url }}" defer></script>
+    {% endif %}
+    {% unless page.glossary == true %}
+        {% assign _lookup_terms = "" | split: "" %}
+        {% if site.data.glossaries %}
+            {% if course_meta and course_meta.glossary_includes %}
+                {% for _inc_slug in course_meta.glossary_includes %}
+                    {% assign _inc_list = site.data.glossaries[_inc_slug] %}
+                    {% if _inc_list %}
+                        {% for _t in _inc_list %}
+                            {% assign _lookup_terms = _lookup_terms | push: _t %}
+                        {% endfor %}
+                    {% endif %}
+                {% endfor %}
+            {% endif %}
+            {% assign _own_list = site.data.glossaries[course_slug] %}
+            {% if _own_list %}
+                {% for _t in _own_list %}
+                    {% assign _lookup_terms = _lookup_terms | push: _t %}
+                {% endfor %}
+            {% endif %}
+        {% endif %}
+        {% if _lookup_terms.size > 0 %}
+            {% assign _empty_arr = "" | split: "" %}
+            <script type="application/json" id="courseGlossaryLookupData">
+            {
+              "glossaryUrl": {{ '/courses/' | append: course_slug | append: '/glossary/' | relative_url | jsonify }},
+              "terms": [
+                {% for _t in _lookup_terms %}
+                  {% assign _tid = _t.id | default: _t.term | slugify %}
+                  {
+                    "id": {{ _tid | jsonify }},
+                    "term": {{ _t.term | jsonify }},
+                    "full": {{ _t.full | default: "" | jsonify }},
+                    "category": {{ _t.category | default: "" | jsonify }},
+                    "tags": {{ _t.tags | default: _empty_arr | jsonify }},
+                    "definition": {{ _t.definition | default: "" | jsonify }},
+                    "aliases": {{ _t.aliases | default: _empty_arr | jsonify }}
+                  }{% unless forloop.last %},{% endunless %}
+                {% endfor %}
+              ]
+            }
+            </script>
+            {% unless page.glossary_autolink == false %}
+                <script src="{{ '/assets/js/course-glossary-lookup.js' | relative_url }}" defer></script>
+            {% endunless %}
+        {% endif %}
+    {% endunless %}
 </body>
 
 </html>

@@ -336,6 +336,8 @@
                         class="card border glossary-term-card"
                         id="term-{{ term_id }}"
                         data-term-id="{{ term_id }}"
+                        data-term="{{ item.term | escape }}"
+                        data-aliases="{{ item.aliases | join: '|' | escape }}"
                         data-category="{{ item.category | default: '' | downcase | escape }}"
                         data-category-label="{{ item.category | default: '' | escape }}"
                         data-search="{{ term_search | strip_newlines | downcase | escape }}"
@@ -360,57 +362,57 @@
                               {{ item.definition }}
                             </p>
 
-                            {% if item.builds_on or item.related %}
-                              <div class="glossary-term-links">
-                                {% if item.builds_on and item.builds_on.size > 0 %}
-                                  <div class="glossary-term-link-row d-flex flex-wrap align-items-center gap-1 mt-2">
-                                    <span class="glossary-link-label text-body-secondary me-1" style="font-size: 0.75rem;">Builds on:</span>
-                                    {% for ref_id in item.builds_on %}
-                                      {% assign ref_slug = ref_id | slugify %}
-                                      {% assign ref_label = ref_id %}
-                                      {% for target in sorted_terms %}
-                                        {% assign target_id = target.id | default: target.term | slugify %}
-                                        {% if target_id == ref_slug %}
-                                          {% assign ref_label = target.term %}
-                                          {% break %}
-                                        {% endif %}
-                                      {% endfor %}
-                                      <a
-                                        href="#term-{{ ref_slug }}"
-                                        class="badge rounded-pill text-bg-primary-subtle text-primary-emphasis border border-primary-subtle text-decoration-none fw-normal glossary-ref-link"
-                                        data-target-term="{{ ref_slug }}"
-                                      >
-                                        <span class="glossary-ref-arrow" aria-hidden="true">↑ </span>{{ ref_label }}
-                                      </a>
+                            <div class="glossary-term-links">
+                              {% if item.builds_on and item.builds_on.size > 0 %}
+                                <div class="glossary-term-link-row d-flex flex-wrap align-items-center gap-1 mt-2">
+                                  <span class="glossary-link-label text-body-secondary me-1" style="font-size: 0.75rem;">Builds on:</span>
+                                  {% for ref_id in item.builds_on %}
+                                    {% assign ref_slug = ref_id | slugify %}
+                                    {% assign ref_label = ref_id %}
+                                    {% for target in sorted_terms %}
+                                      {% assign target_id = target.id | default: target.term | slugify %}
+                                      {% if target_id == ref_slug %}
+                                        {% assign ref_label = target.term %}
+                                        {% break %}
+                                      {% endif %}
                                     {% endfor %}
-                                  </div>
-                                {% endif %}
+                                    <a
+                                      href="#term-{{ ref_slug }}"
+                                      class="badge rounded-pill text-bg-primary-subtle text-primary-emphasis border border-primary-subtle text-decoration-none fw-normal glossary-ref-link"
+                                      data-target-term="{{ ref_slug }}"
+                                    >
+                                      <span class="glossary-ref-arrow" aria-hidden="true">↑ </span>{{ ref_label }}
+                                    </a>
+                                  {% endfor %}
+                                </div>
+                              {% endif %}
 
-                                {% if item.related and item.related.size > 0 %}
-                                  <div class="glossary-term-link-row d-flex flex-wrap align-items-center gap-1 mt-2">
-                                    <span class="glossary-link-label text-body-secondary me-1" style="font-size: 0.75rem;">Related:</span>
-                                    {% for ref_id in item.related %}
-                                      {% assign ref_slug = ref_id | slugify %}
-                                      {% assign ref_label = ref_id %}
-                                      {% for target in sorted_terms %}
-                                        {% assign target_id = target.id | default: target.term | slugify %}
-                                        {% if target_id == ref_slug %}
-                                          {% assign ref_label = target.term %}
-                                          {% break %}
-                                        {% endif %}
-                                      {% endfor %}
-                                      <a
-                                        href="#term-{{ ref_slug }}"
-                                        class="badge rounded-pill bg-body-tertiary border text-body text-decoration-none fw-normal glossary-ref-link"
-                                        data-target-term="{{ ref_slug }}"
-                                      >
-                                        {{ ref_label }}
-                                      </a>
+                              {% if item.related and item.related.size > 0 %}
+                                <div class="glossary-term-link-row d-flex flex-wrap align-items-center gap-1 mt-2">
+                                  <span class="glossary-link-label text-body-secondary me-1" style="font-size: 0.75rem;">Related:</span>
+                                  {% for ref_id in item.related %}
+                                    {% assign ref_slug = ref_id | slugify %}
+                                    {% assign ref_label = ref_id %}
+                                    {% for target in sorted_terms %}
+                                      {% assign target_id = target.id | default: target.term | slugify %}
+                                      {% if target_id == ref_slug %}
+                                        {% assign ref_label = target.term %}
+                                        {% break %}
+                                      {% endif %}
                                     {% endfor %}
-                                  </div>
-                                {% endif %}
-                              </div>
-                            {% endif %}
+                                    <a
+                                      href="#term-{{ ref_slug }}"
+                                      class="badge rounded-pill bg-body-tertiary border text-body text-decoration-none fw-normal glossary-ref-link"
+                                      data-target-term="{{ ref_slug }}"
+                                    >
+                                      {{ ref_label }}
+                                    </a>
+                                  {% endfor %}
+                                </div>
+                              {% endif %}
+
+                              <div class="glossary-term-link-row glossary-mentions-row d-none flex-wrap align-items-center gap-1 mt-2"></div>
+                            </div>
                           </div>
                         </div>
                       </div>
@@ -708,7 +710,7 @@
         display: block !important;
         margin-top: 0.15rem !important;
       }
-      html.print-mode #courseGlossary:not(.print-card-layout) .glossary-term-link-row {
+      html.print-mode #courseGlossary:not(.print-card-layout) .glossary-term-link-row:not(.d-none) {
         display: inline !important;
         margin: 0 0.75rem 0 0 !important;
         font-size: calc(var(--glossary-print-font, 0.9rem) * 0.88) !important;
@@ -932,7 +934,7 @@
           display: block !important;
           margin-top: 0.15rem !important;
         }
-        #courseGlossary:not(.print-card-layout) .glossary-term-link-row {
+        #courseGlossary:not(.print-card-layout) .glossary-term-link-row:not(.d-none) {
           display: inline !important;
           margin: 0 0.75rem 0 0 !important;
           font-size: calc(var(--glossary-print-font, 0.9rem) * 0.88) !important;
@@ -957,6 +959,35 @@
         }
       }
     </style>
+    {% assign _course_prefix = "_courses/" | append: slug | append: "/" %}
+    {% assign _index_docs = "" | split: "" %}
+    {% if site.courses and site.courses.size > 0 %}
+      {% for _doc in site.courses %}
+        {% assign _pcheck = _doc.path | slice: 0, _course_prefix.size %}
+        {% if _pcheck == _course_prefix %}
+          {% unless _doc.glossary == true or _doc.hidden == true or _doc.suppressed == true %}
+            {% assign _index_docs = _index_docs | push: _doc %}
+          {% endunless %}
+        {% endif %}
+      {% endfor %}
+    {% endif %}
+    <script type="application/json" id="coursePagesIndex">
+    [
+      {% for _doc in _index_docs %}
+        {% assign _doc_text = _doc.content | markdownify | strip_html | normalize_whitespace %}
+        {% assign _doc_title = _doc.title %}
+        {% assign _root_idx = "_courses/" | append: slug | append: "/index.md" %}
+        {% if _doc.path == _root_idx %}
+          {% assign _doc_title = "Overview" %}
+        {% endif %}
+        {
+          "title": {{ _doc_title | jsonify }},
+          "url": {{ _doc.url | relative_url | jsonify }},
+          "text": {{ _doc_text | jsonify }}
+        }{% unless forloop.last %},{% endunless %}
+      {% endfor %}
+    ]
+    </script>
     <script src="{{ '/assets/js/course-glossary.js' | relative_url }}" defer></script>
   {% else %}
     <div class="card bg-body-tertiary border">

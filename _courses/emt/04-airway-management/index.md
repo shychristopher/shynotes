@@ -1,6 +1,7 @@
 ---
 title: Airway Management
 description: Opening, maintaining, suctioning, and oxygenating the airway.
+tags: [Airway]
 permalink: /courses/emt/04-airway-management/
 ---
 

@@ -1,6 +1,7 @@
 ---
 title: Patient Assessment
 description: Systematic NREMT assessment flow from scene size-up through reassessment.
+tags: [Assessment]
 permalink: /courses/emt/05-patient-assessment/
 ---
 

@@ -727,14 +727,97 @@
   window.addEventListener("beforeprint", () => syncPrintMasonry(true));
   window.addEventListener("afterprint", () => syncPrintMasonry(false));
 
-  // Initialize from stored per-course glossary state
+  function escapeRegex(str) {
+    return str.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  }
+
+  function isAcronym(phrase) {
+    return phrase.length <= 6 && phrase === phrase.toUpperCase() && /[A-Z]/.test(phrase);
+  }
+
+  function populateCourseMentions() {
+    const indexEl = document.getElementById("coursePagesIndex");
+    if (!indexEl) return;
+
+    let pages;
+    try {
+      pages = JSON.parse(indexEl.textContent || "[]");
+    } catch (_) {
+      return;
+    }
+    if (!Array.isArray(pages) || !pages.length) return;
+
+    termCards.forEach((card) => {
+      const mentionsRow = card.querySelector(".glossary-mentions-row");
+      if (!mentionsRow) return;
+
+      const mainTerm = (card.dataset.term || "").trim();
+      const aliases = (card.dataset.aliases || "")
+        .split("|")
+        .map((s) => s.trim())
+        .filter((s) => s.length >= 2);
+      const phrases = [mainTerm, ...aliases].filter((s) => s.length >= 2);
+      if (!phrases.length) return;
+
+      const matchers = phrases.map((p) => {
+        const flags = isAcronym(p) ? "" : "i";
+        return new RegExp(`\\b${escapeRegex(p)}\\b`, flags);
+      });
+
+      const matchedPages = pages.filter(
+        (pg) => typeof pg.text === "string" && matchers.some((rx) => rx.test(pg.text))
+      );
+
+      if (!matchedPages.length) return;
+
+      mentionsRow.innerHTML = "";
+      const label = document.createElement("span");
+      label.className = "glossary-link-label text-body-secondary me-1";
+      label.style.fontSize = "0.75rem";
+      label.textContent = "Mentioned in:";
+      mentionsRow.appendChild(label);
+
+      matchedPages.forEach((pg) => {
+        const link = document.createElement("a");
+        link.href = pg.url;
+        link.className =
+          "badge rounded-pill bg-body-tertiary border text-body text-decoration-none fw-normal glossary-ref-link";
+        link.textContent = pg.title;
+        link.title = `Open ${pg.title}`;
+        mentionsRow.appendChild(link);
+      });
+
+      mentionsRow.classList.remove("d-none");
+      mentionsRow.classList.add("d-flex");
+    });
+  }
+
+  // Initialize from stored per-course glossary state (with optional ?categories=... URL pre-filter)
   pruneExpiredState();
+
+  const urlCatParam = urlParams.get("categories") || urlParams.get("category");
+  let appliedUrlCategoryFilter = false;
+  if (urlCatParam) {
+    const requestedCats = urlCatParam
+      .split(",")
+      .map((s) => s.trim().toLowerCase())
+      .filter((s) => s && catLabelByValue.has(s));
+    if (requestedCats.length > 0) {
+      state.categories = requestedCats;
+      state.query = "";
+      state.filterUpdatedAt = Date.now();
+      appliedUrlCategoryFilter = true;
+    }
+  }
+
+  populateCourseMentions();
+
   if (searchInput && typeof state.query === "string") {
     searchInput.value = state.query;
   }
   setSelectedCategories(state.categories);
   applyPrintOptions(false);
-  applyGlossaryFilters(false);
+  applyGlossaryFilters(appliedUrlCategoryFilter);
   renderRecentBar();
   updateStickyOffset();
   scheduleFilterExpiry();
