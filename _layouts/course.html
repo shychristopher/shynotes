@@ -83,11 +83,38 @@
             min-height: 0;
             overflow: hidden;
         }
-        .course-sidebar-scroll {
+        .course-sidebar-scroll,
+        .glossary-sidebar-scroll {
             flex: 1 1 auto;
             min-height: 0;
             overflow-y: auto;
             overflow-x: hidden;
+        }
+        @media (min-width: 1200px) {
+            .glossary-sidebar {
+                display: flex !important;
+                flex-direction: column;
+                flex: 0 0 260px !important;
+                width: 260px !important;
+                position: sticky !important;
+                top: 57px;
+                height: calc(100vh - 57px) !important;
+                overflow: hidden !important;
+                background-color: var(--bs-tertiary-bg) !important;
+                border-left: var(--bs-border-width) solid var(--bs-border-color) !important;
+            }
+            .glossary-sidebar .offcanvas-body {
+                width: 100%;
+                flex: 1 1 auto !important;
+                min-height: 0;
+                overflow: hidden !important;
+            }
+        }
+        .glossary-sidebar .offcanvas-body {
+            display: flex;
+            flex-direction: column;
+            min-height: 0;
+            overflow: hidden;
         }
         .course-sidebar .course-nav-folder,
         .course-sidebar .nav-link,
@@ -169,7 +196,11 @@
 </head>
 
 <body>
-    {% include components/navigation/navbar.html sidebar_id="courseNavSidebar" %}
+    {% if page.glossary == true %}
+        {% include components/navigation/navbar.html sidebar_id="courseNavSidebar" right_sidebar_id="glossaryFilterSidebar" %}
+    {% else %}
+        {% include components/navigation/navbar.html sidebar_id="courseNavSidebar" %}
+    {% endif %}
 
     <div class="d-lg-flex">
         {% include components/navigation/course-nav-sidebar.html course_slug=course_slug course_meta=course_meta %}
@@ -273,6 +304,10 @@
                 </footer>
             </div>
         </main>
+
+        {% if page.glossary == true %}
+            {% include components/navigation/glossary-filter-sidebar.html course_slug=course_slug course_meta=course_meta %}
+        {% endif %}
     </div>
 
     {% include body/scripts.html %}

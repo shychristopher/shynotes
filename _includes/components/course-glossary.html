@@ -73,29 +73,6 @@
         </div>
       </div>
 
-      {% if unique_categories.size > 0 %}
-        <div class="d-flex flex-wrap gap-1 mb-2" id="glossaryCategoryBar" role="group" aria-label="Filter glossary by category">
-          <button
-            type="button"
-            class="btn btn-sm btn-primary rounded-pill glossary-cat-btn"
-            data-category="all"
-            aria-pressed="true"
-          >
-            All
-          </button>
-          {% for cat in unique_categories %}
-            <button
-              type="button"
-              class="btn btn-sm btn-outline-secondary rounded-pill glossary-cat-btn"
-              data-category="{{ cat | downcase | escape }}"
-              aria-pressed="false"
-            >
-              {{ cat }}
-            </button>
-          {% endfor %}
-        </div>
-      {% endif %}
-
       <div class="d-flex flex-wrap gap-1" id="glossaryAlphaBar" aria-label="Jump to letter">
         {% for letter in unique_letters %}
           <a
@@ -107,19 +84,6 @@
             {{ letter }}
           </a>
         {% endfor %}
-      </div>
-
-      <div class="d-none align-items-center flex-wrap gap-1 mt-2 pt-2 border-top" id="glossaryRecentBar">
-        <span class="text-body-secondary me-1" style="font-size: 0.72rem;">Recent:</span>
-        <div class="d-inline-flex flex-wrap gap-1" id="glossaryRecentList"></div>
-        <button
-          type="button"
-          class="btn btn-link btn-sm p-0 ms-auto text-decoration-none text-body-secondary"
-          id="glossaryClearRecentBtn"
-          style="font-size: 0.72rem;"
-        >
-          Clear recent
-        </button>
       </div>
     </div>
 
