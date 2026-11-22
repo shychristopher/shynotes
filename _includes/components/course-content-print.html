@@ -41,7 +41,7 @@
   {% for _doc in site.courses %}
     {% assign _pcheck = _doc.path | slice: 0, scope_prefix.size %}
     {% if _pcheck == scope_prefix %}
-      {% unless _doc.glossary == true or _doc.hidden == true or _doc.suppressed == true or _doc.nav_exclude == true %}
+      {% unless _doc.glossary == true or _doc.quick_reference == true or _doc.hidden == true or _doc.suppressed == true or _doc.nav_exclude == true %}
         {% assign _raw_sec = _raw_sec | push: _doc %}
       {% endunless %}
     {% endif %}

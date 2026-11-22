@@ -1,0 +1,81 @@
+{% assign slug = include.course_slug %}
+<section id="courseQuickReference" class="mt-2" data-course-slug="{{ slug | escape }}">
+  <!-- Controls (shown when at least 1 saved item exists) -->
+  <div id="quickRefControls" class="d-none mb-4">
+    <div class="d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-2 pb-3 border-bottom">
+      <div class="d-flex flex-wrap align-items-center gap-1" id="quickRefFilterBar" role="tablist" aria-label="Filter saved items">
+        <button type="button" class="btn btn-sm btn-primary quickref-filter-btn active" data-filter="all">
+          All <span class="badge text-bg-light text-dark ms-1" data-filter-count="all">0</span>
+        </button>
+        <button type="button" class="btn btn-sm btn-outline-secondary quickref-filter-btn" data-filter="return">
+          Return to <span class="badge text-bg-secondary-subtle text-secondary-emphasis ms-1" data-filter-count="return">0</span>
+        </button>
+        <button type="button" class="btn btn-sm btn-outline-secondary quickref-filter-btn" data-filter="bookmark">
+          Bookmarked <span class="badge text-bg-secondary-subtle text-secondary-emphasis ms-1" data-filter-count="bookmark">0</span>
+        </button>
+        <button type="button" class="btn btn-sm btn-outline-secondary quickref-filter-btn" data-filter="review">
+          Review later <span class="badge text-bg-secondary-subtle text-secondary-emphasis ms-1" data-filter-count="review">0</span>
+        </button>
+      </div>
+
+      <div class="d-flex align-items-center gap-2">
+        <input
+          type="search"
+          id="quickRefSearch"
+          class="form-control form-control-sm"
+          placeholder="Filter saved sections…"
+          aria-label="Filter saved sections"
+          autocomplete="off"
+          style="min-width: 190px;"
+        >
+        <button type="button" class="btn btn-sm btn-outline-danger text-nowrap" id="quickRefClearAllBtn">
+          Clear all
+        </button>
+      </div>
+    </div>
+
+    <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 pt-2 small text-body-secondary">
+      <span id="quickRefShownCount">0 items</span>
+      <div class="d-inline-flex align-items-center gap-2">
+        <button type="button" class="btn btn-link btn-sm p-0 text-decoration-none text-body-secondary" id="quickRefExpandAllBtn" style="font-size: 0.78rem;">
+          Show all notes
+        </button>
+        <span class="text-body-tertiary" aria-hidden="true">·</span>
+        <button type="button" class="btn btn-link btn-sm p-0 text-decoration-none text-body-secondary" id="quickRefCollapseAllBtn" style="font-size: 0.78rem;">
+          Collapse all notes
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Saved Bookmarks List -->
+  <div id="quickRefGroups" class="d-flex flex-column gap-4"></div>
+
+  <!-- No Search Matches State -->
+  <div id="quickRefNoMatches" class="card bg-body-tertiary border d-none mt-3">
+    <div class="card-body text-center py-4">
+      <p class="fw-semibold mb-1">No matching bookmarks.</p>
+      <p class="small text-body-secondary mb-3">Try switching tabs or clearing your search.</p>
+      <button type="button" class="btn btn-sm btn-outline-secondary" id="quickRefResetFilterBtn">
+        Show all saved items
+      </button>
+    </div>
+  </div>
+
+  <!-- Empty State -->
+  <div id="quickRefEmpty" class="card bg-body-tertiary border">
+    <div class="card-body text-center py-5">
+      <div class="text-body-secondary mb-2">
+        <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="currentColor" viewBox="0 0 16 16" aria-hidden="true">
+          <path d="M2 2a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v13.5a.5.5 0 0 1-.777.416L8 13.101l-5.223 2.815A.5.5 0 0 1 2 15.5zm2-1a1 1 0 0 0-1 1v12.566l4.723-2.482a.5.5 0 0 1 .554 0L13 14.566V2a1 1 0 0 0-1-1z"/>
+        </svg>
+      </div>
+      <h2 class="h6 fw-bold mb-1">No saved sections yet</h2>
+      <p class="small text-body-secondary mx-auto mb-0" style="max-width: 28rem;">
+        Click the bookmark icon on any section heading while studying to mark a
+        <strong>Return to</strong> spot, save a <strong>Bookmark</strong> for quick reference, or flag it to
+        <strong>Review later</strong>. Everything you save will show up right here.
+      </p>
+    </div>
+  </div>
+</section>

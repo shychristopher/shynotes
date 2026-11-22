@@ -34,7 +34,7 @@
 {% endif %}
 
 <aside
-  class="offcanvas-xl offcanvas-end glossary-sidebar bg-body-tertiary d-print-none"
+  class="offcanvas-xl offcanvas-end glossary-sidebar bg-body-tertiary d-print-none{% if include.extra_class %} {{ include.extra_class }}{% endif %}"
   tabindex="-1"
   id="glossaryFilterSidebar"
   aria-labelledby="glossaryFilterSidebarLabel"

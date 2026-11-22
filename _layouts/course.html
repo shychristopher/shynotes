@@ -16,6 +16,24 @@
     {% endif %}
   {% endif %}
 {% endif %}
+{% assign expected_course_index = "_courses/" | append: course_slug | append: "/index.md" %}
+{% assign is_course_index = false %}
+{% if page.path == expected_course_index %}
+  {% assign is_course_index = true %}
+{% endif %}
+{% assign course_has_glossary = false %}
+{% if site.data.glossaries and course_slug %}
+  {% if site.data.glossaries[course_slug] and site.data.glossaries[course_slug].size > 0 %}
+    {% assign course_has_glossary = true %}
+  {% elsif course_meta and course_meta.glossary_includes %}
+    {% for _inc_slug in course_meta.glossary_includes %}
+      {% if site.data.glossaries[_inc_slug] and site.data.glossaries[_inc_slug].size > 0 %}
+        {% assign course_has_glossary = true %}
+        {% break %}
+      {% endif %}
+    {% endfor %}
+  {% endif %}
+{% endif %}
 {% if is_page_hidden %}
 {% assign redirect_url = '/courses/?unavailable=1' | relative_url %}
 <!DOCTYPE html>
@@ -128,9 +146,49 @@
             color: var(--bs-body-color);
         }
         .course-sidebar .nav-link:not(.active):hover,
-        .course-sidebar .course-nav-toggle:hover {
+        .course-sidebar .course-nav-toggle:hover,
+        .course-sidebar .course-branch-toggle:hover {
             background-color: var(--bs-secondary-bg);
         }
+        .course-sidebar .course-branch-toggle {
+            font-size: 0.78rem;
+            line-height: 1;
+            opacity: 0.55;
+            transition: opacity 0.15s ease, background-color 0.15s ease;
+        }
+        .course-sidebar .course-nav-folder-row:hover .course-branch-toggle,
+        .course-sidebar .course-branch-toggle:focus-visible {
+            opacity: 1;
+        }
+        .course-sidebar .course-quickref-row {
+            min-width: 0;
+        }
+        .course-sidebar .course-quickref-link {
+            min-width: 0;
+            line-height: 1.25;
+        }
+        .course-sidebar .course-quickref-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 15px;
+            height: 16px;
+            margin-top: 1px;
+        }
+        .course-sidebar .course-quickref-remove {
+            opacity: 0.4;
+            font-size: 0.95rem;
+            line-height: 1;
+            margin-top: 3px;
+        }
+        .course-sidebar .course-quickref-row:hover .course-quickref-remove,
+        .course-sidebar .course-quickref-remove:focus-visible {
+            opacity: 1;
+            color: var(--bs-danger) !important;
+        }
+        .quickref-type-return { color: var(--bs-primary); }
+        .quickref-type-bookmark { color: #d97706; }
+        .quickref-type-review { color: #dc3545; }
         .course-sidebar .nav-chevron,
         .section-terms-toggle .nav-chevron {
             display: inline-block;
@@ -214,6 +272,202 @@
         .nav-link.active .course-page-indicator.indicator-new {
             box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.35);
         }
+
+        /* Collapsible article sections & multi-type Bookmarks */
+        .article-section {
+            margin-top: 1.15rem;
+            border: 1px solid var(--bs-border-color);
+            border-radius: 0.5rem;
+            background-color: var(--bs-body-bg);
+            scroll-margin-top: 76px;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
+        }
+        .article-subsection {
+            margin-top: 0.85rem;
+            border: 1px solid var(--bs-border-color-translucent);
+            border-radius: 0.4rem;
+            background-color: var(--bs-tertiary-bg);
+            scroll-margin-top: 76px;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
+        }
+        .article-section.bm-type-return,
+        .article-subsection.bm-type-return {
+            border-color: var(--bs-primary);
+            box-shadow: inset 3px 0 0 var(--bs-primary);
+        }
+        .article-section.bm-type-bookmark,
+        .article-subsection.bm-type-bookmark {
+            border-color: #d97706;
+            box-shadow: inset 3px 0 0 #d97706;
+        }
+        .article-section.bm-type-review,
+        .article-subsection.bm-type-review {
+            border-color: #dc3545;
+            box-shadow: inset 3px 0 0 #dc3545;
+        }
+        .article-section.section-jump-pulse,
+        .article-subsection.section-jump-pulse {
+            box-shadow: inset 3px 0 0 var(--bs-primary), 0 0 0 0.22rem rgba(var(--bs-primary-rgb), 0.25);
+        }
+        .article-section-header {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.55rem 0.85rem;
+            border-bottom: 1px solid var(--bs-border-color-translucent);
+        }
+        .article-section.is-collapsed > .article-section-header,
+        .article-subsection.is-collapsed > .article-section-header {
+            border-bottom-color: transparent;
+        }
+        .article-section-heading {
+            flex: 1 1 auto;
+            min-width: 0;
+            margin: 0 !important;
+            font-size: 1.15rem;
+            line-height: 1.3;
+        }
+        .article-section-toggle {
+            width: 100%;
+            min-width: 0;
+            display: flex;
+            align-items: center;
+            gap: 0.45rem;
+            background: transparent;
+            border: 0;
+            padding: 0;
+            text-align: left;
+            color: inherit;
+            font: inherit;
+            cursor: pointer;
+        }
+        .article-section-chevron {
+            display: inline-block;
+            font-size: 0.8rem;
+            color: var(--bs-secondary-color);
+            flex-shrink: 0;
+            transition: transform 0.15s ease;
+        }
+        .article-section-toggle[aria-expanded="true"] .article-section-chevron {
+            transform: rotate(90deg);
+        }
+        .article-subsection .article-section-heading {
+            font-size: 1rem;
+        }
+        .article-section-actions {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.45rem;
+            flex-shrink: 0;
+        }
+        .article-bookmark-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.3rem;
+            padding: 0.15rem 0.5rem;
+            border-radius: 999px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+        .article-bookmark-pill-return {
+            background-color: var(--bs-primary-bg-subtle);
+            color: var(--bs-primary-text-emphasis);
+            border: 1px solid var(--bs-primary-border-subtle);
+        }
+        .article-bookmark-pill-bookmark {
+            background-color: var(--bs-warning-bg-subtle);
+            color: var(--bs-warning-text-emphasis);
+            border: 1px solid var(--bs-warning-border-subtle);
+        }
+        .article-bookmark-pill-review {
+            background-color: var(--bs-danger-bg-subtle);
+            color: var(--bs-danger-text-emphasis);
+            border: 1px solid var(--bs-danger-border-subtle);
+        }
+        .article-section-bookmark-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            border: 0;
+            border-radius: 0.3rem;
+            background: transparent;
+            color: var(--bs-secondary-color);
+            opacity: 0.5;
+            padding: 0;
+            cursor: pointer;
+            transition: opacity 0.15s ease, color 0.15s ease, background-color 0.15s ease;
+        }
+        .article-section-header:hover .article-section-bookmark-btn,
+        .article-section-bookmark-btn:focus-visible,
+        .article-section-bookmark-btn[aria-expanded="true"],
+        .article-section-bookmark-btn.is-active {
+            opacity: 1;
+        }
+        .article-section-bookmark-btn:hover {
+            background-color: var(--bs-secondary-bg);
+            color: var(--bs-body-color);
+        }
+        .article-section-bookmark-btn[data-active-type="return"] { color: var(--bs-primary); }
+        .article-section-bookmark-btn[data-active-type="bookmark"] { color: #d97706; }
+        .article-section-bookmark-btn[data-active-type="review"] { color: #dc3545; }
+        .article-bookmark-menu {
+            min-width: 13.5rem;
+        }
+        .article-section-body {
+            padding: 0.85rem 1rem 0.95rem;
+        }
+        .article-section-body > :first-child {
+            margin-top: 0;
+        }
+        .article-section-body > :last-child {
+            margin-bottom: 0;
+        }
+        .article-section.is-collapsed > .article-section-body,
+        .article-subsection.is-collapsed > .article-section-body {
+            display: none;
+        }
+        .quickref-card.bm-type-return {
+            border-color: var(--bs-primary) !important;
+            box-shadow: inset 3px 0 0 var(--bs-primary);
+        }
+        .quickref-card.bm-type-bookmark {
+            border-color: #d97706 !important;
+            box-shadow: inset 3px 0 0 #d97706;
+        }
+        .quickref-card.bm-type-review {
+            border-color: #dc3545 !important;
+            box-shadow: inset 3px 0 0 #dc3545;
+        }
+        .quickref-preview-body > :first-child { margin-top: 0; }
+        .quickref-preview-body > :last-child { margin-bottom: 0; }
+        .quickref-preview-body table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 0.75rem;
+            font-size: 0.9em;
+        }
+        .quickref-preview-body th,
+        .quickref-preview-body td {
+            border: 1px solid var(--bs-border-color);
+            padding: 0.35rem 0.55rem;
+            text-align: left;
+        }
+        .quickref-preview-body thead th {
+            background-color: var(--bs-tertiary-bg);
+            font-weight: 600;
+        }
+        .article-resume-btn {
+            background-color: var(--bs-primary-bg-subtle);
+            color: var(--bs-primary-text-emphasis);
+            border-color: var(--bs-primary-border-subtle) !important;
+        }
+        .article-resume-btn:hover {
+            background-color: var(--bs-primary);
+            color: #fff !important;
+        }
         /* Markdown tables & readability inside course articles */
         #courseArticleContent table,
         #contentPrintCompiled table {
@@ -283,6 +537,22 @@
             transform: scale(1.12);
         }
 
+        /* Synchronous view switching for auto-generated Glossary & Quick Reference on every course */
+        html:not(.course-view-glossary) .course-view-only-glossary,
+        html:not(.course-view-glossary) .glossary-view-only,
+        html:not(.course-view-quickref) .course-view-only-quickref,
+        html.course-view-glossary .course-view-default,
+        html.course-view-quickref .course-view-default {
+            display: none !important;
+        }
+        @media print {
+            html:not(.course-view-glossary) .course-view-only-glossary,
+            html:not(.course-view-quickref) .course-view-only-quickref,
+            html.course-view-glossary .course-view-default,
+            html.course-view-quickref .course-view-default {
+                display: none !important;
+            }
+        }
         /* Hide content print sidebar & FAB completely outside print-mode */
         html:not(.print-mode) #contentPrintSidebar,
         html:not(.print-mode) #contentPrintFab {
@@ -474,8 +744,29 @@
                 max-width: none !important;
             }
             .content-screen-header,
-            #sectionKeyTerms {
+            #sectionKeyTerms,
+            #articleSectionBar,
+            .article-section-check,
+            .article-section-chevron,
+            .article-section-actions {
                 display: none !important;
+            }
+            .article-section,
+            .article-subsection {
+                border: 0 !important;
+                box-shadow: none !important;
+                background: transparent !important;
+                margin-top: 0.75rem !important;
+            }
+            .article-section-header {
+                border: 0 !important;
+                padding: 0 0 0.25rem 0 !important;
+            }
+            .article-section-body,
+            .article-section.is-collapsed > .article-section-body,
+            .article-subsection.is-collapsed > .article-section-body {
+                display: block !important;
+                padding: 0 !important;
             }
             #contentPrintHeader {
                 display: block !important;
@@ -570,6 +861,8 @@
 <body>
     {% if page.glossary == true %}
         {% include components/navigation/navbar.html sidebar_id="courseNavSidebar" right_sidebar_id="glossaryFilterSidebar" %}
+    {% elsif is_course_index and course_has_glossary %}
+        {% include components/navigation/navbar.html sidebar_id="courseNavSidebar" right_sidebar_id="glossaryFilterSidebar" right_sidebar_class="glossary-view-only" %}
     {% else %}
         {% include components/navigation/navbar.html sidebar_id="courseNavSidebar" %}
     {% endif %}
@@ -579,8 +872,12 @@
 
         <main class="flex-grow-1 p-4 course-layout-main{% if page.glossary == true %} glossary-layout-main{% else %} content-layout-main{% endif %}" style="min-width: 0;">
             <div class="container-fluid{% if page.glossary == true %} glossary-layout-container{% else %} content-layout-container{% endif %}">
-                {% assign expected_course_index = "_courses/" | append: course_slug | append: "/index.md" %}
-                {% if page.glossary != true %}
+                {% assign is_special_view = false %}
+                {% if page.glossary == true or page.quick_reference == true %}
+                    {% assign is_special_view = true %}
+                {% endif %}
+                {% if is_course_index %}<div class="course-view-default">{% endif %}
+                {% unless is_special_view %}
                     <div id="contentPrintWorkspace">
                         {% include components/course-content-print.html course_slug=course_slug course_meta=course_meta %}
                         <div id="contentPrintStage">
@@ -602,7 +899,7 @@
                                         <span class="small text-muted d-none" id="contentPrintSubtitle"></span>
                                     </div>
                                 </header>
-                {% endif %}
+                {% endunless %}
 
                 {% if course_meta and page.path == expected_course_index %}
                     <header class="mb-4 pb-3 border-bottom content-screen-header">
@@ -670,19 +967,21 @@
                                     <p class="text-body-secondary mb-0">{{ page.description }}</p>
                                 {% endif %}
                             </div>
-                            <a
-                                href="?print=1"
-                                {% if page.glossary == true %}id="glossaryPrintPreviewLink"{% endif %}
-                                class="btn btn-sm btn-outline-secondary d-inline-flex align-items-center gap-1 flex-shrink-0 d-print-none"
-                                title="Print preview & options"
-                                aria-label="Open print preview"
-                            >
-                                <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" fill="currentColor" viewBox="0 0 16 16" aria-hidden="true">
-                                    <path d="M2.5 8a.5.5 0 1 0 0-1 .5.5 0 0 0 0 1"/>
-                                    <path d="M5 1a2 2 0 0 0-2 2v2H2a2 2 0 0 0-2 2v3a2 2 0 0 0 2 2h1v1a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2v-1h1a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-1V3a2 2 0 0 0-2-2zM4 3a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v2H4zm1 5a2 2 0 0 0-2 2v1H2a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1h-1v-1a2 2 0 0 0-2-2zm7 2v3a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1v-3a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1"/>
-                                </svg>
-                                <span class="d-none d-sm-inline">Print</span>
-                            </a>
+                            {% unless page.quick_reference == true %}
+                                <a
+                                    href="?print=1"
+                                    {% if page.glossary == true %}id="glossaryPrintPreviewLink"{% endif %}
+                                    class="btn btn-sm btn-outline-secondary d-inline-flex align-items-center gap-1 flex-shrink-0 d-print-none"
+                                    title="Print preview & options"
+                                    aria-label="Open print preview"
+                                >
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" fill="currentColor" viewBox="0 0 16 16" aria-hidden="true">
+                                        <path d="M2.5 8a.5.5 0 1 0 0-1 .5.5 0 0 0 0 1"/>
+                                        <path d="M5 1a2 2 0 0 0-2 2v2H2a2 2 0 0 0-2 2v3a2 2 0 0 0 2 2h1v1a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2v-1h1a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-1V3a2 2 0 0 0-2-2zM4 3a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v2H4zm1 5a2 2 0 0 0-2 2v1H2a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1h-1v-1a2 2 0 0 0-2-2zm7 2v3a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1v-3a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1"/>
+                                    </svg>
+                                    <span class="d-none d-sm-inline">Print</span>
+                                </a>
+                            {% endunless %}
                         </div>
                     </header>
                 {% endif %}
@@ -694,64 +993,131 @@
                     {{ content }}
                     {% if page.glossary == true %}
                         {% include components/course-glossary.html course_slug=course_slug course_meta=course_meta %}
+                    {% elsif page.quick_reference == true %}
+                        {% include components/course-quick-reference.html course_slug=course_slug course_meta=course_meta %}
                     {% endif %}
                 </article>
 
-                {% if page.glossary != true %}
+                {% unless is_special_view %}
                     <div id="contentPrintCompiled" class="d-none"></div>
                     <section id="contentPrintGlossary" class="d-none mt-4 pt-3 border-top border-dark-subtle"></section>
                     {% include components/section-key-terms.html course_slug=course_slug course_meta=course_meta %}
                             </div>
                         </div>
                     </div>
+                {% endunless %}
+
+                {% unless page.quick_reference == true %}
+                    {% assign _self_auto_rev = "empty" %}
+                    {% if page.glossary == true and site.data.glossaries %}
+                        {% assign _gl_data = site.data.glossaries[course_slug] %}
+                        {% if _gl_data %}
+                            {% assign _gl_json = _gl_data | jsonify %}
+                            {% assign _self_auto_rev = "glossary-" | append: _gl_data.size | append: "-" | append: _gl_json.size %}
+                        {% endif %}
+                    {% else %}
+                        {% assign _self_clean = content | strip_html | normalize_whitespace %}
+                        {% if _self_clean != "" %}
+                            {% assign _self_head = _self_clean | slice: 0, 32 | slugify %}
+                            {% assign _self_auto_rev = _self_clean.size | append: "-" | append: _self_head %}
+                        {% endif %}
+                    {% endif %}
+                    {% assign _self_rev = page.revision | default: page.updated | default: _self_auto_rev %}
+                    <footer class="mt-5 pt-3 border-top d-flex flex-wrap justify-content-between align-items-center gap-2 d-print-none">
+                        <div class="d-flex align-items-center gap-2">
+                            <span class="small text-body-secondary">Page status:</span>
+                            <span class="badge rounded-pill text-bg-secondary-subtle text-secondary-emphasis border" id="coursePageStatusBadge">
+                                Not reviewed
+                            </span>
+                        </div>
+                        <button
+                            type="button"
+                            class="btn btn-sm btn-outline-primary"
+                            id="courseReviewToggleBtn"
+                            data-page-rev="{{ _self_rev | escape }}"
+                            aria-pressed="false"
+                        >
+                            Mark as Reviewed
+                        </button>
+                    </footer>
+                {% endunless %}
+                {% if is_course_index %}</div>{% endif %}
+
+                {% if is_course_index and course_has_glossary %}
+                    {% assign glossary_view_url = page.url | relative_url | append: "?view=glossary" %}
+                    <div class="course-view-only-glossary">
+                        <header class="mb-4 pb-3 border-bottom glossary-screen-header">
+                            {% if course_meta %}
+                                <div class="d-flex flex-wrap align-items-center gap-2 mb-2">
+                                    {% if course_meta.course_code %}
+                                        <span class="badge {% if course_meta.deprecated %}text-bg-secondary{% else %}text-bg-primary{% endif %}">
+                                            {{ course_meta.course_code }}
+                                        </span>
+                                    {% endif %}
+                                    <span class="small text-body-secondary">{{ course_meta.title | default: course_slug }}</span>
+                                </div>
+                            {% endif %}
+                            <div class="d-flex justify-content-between align-items-start gap-2">
+                                <div>
+                                    <h1 class="h2 fw-bold mb-1">Glossary</h1>
+                                    <p class="text-body-secondary mb-0">Key terms, abbreviations, and interconnected concepts.</p>
+                                </div>
+                                <a
+                                    href="?view=glossary&amp;print=1"
+                                    id="glossaryPrintPreviewLink"
+                                    class="btn btn-sm btn-outline-secondary d-inline-flex align-items-center gap-1 flex-shrink-0 d-print-none"
+                                    title="Print preview & options"
+                                    aria-label="Open print preview"
+                                >
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" fill="currentColor" viewBox="0 0 16 16" aria-hidden="true">
+                                        <path d="M2.5 8a.5.5 0 1 0 0-1 .5.5 0 0 0 0 1"/>
+                                        <path d="M5 1a2 2 0 0 0-2 2v2H2a2 2 0 0 0-2 2v3a2 2 0 0 0 2 2h1v1a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2v-1h1a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-1V3a2 2 0 0 0-2-2zM4 3a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v2H4zm1 5a2 2 0 0 0-2 2v1H2a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1h-1v-1a2 2 0 0 0-2-2zm7 2v3a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1v-3a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1"/>
+                                    </svg>
+                                    <span class="d-none d-sm-inline">Print</span>
+                                </a>
+                            </div>
+                        </header>
+                        {% include components/course-glossary.html course_slug=course_slug course_meta=course_meta base_glossary_url=glossary_view_url %}
+                    </div>
                 {% endif %}
 
-                {% assign _self_auto_rev = "empty" %}
-                {% if page.glossary == true and site.data.glossaries %}
-                    {% assign _gl_data = site.data.glossaries[course_slug] %}
-                    {% if _gl_data %}
-                        {% assign _gl_json = _gl_data | jsonify %}
-                        {% assign _self_auto_rev = "glossary-" | append: _gl_data.size | append: "-" | append: _gl_json.size %}
-                    {% endif %}
-                {% else %}
-                    {% assign _self_clean = content | strip_html | normalize_whitespace %}
-                    {% if _self_clean != "" %}
-                        {% assign _self_head = _self_clean | slice: 0, 32 | slugify %}
-                        {% assign _self_auto_rev = _self_clean.size | append: "-" | append: _self_head %}
-                    {% endif %}
-                {% endif %}
-                {% assign _self_rev = page.revision | default: page.updated | default: _self_auto_rev %}
-                <footer class="mt-5 pt-3 border-top d-flex flex-wrap justify-content-between align-items-center gap-2 d-print-none">
-                    <div class="d-flex align-items-center gap-2">
-                        <span class="small text-body-secondary">Page status:</span>
-                        <span class="badge rounded-pill text-bg-secondary-subtle text-secondary-emphasis border" id="coursePageStatusBadge">
-                            Not reviewed
-                        </span>
+                {% if is_course_index %}
+                    <div class="course-view-only-quickref">
+                        <header class="mb-4 pb-3 border-bottom">
+                            {% if course_meta %}
+                                <div class="d-flex flex-wrap align-items-center gap-2 mb-2">
+                                    {% if course_meta.course_code %}
+                                        <span class="badge {% if course_meta.deprecated %}text-bg-secondary{% else %}text-bg-primary{% endif %}">
+                                            {{ course_meta.course_code }}
+                                        </span>
+                                    {% endif %}
+                                    <span class="small text-body-secondary">{{ course_meta.title | default: course_slug }}</span>
+                                </div>
+                            {% endif %}
+                            <h1 class="h2 fw-bold mb-1">Quick Reference</h1>
+                            <p class="text-body-secondary mb-0">
+                                Your saved bookmarks, return-to spots, and sections flagged to review later.
+                            </p>
+                        </header>
+                        {% include components/course-quick-reference.html course_slug=course_slug course_meta=course_meta %}
                     </div>
-                    <button
-                        type="button"
-                        class="btn btn-sm btn-outline-primary"
-                        id="courseReviewToggleBtn"
-                        data-page-rev="{{ _self_rev | escape }}"
-                        aria-pressed="false"
-                    >
-                        Mark as Reviewed
-                    </button>
-                </footer>
+                {% endif %}
             </div>
         </main>
 
         {% if page.glossary == true %}
             {% include components/navigation/glossary-filter-sidebar.html course_slug=course_slug course_meta=course_meta %}
+        {% elsif is_course_index and course_has_glossary %}
+            {% include components/navigation/glossary-filter-sidebar.html course_slug=course_slug course_meta=course_meta extra_class="glossary-view-only" %}
         {% endif %}
     </div>
 
     {% include body/scripts.html %}
     <script src="{{ '/assets/js/course-progress.js' | relative_url }}"></script>
-    {% if page.glossary != true %}
-        <script src="{{ '/assets/js/course-content-print.js' | relative_url }}" defer></script>
+    {% if page.quick_reference == true or is_course_index %}
+        <script src="{{ '/assets/js/course-quick-reference.js' | relative_url }}"></script>
     {% endif %}
-    {% unless page.glossary == true %}
+    {% unless is_special_view %}
         {% assign _lookup_terms = "" | split: "" %}
         {% if site.data.glossaries %}
             {% if course_meta and course_meta.glossary_includes %}
@@ -775,7 +1141,7 @@
             {% assign _empty_arr = "" | split: "" %}
             <script type="application/json" id="courseGlossaryLookupData">
             {
-              "glossaryUrl": {{ '/courses/' | append: course_slug | append: '/glossary/' | relative_url | jsonify }},
+              "glossaryUrl": {{ '/courses/' | append: course_slug | append: '/?view=glossary' | relative_url | jsonify }},
               "terms": [
                 {% for _t in _lookup_terms %}
                   {% assign _tid = _t.id | default: _t.term | slugify %}
@@ -792,6 +1158,10 @@
               ]
             }
             </script>
+        {% endif %}
+        <script src="{{ '/assets/js/course-sections.js' | relative_url }}"></script>
+        <script src="{{ '/assets/js/course-content-print.js' | relative_url }}" defer></script>
+        {% if _lookup_terms.size > 0 %}
             {% unless page.glossary_autolink == false %}
                 <script src="{{ '/assets/js/course-glossary-lookup.js' | relative_url }}" defer></script>
             {% endunless %}

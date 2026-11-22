@@ -1,5 +1,11 @@
 (() => {
   if (document.documentElement.classList.contains("print-mode")) return;
+  if (
+    document.documentElement.classList.contains("course-view-glossary") ||
+    document.documentElement.classList.contains("course-view-quickref")
+  ) {
+    return;
+  }
 
   const dataEl = document.getElementById("courseGlossaryLookupData");
   const articleEl = document.getElementById("courseArticleContent");
@@ -80,6 +86,7 @@
     while (parent && parent !== articleEl) {
       if (SKIP_TAGS.has(parent.tagName)) return true;
       if (parent.classList.contains("glossary-lookup-term")) return true;
+      if (parent.classList.contains("article-section-ui")) return true;
       parent = parent.parentElement;
     }
     return false;

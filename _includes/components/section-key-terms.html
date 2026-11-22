@@ -1,147 +1,56 @@
 {% assign slug = include.course_slug %}
-{% assign course_meta = include.course_meta %}
-
-{% comment %} Gather tags/categories from this page, or inherit from the parent folder's index.md {% endcomment %}
-{% assign section_tags = "" | split: "" %}
-{% if page.glossary_categories %}
-  {% for t in page.glossary_categories %}
-    {% assign t_down = t | downcase %}
-    {% assign section_tags = section_tags | push: t_down %}
-  {% endfor %}
-{% endif %}
-{% if page.tags %}
-  {% for t in page.tags %}
-    {% assign t_down = t | downcase %}
-    {% assign section_tags = section_tags | push: t_down %}
-  {% endfor %}
-{% endif %}
-
-{% assign is_folder_overview = false %}
-{% assign path_parts = page.path | split: "/" %}
-{% if path_parts.size >= 4 %}
-  {% assign parent_index_path = "_courses/" | append: slug | append: "/" | append: path_parts[2] | append: "/index.md" %}
-  {% if page.path == parent_index_path %}
-    {% assign is_folder_overview = true %}
-  {% elsif section_tags.size == 0 and site.courses %}
-    {% assign parent_doc = site.courses | where: "path", parent_index_path | first %}
-    {% if parent_doc %}
-      {% if parent_doc.glossary_categories %}
-        {% for t in parent_doc.glossary_categories %}
-          {% assign t_down = t | downcase %}
-          {% assign section_tags = section_tags | push: t_down %}
-        {% endfor %}
-      {% endif %}
-      {% if parent_doc.tags %}
-        {% for t in parent_doc.tags %}
-          {% assign t_down = t | downcase %}
-          {% assign section_tags = section_tags | push: t_down %}
-        {% endfor %}
-      {% endif %}
-    {% endif %}
-  {% endif %}
-{% endif %}
-
-{% if section_tags.size > 0 and site.data.glossaries %}
-  {% assign section_tags = section_tags | uniq %}
-  {% assign raw_terms = "" | split: "" %}
-  {% if course_meta and course_meta.glossary_includes %}
-    {% for inc_slug in course_meta.glossary_includes %}
-      {% assign inc_terms = site.data.glossaries[inc_slug] %}
-      {% if inc_terms %}
-        {% for item in inc_terms %}
-          {% assign raw_terms = raw_terms | push: item %}
-        {% endfor %}
+{% if site.data.glossaries %}
+  {% assign has_glossary_terms = false %}
+  {% if site.data.glossaries[slug] and site.data.glossaries[slug].size > 0 %}
+    {% assign has_glossary_terms = true %}
+  {% elsif include.course_meta and include.course_meta.glossary_includes %}
+    {% for inc_slug in include.course_meta.glossary_includes %}
+      {% if site.data.glossaries[inc_slug] and site.data.glossaries[inc_slug].size > 0 %}
+        {% assign has_glossary_terms = true %}
+        {% break %}
       {% endif %}
     {% endfor %}
   {% endif %}
-  {% assign own_terms = site.data.glossaries[slug] %}
-  {% if own_terms %}
-    {% for item in own_terms %}
-      {% assign raw_terms = raw_terms | push: item %}
-    {% endfor %}
-  {% endif %}
 
-  {% assign matched_terms = "" | split: "" %}
-  {% assign matched_categories = "" | split: "" %}
-  {% for item in raw_terms %}
-    {% assign is_match = false %}
-    {% assign item_cat_down = item.category | default: "" | downcase %}
-    {% if item_cat_down != "" and section_tags contains item_cat_down %}
-      {% assign is_match = true %}
-      {% assign matched_categories = matched_categories | push: item_cat_down %}
-    {% endif %}
-    {% if is_match == false and item.tags %}
-      {% for itag in item.tags %}
-        {% assign itag_down = itag | downcase %}
-        {% if section_tags contains itag_down %}
-          {% assign is_match = true %}
-          {% if item_cat_down != "" %}
-            {% assign matched_categories = matched_categories | push: item_cat_down %}
-          {% endif %}
-          {% break %}
-        {% endif %}
-      {% endfor %}
-    {% endif %}
-    {% if is_match %}
-      {% assign matched_terms = matched_terms | push: item %}
-    {% endif %}
-  {% endfor %}
-
-  {% if matched_terms.size > 0 %}
-    {% assign sorted_matched = matched_terms | sort_natural: "term" %}
-    {% assign unique_cats = matched_categories | uniq %}
-    {% assign cat_query = unique_cats | join: "," %}
-    {% assign glossary_link = "/courses/" | append: slug | append: "/glossary/" %}
-    {% if cat_query != "" %}
-      {% assign glossary_link = glossary_link | append: "?categories=" | append: cat_query %}
-    {% endif %}
-
-    <section id="sectionKeyTerms" class="card border bg-body-tertiary mt-4">
+  {% if has_glossary_terms %}
+    {% assign glossary_base_url = '/courses/' | append: slug | append: '/?view=glossary' | relative_url %}
+    <section
+      id="sectionKeyTerms"
+      class="card border bg-body-tertiary mt-4 d-none"
+      data-glossary-url="{{ glossary_base_url }}"
+    >
       <div class="card-header bg-transparent d-flex flex-wrap justify-content-between align-items-center gap-2 py-2 px-3">
         <button
           type="button"
           class="btn btn-link btn-sm p-0 text-decoration-none text-body fw-semibold d-inline-flex align-items-center gap-2 section-terms-toggle"
+          id="sectionKeyTermsToggle"
           data-bs-toggle="collapse"
           data-bs-target="#sectionKeyTermsBody"
-          aria-expanded="{% if is_folder_overview %}true{% else %}false{% endif %}"
+          aria-expanded="true"
           aria-controls="sectionKeyTermsBody"
         >
           <span class="nav-chevron text-body-secondary" aria-hidden="true">▸</span>
           <span>Key Terms</span>
-          <span class="badge rounded-pill text-bg-secondary-subtle text-secondary-emphasis border fw-normal">
-            {{ sorted_matched.size }}
+          <span
+            class="badge rounded-pill text-bg-secondary-subtle text-secondary-emphasis border fw-normal"
+            id="sectionKeyTermsCount"
+          >
+            0
           </span>
         </button>
 
         <a
-          href="{{ glossary_link | relative_url }}"
+          href="{{ glossary_base_url }}"
+          id="sectionKeyTermsGlossaryLink"
           class="small text-decoration-none d-print-none"
         >
           Open in Glossary →
         </a>
       </div>
 
-      <div class="collapse{% if is_folder_overview %} show{% endif %}" id="sectionKeyTermsBody">
+      <div class="collapse show" id="sectionKeyTermsBody">
         <div class="card-body py-3 px-3 bg-body rounded-bottom">
-          <dl class="mb-0 d-flex flex-column gap-2">
-            {% for item in sorted_matched %}
-              {% assign term_id = item.id | default: item.term | slugify %}
-              <div class="{% unless forloop.last %}pb-2 border-bottom{% endunless %}">
-                <dt class="small fw-bold mb-0">
-                  <a
-                    href="{{ '/courses/' | append: slug | append: '/glossary/#term-' | append: term_id | relative_url }}"
-                    class="text-decoration-none text-body"
-                  >
-                    {{ item.term }}
-                  </a>
-                  {% if item.full %}
-                    <span class="fw-normal text-body-secondary">— {{ item.full }}</span>
-                  {% endif %}
-                </dt>
-                <dd class="small text-body-secondary mb-0 mt-1">{{ item.definition }}</dd>
-              </div>
-            {% endfor %}
-          </dl>
+          <dl class="mb-0 d-flex flex-column gap-2" id="sectionKeyTermsList"></dl>
         </div>
       </div>
     </section>

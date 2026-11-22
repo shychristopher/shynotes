@@ -40,6 +40,15 @@
 
   const pageLinks = Array.from(sidebar.querySelectorAll("[data-course-page]"));
   const folderCollapses = Array.from(sidebar.querySelectorAll(".course-folder-collapse[data-folder-key]"));
+  const expandAllFoldersBtn = sidebar.querySelector(".course-tree-expand-all");
+  const collapseAllFoldersBtn = sidebar.querySelector(".course-tree-collapse-all");
+  const branchToggleBtns = Array.from(sidebar.querySelectorAll(".course-branch-toggle[data-branch-target]"));
+  const overviewNavLink = document.getElementById("courseNavOverviewLink");
+  const glossaryNavLink = document.getElementById("courseNavGlossaryLink");
+  const quickRefNavLink = document.getElementById("courseNavQuickRefLink");
+  const quickRefNavCount = document.getElementById("courseQuickRefNavCount");
+  const studyToolsSection = document.getElementById("courseStudyToolsSection");
+  const studyToolsNav = document.getElementById("courseStudyToolsNav");
   const progressBarEl = document.getElementById("courseProgressBar");
   const progressLabelEl = document.getElementById("courseProgressLabel");
   const resetProgressBtn = document.getElementById("resetCourseProgress");
@@ -47,8 +56,48 @@
   const pageStatusBadgeEl = document.getElementById("coursePageStatusBadge");
   const articleEl = document.getElementById("courseArticleContent");
 
+  const isGlossaryView = document.documentElement.classList.contains("course-view-glossary");
+  const isQuickRefView = document.documentElement.classList.contains("course-view-quickref");
+
+  if (isGlossaryView || isQuickRefView) {
+    overviewNavLink?.classList.remove("active", "fw-semibold");
+    overviewNavLink?.removeAttribute("aria-current");
+    const targetNav = isGlossaryView ? glossaryNavLink : quickRefNavLink;
+    targetNav?.classList.add("active", "fw-semibold");
+    targetNav?.setAttribute("aria-current", "page");
+    const baseTitle = document.title;
+    const prefix = isGlossaryView ? "Glossary" : "Quick Reference";
+    if (!baseTitle.startsWith(prefix)) {
+      document.title = `${prefix} · ${baseTitle}`;
+    }
+  }
+
   const currentPageUrl = sidebar.dataset.currentUrl || window.location.pathname;
   const allPageUrls = pageLinks.map((el) => el.dataset.pageUrl).filter(Boolean);
+
+  const BOOKMARK_TYPES = {
+    return: {
+      label: "Return to",
+      order: 0,
+      iconHtml:
+        '<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="currentColor" viewBox="0 0 16 16" aria-hidden="true"><path fill-rule="evenodd" d="M1.5 1.5A.5.5 0 0 0 1 2v4.8a2.5 2.5 0 0 0 2.5 2.5h9.793l-3.347 3.346a.5.5 0 0 0 .708.708l4.2-4.2a.5.5 0 0 0 0-.708l-4-4a.5.5 0 0 0-.708.708L13.293 8.3H3.5A1.5 1.5 0 0 1 2 6.8V2a.5.5 0 0 0-.5-.5"/></svg>',
+      colorClass: "quickref-type-return"
+    },
+    bookmark: {
+      label: "Bookmarked",
+      order: 1,
+      iconHtml:
+        '<svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" fill="currentColor" viewBox="0 0 16 16" aria-hidden="true"><path d="M2 2v13.5a.5.5 0 0 0 .74.439L8 13.069l5.26 2.87A.5.5 0 0 0 14 15.5V2a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2"/></svg>',
+      colorClass: "quickref-type-bookmark"
+    },
+    review: {
+      label: "Review later",
+      order: 2,
+      iconHtml:
+        '<svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" fill="currentColor" viewBox="0 0 16 16" aria-hidden="true"><path d="M14.778.085A.5.5 0 0 1 15 .5V8a.5.5 0 0 1-.314.464L14.5 8l.186.464-.003.001-.006.003-.023.009a12 12 0 0 1-.397.15c-.264.095-.631.223-1.047.35-.816.252-1.879.523-2.71.523-.847 0-1.548-.28-2.158-.525l-.028-.01C7.68 8.71 7.14 8.5 6.5 8.5c-.7 0-1.638.23-2.437.477A20 20 0 0 0 3 9.342V15.5a.5.5 0 0 1-1 0V.5a.5.5 0 0 1 1 0v.282c.226-.079.496-.17.79-.26C4.606.272 5.67 0 6.5 0c.84 0 1.524.277 2.121.519l.043.018C9.286.788 9.828 1 10.5 1c.7 0 1.638-.23 2.437-.477a20 20 0 0 0 1.349-.476l.019-.007.004-.002h.001"/></svg>',
+      colorClass: "quickref-type-review"
+    }
+  };
 
   function createFreshState() {
     return {
@@ -57,7 +106,8 @@
       initializedAt: new Date().toISOString(),
       knownPages: [...allPageUrls],
       folders: {},
-      pages: {}
+      pages: {},
+      bookmarks: []
     };
   }
 
@@ -70,6 +120,7 @@
     state.folders = state.folders && typeof state.folders === "object" ? state.folders : {};
     state.pages = state.pages && typeof state.pages === "object" ? state.pages : {};
     state.knownPages = Array.isArray(state.knownPages) ? state.knownPages : [...allPageUrls];
+    state.bookmarks = Array.isArray(state.bookmarks) ? state.bookmarks : [];
   }
 
   function getPageStatus(url, currentRev, isExplicitNew) {
@@ -114,6 +165,14 @@
     }
   }
 
+  function renderQuickReference() {
+    const count = Array.isArray(state.bookmarks) ? state.bookmarks.length : 0;
+    if (quickRefNavCount) {
+      quickRefNavCount.textContent = String(count);
+      quickRefNavCount.classList.toggle("d-none", count === 0);
+    }
+  }
+
   function renderAllStatuses() {
     let reviewedCount = 0;
     let currentPageStatus = "unreviewed";
@@ -143,6 +202,7 @@
     }
 
     updateCurrentPageControls(currentPageStatus);
+    renderQuickReference();
   }
 
   function updateCurrentPageControls(status) {
@@ -180,6 +240,49 @@
     }
   }
 
+  function setFolderListOpen(list, open) {
+    list.forEach((collapseEl) => {
+      const key = collapseEl.dataset.folderKey;
+      const toggleBtn = sidebar.querySelector(`[data-bs-target="#${collapseEl.id}"]`);
+      if (window.bootstrap?.Collapse) {
+        const inst = window.bootstrap.Collapse.getOrCreateInstance(collapseEl, { toggle: false });
+        if (open) {
+          inst.show();
+        } else {
+          inst.hide();
+        }
+      } else {
+        collapseEl.classList.toggle("show", open);
+      }
+      toggleBtn?.setAttribute("aria-expanded", open ? "true" : "false");
+      if (key) state.folders[key] = open;
+    });
+    CourseStateStore.save(courseSlug, state);
+    updateBranchToggleStates();
+  }
+
+  function getBranchCollapses(rootCollapse) {
+    if (!rootCollapse) return [];
+    const nested = Array.from(rootCollapse.querySelectorAll(".course-folder-collapse[data-folder-key]"));
+    return [rootCollapse, ...nested];
+  }
+
+  function updateBranchToggleStates() {
+    branchToggleBtns.forEach((btn) => {
+      const targetSel = btn.dataset.branchTarget;
+      const rootCollapse = targetSel ? sidebar.querySelector(targetSel) : null;
+      if (!rootCollapse) return;
+      const list = getBranchCollapses(rootCollapse);
+      const allOpen = list.every((el) => el.classList.contains("show"));
+      const label = btn.dataset.branchLabel || "section";
+      const icon = btn.querySelector(".course-branch-icon");
+      if (icon) icon.textContent = allOpen ? "«" : "»";
+      btn.title = allOpen ? `Collapse all in ${label}` : `Show all in ${label}`;
+      btn.setAttribute("aria-label", btn.title);
+      btn.dataset.branchAllOpen = allOpen ? "true" : "false";
+    });
+  }
+
   function restoreFolderStates() {
     folderCollapses.forEach((collapseEl) => {
       const key = collapseEl.dataset.folderKey;
@@ -198,17 +301,42 @@
         toggleBtn?.setAttribute("aria-expanded", shouldBeOpen ? "true" : "false");
       }
     });
+    updateBranchToggleStates();
   }
 
   folderCollapses.forEach((collapseEl) => {
     const key = collapseEl.dataset.folderKey;
-    collapseEl.addEventListener("shown.bs.collapse", () => {
+    collapseEl.addEventListener("shown.bs.collapse", (event) => {
+      if (event.target !== collapseEl) return;
       state.folders[key] = true;
       CourseStateStore.save(courseSlug, state);
+      updateBranchToggleStates();
     });
-    collapseEl.addEventListener("hidden.bs.collapse", () => {
+    collapseEl.addEventListener("hidden.bs.collapse", (event) => {
+      if (event.target !== collapseEl) return;
       state.folders[key] = false;
       CourseStateStore.save(courseSlug, state);
+      updateBranchToggleStates();
+    });
+  });
+
+  expandAllFoldersBtn?.addEventListener("click", () => {
+    setFolderListOpen(folderCollapses, true);
+  });
+
+  collapseAllFoldersBtn?.addEventListener("click", () => {
+    setFolderListOpen(folderCollapses, false);
+  });
+
+  branchToggleBtns.forEach((btn) => {
+    btn.addEventListener("click", (event) => {
+      event.stopPropagation();
+      const targetSel = btn.dataset.branchTarget;
+      const rootCollapse = targetSel ? sidebar.querySelector(targetSel) : null;
+      if (!rootCollapse) return;
+      const list = getBranchCollapses(rootCollapse);
+      const allOpen = list.every((el) => el.classList.contains("show"));
+      setFolderListOpen(list, !allOpen);
     });
   });
 
@@ -242,6 +370,7 @@
 
   function startAutoReview() {
     if (document.documentElement.classList.contains("print-mode")) return;
+    if (isGlossaryView || isQuickRefView) return;
     if (autoReviewCancelled) return;
 
     const currentLink = pageLinks.find((el) => el.dataset.pageUrl === currentPageUrl);
@@ -330,7 +459,7 @@
 
   if (resetProgressBtn) {
     resetProgressBtn.addEventListener("click", () => {
-      if (!window.confirm("Reset your saved progress and folder states for this course?")) {
+      if (!window.confirm("Reset your saved progress, bookmarks, and folder states for this course?")) {
         return;
       }
       autoReviewCancelled = true;
@@ -344,9 +473,65 @@
         collapseEl.classList.toggle("show", isDefaultOpen);
         toggleBtn?.setAttribute("aria-expanded", isDefaultOpen ? "true" : "false");
       });
+      updateBranchToggleStates();
       renderAllStatuses();
+      window.dispatchEvent(new CustomEvent("shynotes:bookmarks-changed", { detail: { bookmarks: [] } }));
     });
   }
+
+  // Shared bookmark API for course-sections.js
+  window.ShyNotesCourseProgress = {
+    courseSlug,
+    currentPageUrl,
+    BOOKMARK_TYPES,
+    getBookmarks(url = null) {
+      const list = Array.isArray(state.bookmarks) ? state.bookmarks : [];
+      return url ? list.filter((b) => b.url === url) : [...list];
+    },
+    setBookmark({ url = currentPageUrl, pageTitle = "", sectionId, sectionTitle = "", snippet = "", type = "bookmark" }) {
+      if (!sectionId || !BOOKMARK_TYPES[type]) return;
+      const id = `${url}#${sectionId}`;
+      const list = Array.isArray(state.bookmarks) ? [...state.bookmarks] : [];
+
+      // Keep at most one "Return to" marker per page so returning always lands cleanly in one spot
+      const filtered = list.filter((item) => {
+        if (item.id === id) return false;
+        if (type === "return" && item.url === url && item.type === "return") return false;
+        return true;
+      });
+
+      filtered.push({
+        id,
+        url,
+        pageTitle,
+        sectionId,
+        sectionTitle,
+        snippet,
+        type,
+        updatedAt: new Date().toISOString()
+      });
+
+      state.bookmarks = filtered;
+      CourseStateStore.save(courseSlug, state);
+      renderQuickReference();
+      window.dispatchEvent(new CustomEvent("shynotes:bookmarks-changed", { detail: { bookmarks: filtered } }));
+    },
+    removeBookmark(id) {
+      const list = Array.isArray(state.bookmarks) ? state.bookmarks : [];
+      const next = list.filter((item) => item.id !== id);
+      if (next.length === list.length) return;
+      state.bookmarks = next;
+      CourseStateStore.save(courseSlug, state);
+      renderQuickReference();
+      window.dispatchEvent(new CustomEvent("shynotes:bookmarks-changed", { detail: { bookmarks: next } }));
+    },
+    clearBookmarks() {
+      state.bookmarks = [];
+      CourseStateStore.save(courseSlug, state);
+      renderQuickReference();
+      window.dispatchEvent(new CustomEvent("shynotes:bookmarks-changed", { detail: { bookmarks: [] } }));
+    }
+  };
 
   restoreFolderStates();
   renderAllStatuses();

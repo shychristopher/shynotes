@@ -126,18 +126,46 @@
 
   {% assign next_depth = include.depth | plus: 1 %}
 
+  {% comment %} Detect if this folder contains nested subfolders so we can offer branch expand/collapse {% endcomment %}
+  {% assign has_nested_folders = false %}
+  {% for doc in include.docs %}
+    {% assign _npcheck = doc.path | slice: 0, child_prefix.size %}
+    {% if _npcheck == child_prefix %}
+      {% assign _nrel = doc.path | remove_first: child_prefix %}
+      {% assign _nparts = _nrel | split: "/" %}
+      {% if _nparts.size > 1 %}
+        {% assign has_nested_folders = true %}
+        {% break %}
+      {% endif %}
+    {% endif %}
+  {% endfor %}
+
   <div class="course-nav-folder{% if include.depth > 0 %} mt-1{% else %} mb-1{% endif %}">
-    <button
-      class="btn btn-sm w-100 text-start d-flex align-items-center justify-content-between gap-2 px-2 py-1 border-0 fw-semibold small text-body course-nav-toggle"
-      type="button"
-      data-bs-toggle="collapse"
-      data-bs-target="#{{ collapse_id }}"
-      aria-expanded="{% if is_open %}true{% else %}false{% endif %}"
-      aria-controls="{{ collapse_id }}"
-    >
-      <span class="text-truncate">{{ folder_label }}</span>
-      <span class="nav-chevron text-body-secondary flex-shrink-0" aria-hidden="true">▸</span>
-    </button>
+    <div class="d-flex align-items-center gap-1 course-nav-folder-row">
+      <button
+        class="btn btn-sm flex-grow-1 text-start d-flex align-items-center justify-content-between gap-2 px-2 py-1 border-0 fw-semibold small text-body course-nav-toggle"
+        type="button"
+        data-bs-toggle="collapse"
+        data-bs-target="#{{ collapse_id }}"
+        aria-expanded="{% if is_open %}true{% else %}false{% endif %}"
+        aria-controls="{{ collapse_id }}"
+      >
+        <span class="text-truncate">{{ folder_label }}</span>
+        <span class="nav-chevron text-body-secondary flex-shrink-0" aria-hidden="true">▸</span>
+      </button>
+      {% if has_nested_folders %}
+        <button
+          type="button"
+          class="btn btn-sm border-0 px-1 py-0 text-body-secondary course-branch-toggle flex-shrink-0"
+          data-branch-target="#{{ collapse_id }}"
+          data-branch-label="{{ folder_label | escape }}"
+          title="Expand or collapse all subfolders in {{ folder_label | escape }}"
+          aria-label="Expand or collapse all subfolders in {{ folder_label | escape }}"
+        >
+          <span class="course-branch-icon" aria-hidden="true">»</span>
+        </button>
+      {% endif %}
+    </div>
 
     <div
       class="collapse course-folder-collapse{% if is_open %} show{% endif %}"

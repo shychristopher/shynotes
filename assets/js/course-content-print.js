@@ -5,6 +5,12 @@
 
   const isPrintMode = document.documentElement.classList.contains("print-mode");
   if (!isPrintMode) return;
+  if (
+    document.documentElement.classList.contains("course-view-glossary") ||
+    document.documentElement.classList.contains("course-view-quickref")
+  ) {
+    return;
+  }
 
   const courseSlug = sidebar.dataset.courseSlug || "default";
   const STORAGE_KEY = `shynotes.content.print.v1.${courseSlug}`;

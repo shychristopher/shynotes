@@ -1,6 +1,10 @@
 (() => {
   const root = document.getElementById("courseGlossary");
   if (!root) return;
+  const isVirtualGlossaryView = Boolean(root.closest(".course-view-only-glossary"));
+  if (isVirtualGlossaryView && !document.documentElement.classList.contains("course-view-glossary")) {
+    return;
+  }
 
   const courseSlug = root.dataset.courseSlug || "default";
   const STORAGE_KEY = `shynotes.glossary.state.v1.${courseSlug}`;
@@ -243,6 +247,7 @@
 
     if (printPreviewLink) {
       const previewParams = new URLSearchParams();
+      if (isVirtualGlossaryView) previewParams.set("view", "glossary");
       previewParams.set("print", "1");
       if (opts.sections) previewParams.set("sections", "1");
       if (opts.categories) previewParams.set("categories", "1");
@@ -711,7 +716,8 @@
 
   printResetBtn?.addEventListener("click", () => {
     state.printOptions = { ...DEFAULT_PRINT_OPTIONS };
-    window.history.replaceState(null, "", `${window.location.pathname}?print=1`);
+    const cleanQuery = isVirtualGlossaryView ? "?view=glossary&print=1" : "?print=1";
+    window.history.replaceState(null, "", `${window.location.pathname}${cleanQuery}`);
     applyPrintOptions(true);
     applyPrintSheetFontFamily();
   });

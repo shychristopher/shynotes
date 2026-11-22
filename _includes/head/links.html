@@ -38,6 +38,257 @@
     word-spacing: var(--a11y-word-spacing, normal);
     letter-spacing: var(--a11y-letter-spacing, normal);
   }
+  html[data-a11y-weight="500"] main,
+  html[data-a11y-weight="500"] #displayLivePreview {
+    font-weight: 500;
+  }
+  html[data-a11y-weight="600"] main,
+  html[data-a11y-weight="600"] #displayLivePreview {
+    font-weight: 600;
+  }
+  html[data-a11y-para-space] main p,
+  html[data-a11y-para-space] main ul,
+  html[data-a11y-para-space] main ol,
+  html[data-a11y-para-space] #displayLivePreview p {
+    margin-bottom: var(--a11y-para-space);
+  }
+  html[data-a11y-case="uppercase"] main,
+  html[data-a11y-case="uppercase"] .course-sidebar,
+  html[data-a11y-case="uppercase"] .glossary-sidebar,
+  html[data-a11y-case="uppercase"] #displayLivePreview {
+    text-transform: uppercase;
+  }
+  html[data-a11y-case="lowercase"] main,
+  html[data-a11y-case="lowercase"] .course-sidebar,
+  html[data-a11y-case="lowercase"] .glossary-sidebar,
+  html[data-a11y-case="lowercase"] #displayLivePreview {
+    text-transform: lowercase;
+  }
+  html[data-a11y-case="capitalize"] main,
+  html[data-a11y-case="capitalize"] .course-sidebar,
+  html[data-a11y-case="capitalize"] .glossary-sidebar,
+  html[data-a11y-case="capitalize"] #displayLivePreview {
+    text-transform: capitalize;
+  }
+  html[data-a11y-case="small-caps"] main,
+  html[data-a11y-case="small-caps"] .course-sidebar,
+  html[data-a11y-case="small-caps"] .glossary-sidebar,
+  html[data-a11y-case="small-caps"] #displayLivePreview {
+    font-variant-caps: small-caps;
+  }
+  html[data-a11y-case] code,
+  html[data-a11y-case] pre,
+  html[data-a11y-case] kbd,
+  html[data-a11y-case] samp,
+  html[data-a11y-case] input,
+  html[data-a11y-case] textarea,
+  html[data-a11y-case] select,
+  html[data-a11y-case] option {
+    text-transform: none !important;
+    font-variant-caps: normal !important;
+  }
+  html[data-a11y-no-italics="true"] main em,
+  html[data-a11y-no-italics="true"] main i,
+  html[data-a11y-no-italics="true"] #displayLivePreview em,
+  html[data-a11y-no-italics="true"] #displayLivePreview i {
+    font-style: normal !important;
+  }
+  @media screen {
+    html[data-a11y-width]:not(.print-mode) #courseArticleContent,
+    html[data-a11y-width]:not(.print-mode) #sectionKeyTerms,
+    html[data-a11y-width]:not(.print-mode) .content-screen-header,
+    html[data-a11y-width]:not(.print-mode) .glossary-screen-header,
+    html[data-a11y-width]:not(.print-mode) #courseGlossary,
+    html[data-a11y-width]:not(.print-mode) #courseQuickReference,
+    html[data-a11y-width]:not(.print-mode) .course-view-only-glossary,
+    html[data-a11y-width]:not(.print-mode) .course-view-only-quickref {
+      max-width: var(--a11y-reading-width);
+    }
+  }
+  #a11yReadingGuideRoot,
+  #a11yReadingGuideRoot *,
+  #a11yMagnifierRoot,
+  #a11yMagnifierRoot * {
+    pointer-events: none !important;
+  }
+  #a11yReadingGuideRoot {
+    position: fixed;
+    inset: 0;
+    z-index: 2000;
+    opacity: 0;
+    transition: opacity 0.12s ease;
+  }
+  #a11yGuideMaskTop,
+  #a11yGuideMaskBottom,
+  .mag-guide-mask-top,
+  .mag-guide-mask-bottom {
+    position: fixed;
+    left: 0;
+    right: 0;
+    background-color: rgba(0, 0, 0, var(--guide-mask-alpha, 0.45));
+    display: none;
+  }
+  .mag-guide-mask-top,
+  .mag-guide-mask-bottom,
+  .mag-guide-band {
+    position: absolute;
+    left: 0;
+    right: 0;
+  }
+  #a11yGuideMaskTop,
+  .mag-guide-mask-top { top: 0; }
+  #a11yGuideMaskBottom,
+  .mag-guide-mask-bottom { bottom: 0; }
+  #a11yReadingGuideRoot.guide-style-mask #a11yGuideMaskTop,
+  #a11yReadingGuideRoot.guide-style-mask #a11yGuideMaskBottom,
+  #a11yMagGuideLayer.guide-style-mask .mag-guide-mask-top,
+  #a11yMagGuideLayer.guide-style-mask .mag-guide-mask-bottom {
+    display: block;
+  }
+  #a11yGuideBand {
+    position: fixed;
+    left: 0;
+    right: 0;
+    overflow: hidden;
+  }
+  .mag-guide-band {
+    overflow: hidden;
+  }
+  #a11yGuideTint,
+  .mag-guide-tint {
+    position: absolute;
+    inset: 0;
+  }
+  #a11yReadingGuideRoot.guide-style-highlight #a11yGuideTint,
+  #a11yMagGuideLayer.guide-style-highlight .mag-guide-tint {
+    background-color: rgba(var(--guide-rgb, 13, 110, 253), var(--guide-fill-alpha, 0.14));
+    border-top: 1px solid rgba(var(--guide-rgb, 13, 110, 253), var(--guide-border-alpha, 0.45));
+    border-bottom: 1px solid rgba(var(--guide-rgb, 13, 110, 253), var(--guide-border-alpha, 0.45));
+  }
+  #a11yReadingGuideRoot.guide-style-mask #a11yGuideTint,
+  #a11yMagGuideLayer.guide-style-mask .mag-guide-tint {
+    background-color: transparent;
+    border-top: 1.5px solid rgba(var(--guide-rgb, 13, 110, 253), 0.65);
+    border-bottom: 1.5px solid rgba(var(--guide-rgb, 13, 110, 253), 0.65);
+  }
+  #a11yReadingGuideRoot.guide-style-invert #a11yGuideTint,
+  #a11yMagGuideLayer.guide-style-invert .mag-guide-tint {
+    -webkit-backdrop-filter: invert(1) contrast(1.08);
+    backdrop-filter: invert(1) contrast(1.08);
+    border-top: 1px solid rgba(128, 128, 128, 0.5);
+    border-bottom: 1px solid rgba(128, 128, 128, 0.5);
+  }
+  #a11yReadingGuideRoot.guide-style-underline #a11yGuideBand,
+  #a11yMagGuideLayer.guide-style-underline .mag-guide-band {
+    overflow: visible;
+  }
+  #a11yReadingGuideRoot.guide-style-underline #a11yGuideTint,
+  #a11yMagGuideLayer.guide-style-underline .mag-guide-tint {
+    background-color: transparent;
+    border-bottom: var(--guide-line-width, 3px) solid rgba(var(--guide-rgb, 13, 110, 253), var(--guide-line-alpha, 0.78));
+  }
+  .guide-color-swatch {
+    width: 22px;
+    height: 22px;
+    border-radius: 999px;
+    border: 2px solid var(--bs-body-bg);
+    box-shadow: 0 0 0 1px var(--bs-border-color);
+    padding: 0;
+    cursor: pointer;
+    transition: transform 0.12s ease, box-shadow 0.12s ease;
+  }
+  .guide-color-swatch:hover {
+    transform: scale(1.1);
+  }
+  .guide-color-swatch.active {
+    box-shadow: 0 0 0 2px var(--bs-body-color);
+    transform: scale(1.12);
+  }
+
+  /* Standalone Screen Magnifier (Windows Magnifier-style Lens & Docked Bar) */
+  #a11yMagnifierRoot {
+    position: fixed;
+    inset: 0;
+    z-index: 2010;
+    opacity: 0;
+    transition: opacity 0.1s ease;
+  }
+  #a11yMagViewport {
+    position: fixed;
+    overflow: hidden;
+    background-color: var(--bs-body-bg);
+    border: 2px solid var(--bs-primary);
+    box-shadow: 0 12px 34px rgba(0, 0, 0, 0.28), 0 0 0 1px rgba(0, 0, 0, 0.12);
+    border-radius: 0.6rem;
+  }
+  #a11yMagnifierRoot.mag-mode-docked #a11yMagViewport {
+    left: 0 !important;
+    top: 0 !important;
+    width: 100vw !important;
+    border-radius: 0 !important;
+    border-width: 0 0 2px 0;
+    box-shadow: 0 6px 22px rgba(0, 0, 0, 0.22);
+  }
+  #a11yMagnifierRoot.mag-shape-circle #a11yMagViewport {
+    border-radius: 9999px;
+  }
+  #a11yMagStage {
+    position: absolute;
+    top: 0;
+    left: 0;
+    transform-origin: 0 0;
+    will-change: transform;
+  }
+  #a11yMagPageWrap {
+    position: relative;
+    will-change: transform;
+  }
+  #a11yMagFixedLayer {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 10;
+  }
+  #a11yMagGuideLayer {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 20;
+    overflow: hidden;
+  }
+  #a11yMagCrosshair {
+    position: absolute;
+    inset: 0;
+    background:
+      linear-gradient(to right, transparent calc(50% - 8px), rgba(var(--bs-primary-rgb), 0.35) calc(50% - 8px), rgba(var(--bs-primary-rgb), 0.35) calc(50% + 8px), transparent calc(50% + 8px)) center / 100% 1px no-repeat,
+      linear-gradient(to bottom, transparent calc(50% - 8px), rgba(var(--bs-primary-rgb), 0.35) calc(50% - 8px), rgba(var(--bs-primary-rgb), 0.35) calc(50% + 8px), transparent calc(50% + 8px)) center / 1px 100% no-repeat;
+    display: none;
+  }
+  #a11yMagnifierRoot.mag-mode-docked #a11yMagCrosshair {
+    display: block;
+  }
+  .a11y-mag-clone table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 1rem;
+    font-size: 0.92em;
+  }
+  .a11y-mag-clone th,
+  .a11y-mag-clone td {
+    border: 1px solid var(--bs-border-color);
+    padding: 0.45rem 0.65rem;
+    text-align: left;
+  }
+  .a11y-mag-clone thead th {
+    background-color: var(--bs-tertiary-bg);
+    font-weight: 600;
+  }
+  @media print {
+    #a11yReadingGuideRoot,
+    #a11yMagnifierRoot {
+      display: none !important;
+    }
+  }
 
   /* High Contrast Light */
   html[data-bs-theme="light"][data-a11y-contrast="high"] {
@@ -139,7 +390,22 @@
       lineHeight: "1.55",
       wordSpacing: "normal",
       letterSpacing: "normal",
+      paragraphSpacing: "normal",
+      textCase: "none",
+      fontWeight: "normal",
+      readingWidth: "none",
       underlineLinks: false,
+      noItalics: false,
+      readingGuide: false,
+      readingGuideStyle: "highlight",
+      readingGuideColor: "blue",
+      readingGuideHeight: "md",
+      readingGuideOpacity: "medium",
+      magnifier: false,
+      magnifierMode: "lens",
+      magnifierZoom: "2",
+      magnifierSize: "md",
+      magnifierShape: "rect",
       reduceMotion: false
     };
 
@@ -176,6 +442,7 @@
     const params = new URLSearchParams(window.location.search);
     const printParam = params.get("print");
     const isPrintMode = params.has("print") && printParam !== "false" && printParam !== "0";
+    const viewParam = params.get("view");
     const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
 
     function loadPrefs() {
@@ -267,11 +534,52 @@
       root.style.setProperty("--a11y-word-spacing", String(currentPrefs.wordSpacing || "normal"));
       root.style.setProperty("--a11y-letter-spacing", String(currentPrefs.letterSpacing || "normal"));
 
+      // Capitalization, weight, paragraph spacing & reading width
+      const textCase = currentPrefs.textCase || "none";
+      if (textCase !== "none") {
+        root.setAttribute("data-a11y-case", textCase);
+      } else {
+        root.removeAttribute("data-a11y-case");
+      }
+
+      const fontWeight = currentPrefs.fontWeight || "normal";
+      if (fontWeight !== "normal") {
+        root.setAttribute("data-a11y-weight", fontWeight);
+      } else {
+        root.removeAttribute("data-a11y-weight");
+      }
+
+      const paraSpace = String(currentPrefs.paragraphSpacing || "normal");
+      if (paraSpace !== "normal") {
+        const resolvedPara =
+          paraSpace === "wide" ? "1.5em" : paraSpace === "xwide" ? "2.25em" : paraSpace;
+        root.setAttribute("data-a11y-para-space", "custom");
+        root.style.setProperty("--a11y-para-space", resolvedPara);
+      } else {
+        root.removeAttribute("data-a11y-para-space");
+        root.style.removeProperty("--a11y-para-space");
+      }
+
+      const readingWidth = String(currentPrefs.readingWidth || "none");
+      if (readingWidth !== "none") {
+        root.setAttribute("data-a11y-width", "custom");
+        root.style.setProperty("--a11y-reading-width", readingWidth);
+      } else {
+        root.removeAttribute("data-a11y-width");
+        root.style.removeProperty("--a11y-reading-width");
+      }
+
       // Extra ADA flags
       if (currentPrefs.underlineLinks) {
         root.setAttribute("data-a11y-links", "underline");
       } else {
         root.removeAttribute("data-a11y-links");
+      }
+
+      if (currentPrefs.noItalics) {
+        root.setAttribute("data-a11y-no-italics", "true");
+      } else {
+        root.removeAttribute("data-a11y-no-italics");
       }
 
       if (currentPrefs.reduceMotion) {
@@ -283,6 +591,11 @@
 
     if (isPrintMode) {
       document.documentElement.classList.add("print-mode");
+    }
+    if (viewParam === "glossary") {
+      document.documentElement.classList.add("course-view-glossary");
+    } else if (viewParam === "quick-reference") {
+      document.documentElement.classList.add("course-view-quickref");
     }
 
     applyPrefs(currentPrefs);
