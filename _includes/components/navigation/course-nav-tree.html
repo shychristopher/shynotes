@@ -8,7 +8,7 @@
     {% assign rel_path = doc.path | remove_first: include.prefix %}
     {% assign parts = rel_path | split: "/" %}
     {% if parts.size == 1 %}
-      {% if doc.name == "index.md" %}
+      {% if parts[0] == "index.md" or parts[0] == "index.html" %}
         {% assign folder_index_doc = doc %}
       {% else %}
         {% assign direct_files = direct_files | push: doc %}

@@ -17,7 +17,7 @@
         {% assign rel_path = doc.path | remove_first: course_prefix %}
         {% assign rel_parts = rel_path | split: "/" %}
         {% if rel_parts.size == 1 %}
-          {% if doc.name == "index.md" %}
+          {% if rel_parts[0] == "index.md" or rel_parts[0] == "index.html" %}
             {% assign overview_url = doc.url %}
             {% assign overview_doc = doc %}
           {% else %}
