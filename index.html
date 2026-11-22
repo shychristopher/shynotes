@@ -41,30 +41,25 @@ title: Home
 <!-- Hero -->
 <section class="p-4 p-md-5 mb-5 bg-body-tertiary border rounded-4">
   <div class="col-lg-9">
-    <span class="badge rounded-pill text-bg-primary-subtle text-primary-emphasis border border-primary-subtle mb-3">
-      Open-Source Study Archive
-    </span>
-    <h1 class="display-5 fw-bold mb-3">Study smarter, not harder.</h1>
+    <h1 class="display-5 fw-bold mb-3">Free study notes, without the clutter.</h1>
     <p class="lead text-body-secondary mb-3">
-      Clean, searchable study notes, course breakdowns, and quick references built to help you actually understand the material—not dig through messy slide decks at 1&nbsp;AM.
+      {{ site.title }} is a simple place to read, search, and print course notes, glossaries, and reference sheets—built to be easy to use whether you're reviewing on a laptop, phone, paper, or offline.
     </p>
     <p class="text-body-secondary mb-4">
-      Jump straight into a course, filter by topic, or hit print when you want paper in front of you. Everything here is free, fast, and open to anyone trying to get through the semester.
+      No accounts, no paywalls, and no ads. Your reading progress, bookmarks, and display preferences stay right in your own browser.
     </p>
     <div class="d-flex flex-wrap align-items-center gap-2 mb-4">
       <a href="{{ '/courses/' | relative_url }}" class="btn btn-primary btn-lg px-4">
-        Start Studying →
+        Browse Courses →
       </a>
-      {% if site.repo.url %}
-        <a
-          href="{{ site.repo.url }}"
-          target="_blank"
-          rel="noopener noreferrer"
-          class="btn btn-outline-secondary btn-lg px-4"
-        >
-          View on GitHub ↗
-        </a>
-      {% endif %}
+      <button
+        type="button"
+        class="btn btn-outline-secondary btn-lg px-4"
+        data-bs-toggle="modal"
+        data-bs-target="#displaySettingsModal"
+      >
+        Display &amp; Accessibility
+      </button>
     </div>
 
     <div class="d-flex flex-wrap gap-3 pt-3 border-top small text-body-secondary">
@@ -72,19 +67,19 @@ title: Home
       <span aria-hidden="true">·</span>
       <span><strong class="text-body">{{ unique_tags.size }}</strong> {% if unique_tags.size == 1 %}topic{% else %}topics{% endif %}</span>
       <span aria-hidden="true">·</span>
-      <span>Dark &amp; print-ready</span>
+      <span>Works offline (PWA)</span>
       <span aria-hidden="true">·</span>
-      <span>100% open source</span>
+      <span>No account needed</span>
     </div>
   </div>
 </section>
 
-<!-- Featured Courses Spotlight -->
+<!-- Featured Courses -->
 <section class="mb-5">
   <div class="d-flex flex-wrap justify-content-between align-items-end gap-2 mb-3">
     <div>
       <h2 class="h4 fw-bold mb-1">Featured Courses</h2>
-      <p class="text-body-secondary small mb-0">A quick spotlight on highlighted study guides in the archive.</p>
+      <p class="text-body-secondary small mb-0">Jump right into one of the active courses.</p>
     </div>
 
     <div class="d-flex align-items-center gap-2">
@@ -111,7 +106,7 @@ title: Home
         </div>
       {% endif %}
       <a href="{{ '/courses/' | relative_url }}" class="btn btn-sm btn-link text-decoration-none px-1">
-        Browse all →
+        View all courses →
       </a>
     </div>
   </div>
@@ -169,110 +164,118 @@ title: Home
       <div class="card-body">
         <p class="fw-semibold mb-1">No featured courses right now.</p>
         <p class="small text-body-secondary mb-3">
-          Check out the full catalog to see everything currently in the archive.
+          Open the full catalog to see all available courses.
         </p>
         <a href="{{ '/courses/' | relative_url }}" class="btn btn-sm btn-outline-primary">
-          Explore Courses →
+          Browse Courses →
         </a>
       </div>
     </div>
   {% endif %}
 </section>
 
-<!-- Why Use Shy Notes + Motivation -->
+<!-- Study Features -->
 <section class="mb-5">
-  <div class="row g-4 align-items-stretch">
-    <div class="col-lg-5">
-      <div class="card h-100 bg-body-tertiary border">
-        <div class="card-body p-4 d-flex flex-column">
-          <span class="small text-uppercase text-body-secondary fw-semibold mb-2">Why I Built This</span>
-          <h2 class="h4 fw-bold mb-3">Notes shouldn't die in a forgotten folder.</h2>
-          <p class="text-body-secondary small mb-3">
-            I started {{ site.title }} because I kept putting real effort into distilling dense lectures, textbooks, and study guides—only for those notes to sit untouched on my laptop once the final was over.
+  <div class="mb-3">
+    <h2 class="h4 fw-bold mb-1">Built-In Study Tools</h2>
+    <p class="text-body-secondary small mb-0">
+      A handful of practical features to make reading, reviewing, and printing less painful.
+    </p>
+  </div>
+
+  <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-3">
+    <div class="col">
+      <div class="card h-100 border">
+        <div class="card-body p-4">
+          <h3 class="h6 fw-bold mb-2">Bookmarks &amp; Quick Reference</h3>
+          <p class="small text-body-secondary mb-0">
+            Click the bookmark icon on any section heading to save a <strong>Return to</strong> spot (earlier sections auto-collapse when you come back), pin a <strong>Bookmark</strong>, or flag it to <strong>Review later</strong>. Everything gathers on each course's <strong>Quick Reference</strong> page with expandable note previews.
           </p>
-          <p class="text-body-secondary small mb-4">
-            Putting them out in the open forces me to write clearer explanations, gives me a fast reference I can pull up anywhere, and hopefully saves someone else a few late nights along the way.
-          </p>
-          <div class="mt-auto">
-            <a href="{{ '/courses/' | relative_url }}" class="small fw-semibold text-decoration-none">
-              See what's in the archive →
-            </a>
-          </div>
         </div>
       </div>
     </div>
 
-    <div class="col-lg-7">
-      <div class="row row-cols-1 row-cols-sm-2 g-3 h-100">
-        <div class="col">
-          <div class="card h-100 border">
-            <div class="card-body p-4">
-              <h3 class="h6 fw-bold mb-2">Built for Fast Review</h3>
-              <p class="small text-body-secondary mb-0">
-                Organized by course and topic so you can review key concepts quickly without wading through fluff.
-              </p>
-            </div>
-          </div>
+    <div class="col">
+      <div class="card h-100 border">
+        <div class="card-body p-4">
+          <h3 class="h6 fw-bold mb-2">Progress Tracking &amp; Collapsible Notes</h3>
+          <p class="small text-body-secondary mb-0">
+            Pages automatically track what you've reviewed—and flag pages that are <strong>New</strong> or <strong>Updated</strong> since you last read them. Collapse or expand individual sections or whole chapters so long study guides stay easy to navigate.
+          </p>
         </div>
+      </div>
+    </div>
 
-        <div class="col">
-          <div class="card h-100 border">
-            <div class="card-body p-4">
-              <h3 class="h6 fw-bold mb-2">Instant Search &amp; Filters</h3>
-              <p class="small text-body-secondary mb-0">
-                Narrow the archive by course code, keyword, status, or tags—your filters even stick around when you reload.
-              </p>
-            </div>
-          </div>
+    <div class="col">
+      <div class="card h-100 border">
+        <div class="card-body p-4">
+          <h3 class="h6 fw-bold mb-2">Interactive Glossaries &amp; Key Terms</h3>
+          <p class="small text-body-secondary mb-0">
+            Hover or tap underlined terms inside lessons to see their definitions without leaving the page. Every lesson lists its own <strong>Key Terms</strong>, and full course glossaries support search, category filters, related-term links, and lesson backlinks.
+          </p>
         </div>
+      </div>
+    </div>
 
-        <div class="col">
-          <div class="card h-100 border">
-            <div class="card-body p-4">
-              <h3 class="h6 fw-bold mb-2">Easy on the Eyes</h3>
-              <p class="small text-body-secondary mb-0">
-                Matches your OS light or dark theme automatically, and switches to clean paper-friendly styling whenever you print or add <code>?print</code>.
-              </p>
-            </div>
-          </div>
+    <div class="col">
+      <div class="card h-100 border">
+        <div class="card-body p-4">
+          <h3 class="h6 fw-bold mb-2">Flexible Print Studio</h3>
+          <p class="small text-body-secondary mb-0">
+            Prefer paper? Print a single page, a whole section, or an entire course in one shot—with an optional glossary appendix, customizable in-text term highlighting, print-only font choices, and multi-column glossary study sheets.
+          </p>
         </div>
+      </div>
+    </div>
 
-        <div class="col">
-          <div class="card h-100 border">
-            <div class="card-body p-4">
-              <h3 class="h6 fw-bold mb-2">Open to Contributions</h3>
-              <p class="small text-body-secondary mb-0">
-                Spot a typo, missing formula, or have clean notes of your own? Open a PR on GitHub and help grow the stash.
-              </p>
-            </div>
-          </div>
+    <div class="col">
+      <div class="card h-100 border">
+        <div class="card-body p-4">
+          <h3 class="h6 fw-bold mb-2">Display &amp; Accessibility Controls</h3>
+          <p class="small text-body-secondary mb-0">
+            Open <strong>Aa Display</strong> in the top bar anytime for Light, Dark, and High Contrast themes, dyslexia-friendly and local system fonts (OpenDyslexic, Atkinson Hyperlegible, Lexend), custom text sizing, spacing, line width, capitalization, a customizable <strong>Reading Guide</strong>, and a <strong>Screen Magnifier</strong>.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <div class="col">
+      <div class="card h-100 border">
+        <div class="card-body p-4">
+          <h3 class="h6 fw-bold mb-2">Offline-Ready &amp; Installable</h3>
+          <p class="small text-body-secondary mb-0">
+            Add {{ site.title }} to your phone's home screen or desktop like an app. Courses you open are saved automatically for offline studying and update quietly when you're back online—without filling your storage with courses you never use.
+          </p>
         </div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- Bottom CTA -->
+<!-- About & Contributing -->
 <section class="card border bg-body-tertiary">
-  <div class="card-body p-4 p-md-5 d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3">
-    <div>
-      <h2 class="h4 fw-bold mb-1">Ready to get studying?</h2>
+  <div class="card-body p-4 p-md-5 d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-4">
+    <div style="max-width: 40rem;">
+      <h2 class="h5 fw-bold mb-2">Why this site exists</h2>
+      <p class="text-body-secondary small mb-2">
+        Class notes take a lot of time to put together, and usually end up buried in a random folder once the semester ends. Keeping them here makes them easy to pull up from anywhere—and hopefully helps somebody else taking the same class.
+      </p>
       <p class="text-body-secondary small mb-0">
-        Pick a course, lock in, and knock out whatever exam or project is next on your list.
+        Spot a mistake, want to add a topic, or have notes for another class? Everything is plain Markdown on GitHub, and new courses automatically get glossaries, bookmarks, print previews, and offline support.
       </p>
     </div>
     <div class="d-flex flex-wrap gap-2 flex-shrink-0">
       <a href="{{ '/courses/' | relative_url }}" class="btn btn-primary">
-        Open Course Dashboard →
+        Go to Courses →
       </a>
       {% if site.repo.url %}
         <a
-          href="{{ site.repo.url }}"
+          href="{{ site.repo.url }}/blob/main/CONTRIBUTING.md"
           target="_blank"
           rel="noopener noreferrer"
           class="btn btn-outline-secondary"
         >
-          Contribute ↗
+          How to Contribute ↗
         </a>
       {% endif %}
     </div>
