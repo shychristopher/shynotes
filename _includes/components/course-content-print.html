@@ -1,0 +1,385 @@
+{% assign slug = include.course_slug %}
+{% assign course_meta = include.course_meta %}
+{% assign path_parts = page.path | split: "/" %}
+{% assign root_index_path = "_courses/" | append: slug | append: "/index.md" %}
+
+{% assign scope_prefix = "" %}
+{% assign scope_label = "" %}
+{% assign is_section_overview = false %}
+{% assign is_course_root = false %}
+
+{% if page.path == root_index_path %}
+  {% assign is_course_root = true %}
+  {% assign scope_prefix = "_courses/" | append: slug | append: "/" %}
+  {% assign scope_label = "Entire Course" %}
+{% elsif path_parts.size >= 4 %}
+  {% assign top_folder = path_parts[2] %}
+  {% assign scope_prefix = "_courses/" | append: slug | append: "/" | append: top_folder | append: "/" %}
+  {% assign folder_index_path = scope_prefix | append: "index.md" %}
+  {% if page.path == folder_index_path %}
+    {% assign is_section_overview = true %}
+  {% endif %}
+  {% assign folder_index_doc = site.courses | where: "path", folder_index_path | first %}
+  {% if folder_index_doc and folder_index_doc.title and folder_index_doc.title != "Index" %}
+    {% assign scope_label = folder_index_doc.title %}
+  {% else %}
+    {% assign fwords = top_folder | replace: "_", "-" | split: "-" %}
+    {% assign fdigits = fwords[0] | remove: "0" | remove: "1" | remove: "2" | remove: "3" | remove: "4" | remove: "5" | remove: "6" | remove: "7" | remove: "8" | remove: "9" %}
+    {% assign flabels = "" | split: "" %}
+    {% for fw in fwords %}
+      {% if forloop.first and fdigits == "" and fwords.size > 1 %}{% continue %}{% endif %}
+      {% assign cap_fw = fw | capitalize %}
+      {% assign flabels = flabels | push: cap_fw %}
+    {% endfor %}
+    {% assign scope_label = flabels | join: " " %}
+  {% endif %}
+{% endif %}
+
+{% assign section_docs = "" | split: "" %}
+{% if scope_prefix != "" and site.courses and site.courses.size > 0 %}
+  {% assign _raw_sec = "" | split: "" %}
+  {% for _doc in site.courses %}
+    {% assign _pcheck = _doc.path | slice: 0, scope_prefix.size %}
+    {% if _pcheck == scope_prefix %}
+      {% unless _doc.glossary == true or _doc.quick_reference == true or _doc.hidden == true or _doc.suppressed == true or _doc.nav_exclude == true %}
+        {% assign _raw_sec = _raw_sec | push: _doc %}
+      {% endunless %}
+    {% endif %}
+  {% endfor %}
+  {% if _raw_sec.size > 0 %}
+    {% assign _sortable_sec = "" | split: "" %}
+    {% for _doc in _raw_sec %}
+      {% assign _sort_path = _doc.path | replace: "/index.md", "/00-index.md" %}
+      {% assign _key = _sort_path | append: ":::" | append: _doc.path %}
+      {% assign _sortable_sec = _sortable_sec | push: _key %}
+    {% endfor %}
+    {% assign _sorted_keys = _sortable_sec | sort_natural %}
+    {% for _key in _sorted_keys %}
+      {% assign _target_path = _key | split: ":::" | last %}
+      {% for _doc in _raw_sec %}
+        {% if _doc.path == _target_path %}
+          {% assign section_docs = section_docs | push: _doc %}
+          {% break %}
+        {% endif %}
+      {% endfor %}
+    {% endfor %}
+  {% endif %}
+{% endif %}
+
+{% assign has_multi_scope = false %}
+{% if section_docs.size > 1 %}
+  {% assign has_multi_scope = true %}
+{% endif %}
+
+{% assign current_page_title = page.title %}
+{% if is_course_root and course_meta and course_meta.title %}
+  {% assign current_page_title = course_meta.title %}
+{% endif %}
+
+{% assign _page_tags_list = "" | split: "" %}
+{% if page.glossary_categories %}
+  {% for _t in page.glossary_categories %}{% assign _page_tags_list = _page_tags_list | push: _t %}{% endfor %}
+{% endif %}
+{% if page.tags %}
+  {% for _t in page.tags %}{% assign _page_tags_list = _page_tags_list | push: _t %}{% endfor %}
+{% endif %}
+
+{% assign _section_tags_list = "" | split: "" %}
+{% for _t in _page_tags_list %}{% assign _section_tags_list = _section_tags_list | push: _t %}{% endfor %}
+{% if folder_index_doc %}
+  {% if folder_index_doc.glossary_categories %}
+    {% for _t in folder_index_doc.glossary_categories %}{% assign _section_tags_list = _section_tags_list | push: _t %}{% endfor %}
+  {% endif %}
+  {% if folder_index_doc.tags %}
+    {% for _t in folder_index_doc.tags %}{% assign _section_tags_list = _section_tags_list | push: _t %}{% endfor %}
+  {% endif %}
+{% endif %}
+
+<!-- Left Print Settings Sidebar (pinned >= 992px, collapses to offcanvas drawer < 992px, never printed) -->
+<aside
+  id="contentPrintSidebar"
+  class="offcanvas-lg offcanvas-start border-end bg-white text-dark"
+  tabindex="-1"
+  aria-labelledby="contentPrintSidebarLabel"
+  data-course-slug="{{ slug | escape }}"
+  data-current-url="{{ page.url | relative_url }}"
+  data-current-title="{{ current_page_title | escape }}"
+  data-scope-label="{{ scope_label | escape }}"
+  data-is-course-root="{% if is_course_root %}true{% else %}false{% endif %}"
+  data-page-tags="{{ _page_tags_list | uniq | join: '|' | downcase | escape }}"
+  data-section-tags="{{ _section_tags_list | uniq | join: '|' | downcase | escape }}"
+  data-default-scope="{% if is_section_overview and has_multi_scope %}section{% else %}page{% endif %}"
+  style="--bs-offcanvas-width: 280px;"
+>
+  <div class="offcanvas-header border-bottom d-lg-none">
+    <h2 class="offcanvas-title h6 fw-bold mb-0" id="contentPrintSidebarLabel">Print Settings</h2>
+    <button
+      type="button"
+      class="btn-close"
+      data-bs-dismiss="offcanvas"
+      data-bs-target="#contentPrintSidebar"
+      aria-label="Close"
+    ></button>
+  </div>
+
+  <div class="offcanvas-body d-flex flex-column w-100 p-0">
+    <div class="p-3 border-bottom d-none d-lg-block">
+      <a
+        href="{{ page.url | relative_url }}"
+        class="small text-decoration-none text-secondary d-inline-flex align-items-center gap-1 mb-2"
+      >
+        <span aria-hidden="true">←</span>
+        <span>Back to Lesson</span>
+      </a>
+      <h2 class="h6 fw-bold mb-0">Print Settings</h2>
+    </div>
+
+    <div class="p-3 flex-grow-1 overflow-y-auto d-flex flex-column gap-4">
+    {% if has_multi_scope %}
+      <!-- Scope Selector (Current Page vs Whole Section / Course) -->
+      <div>
+        <div class="text-uppercase text-secondary fw-semibold mb-2" style="font-size: 0.72rem; letter-spacing: 0.05em;">
+          Scope
+        </div>
+        <div class="d-grid gap-2" role="radiogroup" aria-label="Print scope">
+          <label class="content-scope-option d-flex align-items-start gap-2 p-2 rounded border bg-white" for="printScopePage">
+            <input
+              class="form-check-input mt-1 flex-shrink-0"
+              type="radio"
+              name="contentPrintScope"
+              id="printScopePage"
+              value="page"
+              {% unless is_section_overview %}checked{% endunless %}
+            >
+            <span class="small">
+              <strong class="d-block">This page only</strong>
+              <span class="text-secondary" style="font-size: 0.75rem;">{{ current_page_title }}</span>
+            </span>
+          </label>
+
+          <label class="content-scope-option d-flex align-items-start gap-2 p-2 rounded border bg-white" for="printScopeSection">
+            <input
+              class="form-check-input mt-1 flex-shrink-0"
+              type="radio"
+              name="contentPrintScope"
+              id="printScopeSection"
+              value="section"
+              {% if is_section_overview %}checked{% endif %}
+            >
+            <span class="small">
+              <strong class="d-block">{% if is_course_root %}Entire course{% else %}Whole section{% endif %}</strong>
+              <span class="text-secondary" style="font-size: 0.75rem;">
+                {{ scope_label }} ({{ section_docs.size }} {% if section_docs.size == 1 %}topic{% else %}topics{% endif %})
+              </span>
+            </span>
+          </label>
+        </div>
+
+        <!-- Per-topic selection checklist (visible when Whole Section / Course is active) -->
+        <div id="contentPrintPagePicker" class="d-none mt-2 p-2 rounded border bg-light">
+          <div class="d-flex justify-content-between align-items-center mb-1">
+            <span class="text-uppercase text-secondary fw-semibold" style="font-size: 0.68rem; letter-spacing: 0.05em;">
+              Included Topics
+            </span>
+            <button
+              type="button"
+              class="btn btn-link btn-sm p-0 text-decoration-none"
+              id="contentPrintSelectAllBtn"
+              style="font-size: 0.72rem;"
+            >
+              Select all
+            </button>
+          </div>
+          <div class="overflow-y-auto d-flex flex-column gap-1" style="max-height: 180px;">
+            {% assign _scope_index_path = scope_prefix | append: "index.md" %}
+            {% for _doc in section_docs %}
+              {% assign _doc_title = _doc.title %}
+              {% if _doc.path == root_index_path %}
+                {% assign _doc_title = "Course Overview" %}
+              {% elsif _doc.path == _scope_index_path %}
+                {% assign _doc_title = _doc.title | append: " (Overview)" %}
+              {% endif %}
+              <div class="form-check mb-0">
+                <input
+                  class="form-check-input content-print-page-cb"
+                  type="checkbox"
+                  id="printPageCb-{{ forloop.index }}"
+                  value="{{ _doc.url | relative_url }}"
+                  checked
+                >
+                <label class="form-check-label" for="printPageCb-{{ forloop.index }}" style="font-size: 0.78rem;">
+                  {{ _doc_title }}
+                </label>
+              </div>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+    {% endif %}
+
+    <!-- Layout & Extras -->
+    <div>
+      <div class="text-uppercase text-secondary fw-semibold mb-2" style="font-size: 0.72rem; letter-spacing: 0.05em;">
+        Options
+      </div>
+      {% if has_multi_scope %}
+        <div class="form-check mb-2" id="contentPrintPageBreaksWrap">
+          <input class="form-check-input content-print-opt" type="checkbox" id="contentPrintPageBreaks" data-content-opt="pageBreaks">
+          <label class="form-check-label small" for="contentPrintPageBreaks">Page break between topics</label>
+        </div>
+      {% endif %}
+      <div class="form-check mb-1" id="contentPrintGlossaryWrap">
+        <input class="form-check-input content-print-opt" type="checkbox" id="contentPrintGlossaryOpt" data-content-opt="includeGlossary" checked>
+        <label class="form-check-label small" for="contentPrintGlossaryOpt">
+          Include Glossary <span class="text-secondary" id="contentPrintGlossaryCount"></span>
+        </label>
+      </div>
+
+      <!-- Contextual Term Styling Sub-Panel (shown when Include Glossary is checked) -->
+      <div id="contentPrintTermStyleWrap" class="ms-3 mb-2 p-2 rounded border bg-light flex-column gap-2">
+        <div>
+          <label for="contentPrintTermStyle" class="form-label mb-1 text-secondary" style="font-size: 0.74rem;">Term emphasis in text</label>
+          <select id="contentPrintTermStyle" class="form-select form-select-sm content-print-select" data-content-select="termStyle">
+            <option value="dotted" selected>Dotted underline</option>
+            <option value="solid">Solid underline</option>
+            <option value="box">Box / Pill</option>
+            <option value="highlight">Highlight</option>
+            <option value="bold">Bold italic</option>
+            <option value="none">None</option>
+          </select>
+        </div>
+
+        <div id="contentPrintTermThicknessWrap">
+          <label for="contentPrintTermThickness" class="form-label mb-1 text-secondary" style="font-size: 0.74rem;">Line thickness</label>
+          <select id="contentPrintTermThickness" class="form-select form-select-sm content-print-select" data-content-select="termThickness">
+            <option value="thin" selected>Thin</option>
+            <option value="medium">Medium</option>
+            <option value="thick">Thick</option>
+          </select>
+        </div>
+
+        <div id="contentPrintTermColorWrap">
+          <div class="text-secondary mb-1" style="font-size: 0.74rem;">Color</div>
+          <div class="d-flex align-items-center gap-2" role="radiogroup" aria-label="Term highlight color">
+            <button type="button" class="term-color-swatch" data-term-color="ink" title="Black / Gray (B&W friendly)" aria-label="Black / Gray" style="background-color: #343a40;"></button>
+            <button type="button" class="term-color-swatch" data-term-color="yellow" title="Yellow / Amber" aria-label="Yellow" style="background-color: #facc15;"></button>
+            <button type="button" class="term-color-swatch" data-term-color="blue" title="Blue" aria-label="Blue" style="background-color: #3b82f6;"></button>
+            <button type="button" class="term-color-swatch" data-term-color="green" title="Green" aria-label="Green" style="background-color: #22c55e;"></button>
+            <button type="button" class="term-color-swatch" data-term-color="pink" title="Pink" aria-label="Pink" style="background-color: #ec4899;"></button>
+          </div>
+        </div>
+      </div>
+      <div class="form-check">
+        <input class="form-check-input content-print-opt" type="checkbox" id="contentPrintHeaderOpt" data-content-opt="showHeader" checked>
+        <label class="form-check-label small" for="contentPrintHeaderOpt">Include course header</label>
+      </div>
+    </div>
+
+    <!-- Typography & Density -->
+    <div>
+      <div class="text-uppercase text-secondary fw-semibold mb-2" style="font-size: 0.72rem; letter-spacing: 0.05em;">
+        Typography &amp; Density
+      </div>
+      <div class="mb-2">
+        <label for="contentPrintFontFamily" class="form-label mb-1 text-secondary" style="font-size: 0.78rem;">Font family</label>
+        <select id="contentPrintFontFamily" class="form-select form-select-sm print-font-family-select a11y-font-dropdown">
+          <option value="" data-site-font-option>Match website font</option>
+          <optgroup label="Web &amp; Accessibility Fonts">
+            <option value="sans">System Sans-Serif</option>
+            <option value="atkinson">Atkinson Hyperlegible</option>
+            <option value="lexend">Lexend</option>
+            <option value="opendyslexic">OpenDyslexic</option>
+            <option value="serif">Serif (Georgia)</option>
+            <option value="mono">Monospace</option>
+          </optgroup>
+          <optgroup label="System Fonts" class="a11y-system-fonts-group"></optgroup>
+        </select>
+      </div>
+      <div class="row g-2">
+        <div class="col-6">
+          <label for="contentPrintFont" class="form-label mb-1 text-secondary" style="font-size: 0.78rem;">Font size</label>
+          <select id="contentPrintFont" class="form-select form-select-sm content-print-select" data-content-select="font">
+            <option value="sm">Small</option>
+            <option value="md" selected>Normal</option>
+            <option value="lg">Large</option>
+          </select>
+        </div>
+        <div class="col-6">
+          <label for="contentPrintSpacing" class="form-label mb-1 text-secondary" style="font-size: 0.78rem;">Spacing</label>
+          <select id="contentPrintSpacing" class="form-select form-select-sm content-print-select" data-content-select="spacing">
+            <option value="compact">Compact</option>
+            <option value="normal" selected>Normal</option>
+            <option value="relaxed">Relaxed</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <div id="contentPrintLoading" class="d-none small text-secondary">
+      Loading section topics…
+    </div>
+  </div>
+
+    <div class="p-3 border-top d-grid gap-2 flex-shrink-0">
+      <button type="button" class="btn btn-dark btn-sm fw-semibold" id="contentPreviewPrintBtn">
+        Print Now
+      </button>
+      <a href="{{ page.url | relative_url }}" class="btn btn-outline-secondary btn-sm">
+        Exit Print Preview
+      </a>
+      <button type="button" class="btn btn-link btn-sm text-secondary text-decoration-none py-0" id="contentPrintResetBtn">
+        Reset to defaults
+      </button>
+    </div>
+  </div>
+</aside>
+
+<!-- Floating Mobile / Half-Screen Print Controls Button (hidden >= 992px and in @media print) -->
+<div class="print-preview-fab d-none d-lg-none" id="contentPrintFab">
+  <button
+    type="button"
+    class="btn btn-dark btn-sm rounded-pill shadow d-inline-flex align-items-center gap-2 px-3 py-2"
+    data-bs-toggle="offcanvas"
+    data-bs-target="#contentPrintSidebar"
+    aria-controls="contentPrintSidebar"
+    aria-label="Open print settings"
+  >
+    <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" fill="currentColor" viewBox="0 0 16 16" aria-hidden="true">
+      <path d="M8 4.754a3.246 3.246 0 1 0 0 6.492 3.246 3.246 0 0 0 0-6.492M5.754 8a2.246 2.246 0 1 1 4.492 0 2.246 2.246 0 0 1-4.492 0"/>
+      <path d="M9.796 1.343c-.527-1.79-3.065-1.79-3.592 0l-.094.319a.873.873 0 0 1-1.255.52l-.292-.16c-1.64-.892-3.433.902-2.54 2.541l.159.292a.873.873 0 0 1-.52 1.255l-.319.094c-1.79.527-1.79 3.065 0 3.592l.319.094a.873.873 0 0 1 .52 1.255l-.16.292c-.892 1.64.901 3.434 2.541 2.54l.292-.159a.873.873 0 0 1 1.255.52l.094.319c.527 1.79 3.065 1.79 3.592 0l.094-.319a.873.873 0 0 1 1.255-.52l.292.16c1.64.893 3.434-.902 2.54-2.541l-.159-.292a.873.873 0 0 1 .52-1.255l.319-.094c1.79-.527 1.79-3.065 0-3.592l-.319-.094a.873.873 0 0 1-.52-1.255l.16-.292c.893-1.64-.902-3.433-2.541-2.54l-.292.159a.873.873 0 0 1-1.255-.52zm-2.633.283c.246-.835 1.428-.835 1.674 0l.094.319a1.873 1.873 0 0 0 2.693 1.115l.291-.16c.764-.415 1.6.42 1.184 1.185l-.159.292a1.873 1.873 0 0 0 1.116 2.692l.318.094c.835.246.835 1.428 0 1.674l-.319.094a1.873 1.873 0 0 0-1.115 2.693l.16.291c.415.764-.42 1.6-1.185 1.184l-.291-.159a1.873 1.873 0 0 0-2.693 1.116l-.094.318c-.246.835-1.428.835-1.674 0l-.094-.319a1.873 1.873 0 0 0-2.692-1.115l-.292.16c-.764.415-1.6-.42-1.184-1.185l.159-.291A1.873 1.873 0 0 0 1.945 8.93l-.319-.094c-.835-.246-.835-1.428 0-1.674l.319-.094A1.873 1.873 0 0 0 3.06 4.377l-.16-.292c-.415-.764.42-1.6 1.185-1.184l.292.159a1.873 1.873 0 0 0 2.692-1.115z"/>
+    </svg>
+    <span>Options</span>
+  </button>
+  <button
+    type="button"
+    class="btn btn-primary btn-sm rounded-pill shadow px-3 py-2"
+    id="contentFabPrintBtn"
+  >
+    Print
+  </button>
+</div>
+
+{% if has_multi_scope %}
+{% assign _scope_index_path = scope_prefix | append: "index.md" %}
+<script type="application/json" id="coursePrintSectionManifest">
+[
+  {% for _doc in section_docs %}
+    {% assign _doc_title = _doc.title %}
+    {% assign _is_scope_index = false %}
+    {% if _doc.path == root_index_path %}
+      {% assign _doc_title = "Overview" %}
+      {% assign _is_scope_index = true %}
+    {% elsif _doc.path == _scope_index_path %}
+      {% assign _is_scope_index = true %}
+    {% endif %}
+    {
+      "title": {{ _doc_title | jsonify }},
+      "description": {{ _doc.description | default: "" | jsonify }},
+      "url": {{ _doc.url | relative_url | jsonify }},
+      "isScopeIndex": {% if _is_scope_index %}true{% else %}false{% endif %},
+      "isCurrent": {% if _doc.url == page.url %}true{% else %}false{% endif %}
+    }{% unless forloop.last %},{% endunless %}
+  {% endfor %}
+]
+</script>
+{% endif %}

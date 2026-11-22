@@ -1,0 +1,1173 @@
+{% assign course_meta = nil %}
+{% assign course_slug = nil %}
+{% assign is_page_hidden = false %}
+{% if page.hidden == true or page.suppressed == true %}
+  {% assign is_page_hidden = true %}
+{% endif %}
+{% if page.collection == "courses" %}
+  {% assign path_parts = page.path | split: "/" %}
+  {% assign course_slug = page.course_slug | default: path_parts[1] %}
+  {% if site.data.courses and course_slug %}
+    {% assign course_meta = site.data.courses[course_slug] %}
+    {% if course_meta %}
+      {% if course_meta.hidden == true or course_meta.suppressed == true %}
+        {% assign is_page_hidden = true %}
+      {% endif %}
+    {% endif %}
+  {% endif %}
+{% endif %}
+{% assign expected_course_index = "_courses/" | append: course_slug | append: "/index.md" %}
+{% assign is_course_index = false %}
+{% if page.path == expected_course_index %}
+  {% assign is_course_index = true %}
+{% endif %}
+{% assign course_has_glossary = false %}
+{% if site.data.glossaries and course_slug %}
+  {% if site.data.glossaries[course_slug] and site.data.glossaries[course_slug].size > 0 %}
+    {% assign course_has_glossary = true %}
+  {% elsif course_meta and course_meta.glossary_includes %}
+    {% for _inc_slug in course_meta.glossary_includes %}
+      {% if site.data.glossaries[_inc_slug] and site.data.glossaries[_inc_slug].size > 0 %}
+        {% assign course_has_glossary = true %}
+        {% break %}
+      {% endif %}
+    {% endfor %}
+  {% endif %}
+{% endif %}
+{% if is_page_hidden %}
+{% assign redirect_url = '/courses/?unavailable=1' | relative_url %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="robots" content="noindex, nofollow">
+    <title>Course Unavailable · {{ site.title }}</title>
+    <meta http-equiv="refresh" content="0; url={{ redirect_url }}">
+    <script>
+        window.location.replace({{ redirect_url | jsonify }});
+    </script>
+    {% include head/links.html %}
+</head>
+
+<body>
+    {% include components/navigation/navbar.html %}
+    <main class="container py-5">
+        <div class="card bg-body-tertiary text-center py-4 mx-auto" style="max-width: 32rem;">
+            <div class="card-body">
+                <h1 class="h5 fw-bold mb-2">Course Unavailable</h1>
+                <p class="small text-body-secondary mb-3">
+                    This course is no longer available. Redirecting you back to the courses catalog…
+                </p>
+                <a href="{{ redirect_url }}" class="btn btn-primary btn-sm">Back to Courses</a>
+            </div>
+        </div>
+    </main>
+</body>
+
+</html>
+{% else %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    {% include head/meta.html %}
+    {% include head/links.html %}
+    <style>
+        @media (min-width: 992px) {
+            .course-sidebar {
+                display: flex !important;
+                flex-direction: column;
+                flex: 0 0 280px !important;
+                width: 280px !important;
+                position: sticky !important;
+                top: 57px;
+                height: calc(100vh - 57px) !important;
+                overflow: hidden !important;
+                background-color: var(--bs-tertiary-bg) !important;
+                border-right: var(--bs-border-width) solid var(--bs-border-color) !important;
+            }
+            .course-sidebar .offcanvas-body {
+                width: 100%;
+                flex: 1 1 auto !important;
+                min-height: 0;
+                overflow: hidden !important;
+            }
+        }
+        .course-sidebar .offcanvas-body {
+            display: flex;
+            flex-direction: column;
+            min-height: 0;
+            overflow: hidden;
+        }
+        .course-sidebar-scroll,
+        .glossary-sidebar-scroll {
+            flex: 1 1 auto;
+            min-height: 0;
+            overflow-y: auto;
+            overflow-x: hidden;
+        }
+        @media (min-width: 1200px) {
+            .glossary-sidebar {
+                display: flex !important;
+                flex-direction: column;
+                flex: 0 0 260px !important;
+                width: 260px !important;
+                position: sticky !important;
+                top: 57px;
+                height: calc(100vh - 57px) !important;
+                overflow: hidden !important;
+                background-color: var(--bs-tertiary-bg) !important;
+                border-left: var(--bs-border-width) solid var(--bs-border-color) !important;
+            }
+            .glossary-sidebar .offcanvas-body {
+                width: 100%;
+                flex: 1 1 auto !important;
+                min-height: 0;
+                overflow: hidden !important;
+            }
+        }
+        .glossary-sidebar .offcanvas-body {
+            display: flex;
+            flex-direction: column;
+            min-height: 0;
+            overflow: hidden;
+        }
+        .course-sidebar .course-nav-folder,
+        .course-sidebar .nav-link,
+        .course-sidebar .course-nav-toggle {
+            min-width: 0;
+        }
+        .course-sidebar .nav-link {
+            line-height: 1.35;
+        }
+        .course-sidebar .nav-link:not(.active) {
+            color: var(--bs-body-color);
+        }
+        .course-sidebar .nav-link:not(.active):hover,
+        .course-sidebar .course-nav-toggle:hover,
+        .course-sidebar .course-branch-toggle:hover {
+            background-color: var(--bs-secondary-bg);
+        }
+        .course-sidebar .course-branch-toggle {
+            font-size: 0.78rem;
+            line-height: 1;
+            opacity: 0.55;
+            transition: opacity 0.15s ease, background-color 0.15s ease;
+        }
+        .course-sidebar .course-nav-folder-row:hover .course-branch-toggle,
+        .course-sidebar .course-branch-toggle:focus-visible {
+            opacity: 1;
+        }
+        .course-sidebar .course-quickref-row {
+            min-width: 0;
+        }
+        .course-sidebar .course-quickref-link {
+            min-width: 0;
+            line-height: 1.25;
+        }
+        .course-sidebar .course-quickref-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 15px;
+            height: 16px;
+            margin-top: 1px;
+        }
+        .course-sidebar .course-quickref-remove {
+            opacity: 0.4;
+            font-size: 0.95rem;
+            line-height: 1;
+            margin-top: 3px;
+        }
+        .course-sidebar .course-quickref-row:hover .course-quickref-remove,
+        .course-sidebar .course-quickref-remove:focus-visible {
+            opacity: 1;
+            color: var(--bs-danger) !important;
+        }
+        .quickref-type-return { color: var(--bs-primary); }
+        .quickref-type-bookmark { color: #d97706; }
+        .quickref-type-review { color: #dc3545; }
+        .course-sidebar .nav-chevron,
+        .section-terms-toggle .nav-chevron {
+            display: inline-block;
+            font-size: 0.75rem;
+            transition: transform 0.15s ease;
+        }
+        .course-sidebar .course-nav-toggle[aria-expanded="true"] .nav-chevron,
+        .section-terms-toggle[aria-expanded="true"] .nav-chevron {
+            transform: rotate(90deg);
+        }
+        .glossary-lookup-term {
+            border-bottom: 1.5px dotted var(--bs-primary);
+            cursor: help;
+            border-radius: 2px;
+            transition: background-color 0.15s ease;
+        }
+        .glossary-lookup-term:hover,
+        .glossary-lookup-term:focus {
+            background-color: var(--bs-primary-bg-subtle);
+            outline: none;
+        }
+        .glossary-lookup-popover {
+            max-width: 320px;
+        }
+        @media print {
+            .glossary-lookup-term {
+                border-bottom: 0 !important;
+                background: transparent !important;
+            }
+        }
+        .course-page-indicator-slot {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 16px;
+            height: 19px;
+            flex-shrink: 0;
+        }
+        .course-page-indicator {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 16px;
+            height: 16px;
+            border-radius: 999px;
+            font-size: 0.7rem;
+            line-height: 1;
+            font-weight: 700;
+        }
+        .course-page-indicator.indicator-reviewed {
+            background-color: var(--bs-success);
+            color: #fff;
+        }
+        .course-page-indicator.indicator-updated {
+            width: 10px;
+            height: 10px;
+            background-color: var(--bs-warning);
+            box-shadow: 0 0 0 2px var(--bs-warning-bg-subtle);
+        }
+        .course-page-indicator.indicator-new {
+            width: 10px;
+            height: 10px;
+            background-color: var(--bs-info);
+            box-shadow: 0 0 0 2px var(--bs-info-bg-subtle);
+        }
+        .course-page-indicator.indicator-unreviewed {
+            width: 10px;
+            height: 10px;
+            border: 1.75px solid var(--bs-secondary-color);
+            opacity: 0.65;
+        }
+        .nav-link.active .course-page-indicator.indicator-unreviewed {
+            border-color: rgba(255, 255, 255, 0.8);
+            opacity: 1;
+        }
+        .nav-link.active .course-page-indicator.indicator-reviewed {
+            background-color: rgba(255, 255, 255, 0.25);
+            color: #fff;
+        }
+        .nav-link.active .course-page-indicator.indicator-updated,
+        .nav-link.active .course-page-indicator.indicator-new {
+            box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.35);
+        }
+
+        /* Collapsible article sections & multi-type Bookmarks */
+        .article-section {
+            margin-top: 1.15rem;
+            border: 1px solid var(--bs-border-color);
+            border-radius: 0.5rem;
+            background-color: var(--bs-body-bg);
+            scroll-margin-top: 76px;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
+        }
+        .article-subsection {
+            margin-top: 0.85rem;
+            border: 1px solid var(--bs-border-color-translucent);
+            border-radius: 0.4rem;
+            background-color: var(--bs-tertiary-bg);
+            scroll-margin-top: 76px;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
+        }
+        .article-section.bm-type-return,
+        .article-subsection.bm-type-return {
+            border-color: var(--bs-primary);
+            box-shadow: inset 3px 0 0 var(--bs-primary);
+        }
+        .article-section.bm-type-bookmark,
+        .article-subsection.bm-type-bookmark {
+            border-color: #d97706;
+            box-shadow: inset 3px 0 0 #d97706;
+        }
+        .article-section.bm-type-review,
+        .article-subsection.bm-type-review {
+            border-color: #dc3545;
+            box-shadow: inset 3px 0 0 #dc3545;
+        }
+        .article-section.section-jump-pulse,
+        .article-subsection.section-jump-pulse {
+            box-shadow: inset 3px 0 0 var(--bs-primary), 0 0 0 0.22rem rgba(var(--bs-primary-rgb), 0.25);
+        }
+        .article-section-header {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.55rem 0.85rem;
+            border-bottom: 1px solid var(--bs-border-color-translucent);
+        }
+        .article-section.is-collapsed > .article-section-header,
+        .article-subsection.is-collapsed > .article-section-header {
+            border-bottom-color: transparent;
+        }
+        .article-section-heading {
+            flex: 1 1 auto;
+            min-width: 0;
+            margin: 0 !important;
+            font-size: 1.15rem;
+            line-height: 1.3;
+        }
+        .article-section-toggle {
+            width: 100%;
+            min-width: 0;
+            display: flex;
+            align-items: center;
+            gap: 0.45rem;
+            background: transparent;
+            border: 0;
+            padding: 0;
+            text-align: left;
+            color: inherit;
+            font: inherit;
+            cursor: pointer;
+        }
+        .article-section-chevron {
+            display: inline-block;
+            font-size: 0.8rem;
+            color: var(--bs-secondary-color);
+            flex-shrink: 0;
+            transition: transform 0.15s ease;
+        }
+        .article-section-toggle[aria-expanded="true"] .article-section-chevron {
+            transform: rotate(90deg);
+        }
+        .article-subsection .article-section-heading {
+            font-size: 1rem;
+        }
+        .article-section-actions {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.45rem;
+            flex-shrink: 0;
+        }
+        .article-bookmark-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.3rem;
+            padding: 0.15rem 0.5rem;
+            border-radius: 999px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+        .article-bookmark-pill-return {
+            background-color: var(--bs-primary-bg-subtle);
+            color: var(--bs-primary-text-emphasis);
+            border: 1px solid var(--bs-primary-border-subtle);
+        }
+        .article-bookmark-pill-bookmark {
+            background-color: var(--bs-warning-bg-subtle);
+            color: var(--bs-warning-text-emphasis);
+            border: 1px solid var(--bs-warning-border-subtle);
+        }
+        .article-bookmark-pill-review {
+            background-color: var(--bs-danger-bg-subtle);
+            color: var(--bs-danger-text-emphasis);
+            border: 1px solid var(--bs-danger-border-subtle);
+        }
+        .article-section-bookmark-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            border: 0;
+            border-radius: 0.3rem;
+            background: transparent;
+            color: var(--bs-secondary-color);
+            opacity: 0.5;
+            padding: 0;
+            cursor: pointer;
+            transition: opacity 0.15s ease, color 0.15s ease, background-color 0.15s ease;
+        }
+        .article-section-header:hover .article-section-bookmark-btn,
+        .article-section-bookmark-btn:focus-visible,
+        .article-section-bookmark-btn[aria-expanded="true"],
+        .article-section-bookmark-btn.is-active {
+            opacity: 1;
+        }
+        .article-section-bookmark-btn:hover {
+            background-color: var(--bs-secondary-bg);
+            color: var(--bs-body-color);
+        }
+        .article-section-bookmark-btn[data-active-type="return"] { color: var(--bs-primary); }
+        .article-section-bookmark-btn[data-active-type="bookmark"] { color: #d97706; }
+        .article-section-bookmark-btn[data-active-type="review"] { color: #dc3545; }
+        .article-bookmark-menu {
+            min-width: 13.5rem;
+        }
+        .article-section-body {
+            padding: 0.85rem 1rem 0.95rem;
+        }
+        .article-section-body > :first-child {
+            margin-top: 0;
+        }
+        .article-section-body > :last-child {
+            margin-bottom: 0;
+        }
+        .article-section.is-collapsed > .article-section-body,
+        .article-subsection.is-collapsed > .article-section-body {
+            display: none;
+        }
+        .quickref-card.bm-type-return {
+            border-color: var(--bs-primary) !important;
+            box-shadow: inset 3px 0 0 var(--bs-primary);
+        }
+        .quickref-card.bm-type-bookmark {
+            border-color: #d97706 !important;
+            box-shadow: inset 3px 0 0 #d97706;
+        }
+        .quickref-card.bm-type-review {
+            border-color: #dc3545 !important;
+            box-shadow: inset 3px 0 0 #dc3545;
+        }
+        .quickref-preview-body > :first-child { margin-top: 0; }
+        .quickref-preview-body > :last-child { margin-bottom: 0; }
+        .quickref-preview-body table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 0.75rem;
+            font-size: 0.9em;
+        }
+        .quickref-preview-body th,
+        .quickref-preview-body td {
+            border: 1px solid var(--bs-border-color);
+            padding: 0.35rem 0.55rem;
+            text-align: left;
+        }
+        .quickref-preview-body thead th {
+            background-color: var(--bs-tertiary-bg);
+            font-weight: 600;
+        }
+        .article-resume-btn {
+            background-color: var(--bs-primary-bg-subtle);
+            color: var(--bs-primary-text-emphasis);
+            border-color: var(--bs-primary-border-subtle) !important;
+        }
+        .article-resume-btn:hover {
+            background-color: var(--bs-primary);
+            color: #fff !important;
+        }
+        /* Markdown tables & readability inside course articles */
+        #courseArticleContent table,
+        #contentPrintCompiled table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 1rem;
+            font-size: 0.92em;
+        }
+        #courseArticleContent th,
+        #courseArticleContent td,
+        #contentPrintCompiled th,
+        #contentPrintCompiled td {
+            border: 1px solid var(--bs-border-color);
+            padding: 0.45rem 0.65rem;
+            text-align: left;
+        }
+        #courseArticleContent thead th,
+        #contentPrintCompiled thead th {
+            background-color: var(--bs-tertiary-bg);
+            font-weight: 600;
+        }
+
+        /* Course Content Print Studio (?print=1 + @media print) */
+        .content-scope-option {
+            cursor: pointer;
+            transition: border-color 0.15s ease, background-color 0.15s ease;
+        }
+        .content-scope-option:hover {
+            border-color: var(--bs-primary) !important;
+        }
+        .content-scope-option.active {
+            border-color: var(--bs-primary) !important;
+            background-color: var(--bs-primary-bg-subtle) !important;
+        }
+        #contentPrintWorkspace.content-font-sm { --content-print-font: 0.82rem; }
+        #contentPrintWorkspace.content-font-md { --content-print-font: 0.95rem; }
+        #contentPrintWorkspace.content-font-lg { --content-print-font: 1.08rem; }
+        #contentPrintWorkspace.content-space-compact { --content-print-gap: 0.65rem; --content-print-lh: 1.38; }
+        #contentPrintWorkspace.content-space-normal { --content-print-gap: 1.1rem; --content-print-lh: 1.55; }
+        #contentPrintWorkspace.content-space-relaxed { --content-print-gap: 1.65rem; --content-print-lh: 1.75; }
+
+        /* Term emphasis presets (color & thickness tokens) */
+        #contentPrintWorkspace.term-color-ink { --term-mark-stroke: #212529; --term-mark-bg: #e9ecef; }
+        #contentPrintWorkspace.term-color-yellow { --term-mark-stroke: #b45309; --term-mark-bg: #fff3a1; }
+        #contentPrintWorkspace.term-color-blue { --term-mark-stroke: #0d6efd; --term-mark-bg: #cfe2ff; }
+        #contentPrintWorkspace.term-color-green { --term-mark-stroke: #198754; --term-mark-bg: #d1e7dd; }
+        #contentPrintWorkspace.term-color-pink { --term-mark-stroke: #d63384; --term-mark-bg: #f8d7da; }
+        #contentPrintWorkspace.term-thick-thin { --term-mark-width: 1px; }
+        #contentPrintWorkspace.term-thick-medium { --term-mark-width: 1.75px; }
+        #contentPrintWorkspace.term-thick-thick { --term-mark-width: 2.5px; }
+
+        .term-color-swatch {
+            width: 20px;
+            height: 20px;
+            border-radius: 999px;
+            border: 2px solid #fff;
+            box-shadow: 0 0 0 1px #adb5bd;
+            padding: 0;
+            cursor: pointer;
+            transition: transform 0.12s ease, box-shadow 0.12s ease;
+        }
+        .term-color-swatch:hover {
+            transform: scale(1.1);
+        }
+        .term-color-swatch.active {
+            box-shadow: 0 0 0 2px #212529;
+            transform: scale(1.12);
+        }
+
+        /* Synchronous view switching for auto-generated Glossary & Quick Reference on every course */
+        html:not(.course-view-glossary) .course-view-only-glossary,
+        html:not(.course-view-glossary) .glossary-view-only,
+        html:not(.course-view-quickref) .course-view-only-quickref,
+        html.course-view-glossary .course-view-default,
+        html.course-view-quickref .course-view-default {
+            display: none !important;
+        }
+        @media print {
+            html:not(.course-view-glossary) .course-view-only-glossary,
+            html:not(.course-view-quickref) .course-view-only-quickref,
+            html.course-view-glossary .course-view-default,
+            html.course-view-quickref .course-view-default {
+                display: none !important;
+            }
+        }
+        /* Hide content print sidebar & FAB completely outside print-mode */
+        html:not(.print-mode) #contentPrintSidebar,
+        html:not(.print-mode) #contentPrintFab {
+            display: none !important;
+        }
+
+        @media screen {
+            html.print-mode .content-layout-main,
+            html.print-mode .content-layout-container {
+                padding: 0 !important;
+            }
+            html.print-mode #contentPrintWorkspace {
+                display: flex;
+                flex-direction: column;
+                min-height: 100vh;
+                background-color: #f1f3f5;
+            }
+            html.print-mode #contentPrintSidebar .offcanvas-body {
+                display: flex;
+                flex-direction: column;
+                min-height: 0;
+                overflow: hidden;
+            }
+            html.print-mode #contentPrintFab {
+                position: fixed;
+                right: 1.25rem;
+                bottom: 1.25rem;
+                z-index: 1030;
+                display: flex !important;
+                gap: 0.5rem;
+            }
+            html.print-mode #contentPrintStage {
+                flex: 1 1 auto;
+                padding: 1.25rem;
+                padding-bottom: 5rem;
+                overflow-y: auto;
+            }
+            html.print-mode #contentPrintSheet {
+                max-width: 8.5in;
+                margin: 0 auto;
+                background-color: #fff;
+                color: #000;
+                font-family: var(--print-sheet-font, var(--a11y-font-family, var(--bs-body-font-family))) !important;
+                border: 1px solid #dee2e6;
+                border-radius: 0.375rem;
+                box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+                padding: 2rem 2.25rem;
+            }
+            @media (min-width: 992px) {
+                html.print-mode #contentPrintWorkspace {
+                    flex-direction: row;
+                }
+                html.print-mode #contentPrintSidebar {
+                    display: flex !important;
+                    flex-direction: column;
+                    flex: 0 0 280px !important;
+                    width: 280px !important;
+                    position: sticky !important;
+                    top: 0;
+                    height: 100vh !important;
+                    overflow: hidden !important;
+                    background-color: #fff !important;
+                    border-right: 1px solid #dee2e6 !important;
+                }
+                html.print-mode #contentPrintSidebar .offcanvas-body {
+                    flex: 1 1 auto !important;
+                    width: 100%;
+                    min-height: 0;
+                    overflow: hidden !important;
+                }
+                html.print-mode #contentPrintFab {
+                    display: none !important;
+                }
+                html.print-mode #contentPrintStage {
+                    padding: 2rem;
+                }
+            }
+            html.print-mode #contentPrintWorkspace.content-page-breaks .content-print-doc:not(:first-child) {
+                border-top: 2px dashed #ced4da;
+                padding-top: 1.5rem;
+                margin-top: 2rem;
+            }
+        }
+
+        html.print-mode .content-screen-header {
+            display: none !important;
+        }
+        html.print-mode #contentPrintHeader {
+            display: block !important;
+        }
+        html.print-mode #contentPrintWorkspace.content-hide-header #contentPrintHeader {
+            display: none !important;
+        }
+        html.print-mode #sectionKeyTerms {
+            display: none !important;
+        }
+        html.print-mode #contentPrintWorkspace.content-hide-glossary #contentPrintGlossary {
+            display: none !important;
+        }
+        html.print-mode #contentPrintWorkspace #courseArticleContent,
+        html.print-mode #contentPrintWorkspace #contentPrintCompiled,
+        html.print-mode #contentPrintWorkspace #contentPrintGlossary {
+            font-size: var(--content-print-font, 0.95rem);
+            line-height: var(--content-print-lh, 1.55);
+            color: #000;
+        }
+        html.print-mode #contentPrintWorkspace .content-print-doc:not(:first-child) {
+            margin-top: var(--content-print-gap, 1.1rem);
+            padding-top: var(--content-print-gap, 1.1rem);
+            border-top: 1px solid #dee2e6;
+        }
+        html.print-mode #contentPrintWorkspace .content-print-doc-title,
+        html.print-mode #contentPrintGlossary .content-print-glossary-heading {
+            font-size: calc(var(--content-print-font, 0.95rem) * 1.25);
+            font-weight: 700;
+            margin-bottom: 0.6rem;
+        }
+        html.print-mode #contentPrintWorkspace.content-page-breaks #contentPrintGlossary {
+            border-top: 2px dashed #ced4da !important;
+            padding-top: 1.5rem !important;
+            margin-top: 2rem !important;
+        }
+        html.print-mode .content-print-glossary-item {
+            margin-bottom: 0.45rem;
+        }
+        html.print-mode .content-print-glossary-term {
+            font-weight: 700;
+            text-decoration: underline;
+        }
+        html.print-mode .content-print-glossary-full {
+            color: #333;
+        }
+        html.print-mode #contentPrintWorkspace:not(.content-hide-glossary).term-style-dotted .content-print-term-mark {
+            border-bottom: var(--term-mark-width, 1px) dotted var(--term-mark-stroke, #212529);
+        }
+        html.print-mode #contentPrintWorkspace:not(.content-hide-glossary).term-style-solid .content-print-term-mark {
+            border-bottom: var(--term-mark-width, 1px) solid var(--term-mark-stroke, #212529);
+        }
+        html.print-mode #contentPrintWorkspace:not(.content-hide-glossary).term-style-box .content-print-term-mark {
+            border: var(--term-mark-width, 1px) solid var(--term-mark-stroke, #212529);
+            border-radius: 999px;
+            padding: 0 0.32em;
+            box-decoration-break: clone;
+            -webkit-box-decoration-break: clone;
+        }
+        html.print-mode #contentPrintWorkspace:not(.content-hide-glossary).term-style-highlight .content-print-term-mark {
+            background-color: var(--term-mark-bg, #fff3a1);
+            border-radius: 3px;
+            padding: 0 0.2em;
+            box-decoration-break: clone;
+            -webkit-box-decoration-break: clone;
+        }
+        html.print-mode #contentPrintWorkspace:not(.content-hide-glossary).term-style-bold .content-print-term-mark {
+            font-weight: 700;
+            font-style: italic;
+            color: var(--term-mark-stroke, #212529);
+        }
+
+        @media print {
+            .course-layout-shell {
+                display: block !important;
+            }
+            .course-layout-main,
+            .content-layout-container {
+                padding: 0 !important;
+            }
+            html.print-mode #contentPrintSidebar,
+            #contentPrintSidebar,
+            html.print-mode #contentPrintFab,
+            #contentPrintFab {
+                display: none !important;
+            }
+            html.print-mode #contentPrintSheet,
+            #contentPrintSheet {
+                font-family: var(--print-sheet-font, var(--a11y-font-family, var(--bs-body-font-family))) !important;
+            }
+            html.print-mode #contentPrintWorkspace,
+            #contentPrintWorkspace,
+            html.print-mode #contentPrintStage,
+            #contentPrintStage,
+            html.print-mode #contentPrintSheet,
+            #contentPrintSheet {
+                display: block !important;
+                background: #fff !important;
+                border: 0 !important;
+                box-shadow: none !important;
+                padding: 0 !important;
+                margin: 0 !important;
+                max-width: none !important;
+            }
+            .content-screen-header,
+            #sectionKeyTerms,
+            #articleSectionBar,
+            .article-section-check,
+            .article-section-chevron,
+            .article-section-actions {
+                display: none !important;
+            }
+            .article-section,
+            .article-subsection {
+                border: 0 !important;
+                box-shadow: none !important;
+                background: transparent !important;
+                margin-top: 0.75rem !important;
+            }
+            .article-section-header {
+                border: 0 !important;
+                padding: 0 0 0.25rem 0 !important;
+            }
+            .article-section-body,
+            .article-section.is-collapsed > .article-section-body,
+            .article-subsection.is-collapsed > .article-section-body {
+                display: block !important;
+                padding: 0 !important;
+            }
+            #contentPrintHeader {
+                display: block !important;
+            }
+            #contentPrintWorkspace.content-hide-header #contentPrintHeader {
+                display: none !important;
+            }
+            #contentPrintWorkspace.content-hide-glossary #contentPrintGlossary {
+                display: none !important;
+            }
+            #contentPrintWorkspace #courseArticleContent,
+            #contentPrintWorkspace #contentPrintCompiled,
+            #contentPrintWorkspace #contentPrintGlossary {
+                font-size: var(--content-print-font, 0.95rem);
+                line-height: var(--content-print-lh, 1.55);
+                color: #000;
+            }
+            #contentPrintWorkspace .content-print-doc:not(:first-child) {
+                margin-top: var(--content-print-gap, 1.1rem);
+                padding-top: var(--content-print-gap, 1.1rem);
+                border-top: 1px solid #dee2e6;
+            }
+            #contentPrintWorkspace.content-page-breaks .content-print-doc:not(:first-child),
+            #contentPrintWorkspace.content-page-breaks #contentPrintGlossary {
+                break-before: page;
+                page-break-before: always;
+                border-top: 0 !important;
+                margin-top: 0 !important;
+                padding-top: 0 !important;
+            }
+            #contentPrintWorkspace .content-print-doc-title,
+            #contentPrintGlossary .content-print-glossary-heading {
+                font-size: calc(var(--content-print-font, 0.95rem) * 1.25);
+                font-weight: 700;
+                margin-bottom: 0.6rem;
+                break-after: avoid;
+                page-break-after: avoid;
+            }
+            #contentPrintWorkspace h2,
+            #contentPrintWorkspace h3 {
+                break-after: avoid;
+                page-break-after: avoid;
+            }
+            #contentPrintWorkspace table,
+            .content-print-glossary-item {
+                break-inside: avoid;
+                page-break-inside: avoid;
+            }
+            .content-print-glossary-item {
+                margin-bottom: 0.45rem;
+            }
+            .content-print-glossary-term {
+                font-weight: 700;
+                text-decoration: underline;
+            }
+            .content-print-glossary-full {
+                color: #333;
+            }
+            .content-print-term-mark {
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+            #contentPrintWorkspace:not(.content-hide-glossary).term-style-dotted .content-print-term-mark {
+                border-bottom: var(--term-mark-width, 1px) dotted var(--term-mark-stroke, #212529);
+            }
+            #contentPrintWorkspace:not(.content-hide-glossary).term-style-solid .content-print-term-mark {
+                border-bottom: var(--term-mark-width, 1px) solid var(--term-mark-stroke, #212529);
+            }
+            #contentPrintWorkspace:not(.content-hide-glossary).term-style-box .content-print-term-mark {
+                border: var(--term-mark-width, 1px) solid var(--term-mark-stroke, #212529);
+                border-radius: 999px;
+                padding: 0 0.32em;
+                box-decoration-break: clone;
+                -webkit-box-decoration-break: clone;
+            }
+            #contentPrintWorkspace:not(.content-hide-glossary).term-style-highlight .content-print-term-mark {
+                background-color: var(--term-mark-bg, #fff3a1);
+                border-radius: 3px;
+                padding: 0 0.2em;
+                box-decoration-break: clone;
+                -webkit-box-decoration-break: clone;
+            }
+            #contentPrintWorkspace:not(.content-hide-glossary).term-style-bold .content-print-term-mark {
+                font-weight: 700;
+                font-style: italic;
+                color: var(--term-mark-stroke, #212529);
+            }
+        }
+    </style>
+</head>
+
+<body>
+    {% if page.glossary == true %}
+        {% include components/navigation/navbar.html sidebar_id="courseNavSidebar" right_sidebar_id="glossaryFilterSidebar" %}
+    {% elsif is_course_index and course_has_glossary %}
+        {% include components/navigation/navbar.html sidebar_id="courseNavSidebar" right_sidebar_id="glossaryFilterSidebar" right_sidebar_class="glossary-view-only" %}
+    {% else %}
+        {% include components/navigation/navbar.html sidebar_id="courseNavSidebar" %}
+    {% endif %}
+
+    <div class="d-lg-flex course-layout-shell">
+        {% include components/navigation/course-nav-sidebar.html course_slug=course_slug course_meta=course_meta %}
+
+        <main class="flex-grow-1 p-4 course-layout-main{% if page.glossary == true %} glossary-layout-main{% else %} content-layout-main{% endif %}" style="min-width: 0;">
+            <div class="container-fluid{% if page.glossary == true %} glossary-layout-container{% else %} content-layout-container{% endif %}">
+                {% assign is_special_view = false %}
+                {% if page.glossary == true or page.quick_reference == true %}
+                    {% assign is_special_view = true %}
+                {% endif %}
+                {% if is_course_index %}<div class="course-view-default">{% endif %}
+                {% unless is_special_view %}
+                    <div id="contentPrintWorkspace">
+                        {% include components/course-content-print.html course_slug=course_slug course_meta=course_meta %}
+                        <div id="contentPrintStage">
+                            <div id="contentPrintSheet">
+                                <header
+                                    id="contentPrintHeader"
+                                    class="d-none mb-3 pb-2 border-bottom border-dark"
+                                    data-page-description="{{ page.description | default: course_meta.summary | default: '' | escape }}"
+                                >
+                                    {% if course_meta.course_code or course_meta.title %}
+                                        <div class="small text-muted mb-1">
+                                            {% if course_meta.course_code %}{{ course_meta.course_code }}{% endif %}{% if course_meta.course_code and course_meta.title %} · {% endif %}{% if course_meta.title %}{{ course_meta.title }}{% endif %}
+                                        </div>
+                                    {% endif %}
+                                    <div class="d-flex justify-content-between align-items-baseline gap-2">
+                                        <h1 class="h4 fw-bold mb-0" id="contentPrintTitle">
+                                            {% if course_meta and page.path == expected_course_index %}{{ course_meta.title }}{% else %}{{ page.title }}{% endif %}
+                                        </h1>
+                                        <span class="small text-muted d-none" id="contentPrintSubtitle"></span>
+                                    </div>
+                                </header>
+                {% endunless %}
+
+                {% if course_meta and page.path == expected_course_index %}
+                    <header class="mb-4 pb-3 border-bottom content-screen-header">
+                        <div class="d-flex flex-wrap justify-content-between align-items-start gap-2 mb-2">
+                            <div class="d-flex flex-wrap align-items-center gap-2">
+                                {% if course_meta.course_code %}
+                                    <span class="badge {% if course_meta.deprecated %}text-bg-secondary{% else %}text-bg-primary{% endif %}">
+                                        {{ course_meta.course_code }}
+                                    </span>
+                                {% endif %}
+                                {% if course_meta.term %}
+                                    <span class="small text-body-secondary">{{ course_meta.term }}</span>
+                                {% endif %}
+                                {% if course_meta.deprecated %}
+                                    <span class="badge text-bg-danger-subtle text-danger-emphasis border border-danger-subtle">
+                                        Deprecated
+                                    </span>
+                                {% endif %}
+                            </div>
+                            <a
+                                href="?print=1"
+                                class="btn btn-sm btn-outline-secondary d-inline-flex align-items-center gap-1 flex-shrink-0 d-print-none"
+                                title="Print preview & options"
+                                aria-label="Open print preview"
+                            >
+                                <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" fill="currentColor" viewBox="0 0 16 16" aria-hidden="true">
+                                    <path d="M2.5 8a.5.5 0 1 0 0-1 .5.5 0 0 0 0 1"/>
+                                    <path d="M5 1a2 2 0 0 0-2 2v2H2a2 2 0 0 0-2 2v3a2 2 0 0 0 2 2h1v1a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2v-1h1a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-1V3a2 2 0 0 0-2-2zM4 3a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v2H4zm1 5a2 2 0 0 0-2 2v1H2a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1h-1v-1a2 2 0 0 0-2-2zm7 2v3a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1v-3a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1"/>
+                                </svg>
+                                <span class="d-none d-sm-inline">Print</span>
+                            </a>
+                        </div>
+                        <h1 class="h2 fw-bold mb-2">{{ course_meta.title }}</h1>
+                        {% if course_meta.summary %}
+                            <p class="text-body-secondary mb-3">{{ course_meta.summary }}</p>
+                        {% endif %}
+                        {% if course_meta.tags and course_meta.tags.size > 0 %}
+                            <div class="d-flex flex-wrap gap-1">
+                                {% for tag in course_meta.tags %}
+                                    <span class="badge rounded-pill text-bg-secondary-subtle text-secondary-emphasis border fw-normal">
+                                        {{ tag }}
+                                    </span>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </header>
+                {% elsif page.title %}
+                    <header class="mb-4 pb-3 border-bottom{% if page.glossary == true %} glossary-screen-header{% else %} content-screen-header{% endif %}">
+                        {% if course_meta %}
+                            <div class="d-flex flex-wrap align-items-center gap-2 mb-2">
+                                {% if course_meta.course_code %}
+                                    <span class="badge {% if course_meta.deprecated %}text-bg-secondary{% else %}text-bg-primary{% endif %}">
+                                        {{ course_meta.course_code }}
+                                    </span>
+                                {% endif %}
+                                {% if page.section %}
+                                    <span class="small text-body-secondary">{{ page.section }}</span>
+                                {% endif %}
+                            </div>
+                        {% endif %}
+                        <div class="d-flex justify-content-between align-items-start gap-2">
+                            <div>
+                                <h1 class="h2 fw-bold mb-1">{{ page.title }}</h1>
+                                {% if page.description %}
+                                    <p class="text-body-secondary mb-0">{{ page.description }}</p>
+                                {% endif %}
+                            </div>
+                            {% unless page.quick_reference == true %}
+                                <a
+                                    href="?print=1"
+                                    {% if page.glossary == true %}id="glossaryPrintPreviewLink"{% endif %}
+                                    class="btn btn-sm btn-outline-secondary d-inline-flex align-items-center gap-1 flex-shrink-0 d-print-none"
+                                    title="Print preview & options"
+                                    aria-label="Open print preview"
+                                >
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" fill="currentColor" viewBox="0 0 16 16" aria-hidden="true">
+                                        <path d="M2.5 8a.5.5 0 1 0 0-1 .5.5 0 0 0 0 1"/>
+                                        <path d="M5 1a2 2 0 0 0-2 2v2H2a2 2 0 0 0-2 2v3a2 2 0 0 0 2 2h1v1a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2v-1h1a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-1V3a2 2 0 0 0-2-2zM4 3a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v2H4zm1 5a2 2 0 0 0-2 2v1H2a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1h-1v-1a2 2 0 0 0-2-2zm7 2v3a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1v-3a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1"/>
+                                    </svg>
+                                    <span class="d-none d-sm-inline">Print</span>
+                                </a>
+                            {% endunless %}
+                        </div>
+                    </header>
+                {% endif %}
+
+                <article
+                    id="courseArticleContent"
+                    {% if page.auto_review_seconds %}data-auto-review-seconds="{{ page.auto_review_seconds }}"{% endif %}
+                >
+                    {{ content }}
+                    {% if page.glossary == true %}
+                        {% include components/course-glossary.html course_slug=course_slug course_meta=course_meta %}
+                    {% elsif page.quick_reference == true %}
+                        {% include components/course-quick-reference.html course_slug=course_slug course_meta=course_meta %}
+                    {% endif %}
+                </article>
+
+                {% unless is_special_view %}
+                    <div id="contentPrintCompiled" class="d-none"></div>
+                    <section id="contentPrintGlossary" class="d-none mt-4 pt-3 border-top border-dark-subtle"></section>
+                    {% include components/section-key-terms.html course_slug=course_slug course_meta=course_meta %}
+                            </div>
+                        </div>
+                    </div>
+                {% endunless %}
+
+                {% unless page.quick_reference == true %}
+                    {% assign _self_auto_rev = "empty" %}
+                    {% if page.glossary == true and site.data.glossaries %}
+                        {% assign _gl_data = site.data.glossaries[course_slug] %}
+                        {% if _gl_data %}
+                            {% assign _gl_json = _gl_data | jsonify %}
+                            {% assign _self_auto_rev = "glossary-" | append: _gl_data.size | append: "-" | append: _gl_json.size %}
+                        {% endif %}
+                    {% else %}
+                        {% assign _self_clean = content | strip_html | normalize_whitespace %}
+                        {% if _self_clean != "" %}
+                            {% assign _self_head = _self_clean | slice: 0, 32 | slugify %}
+                            {% assign _self_auto_rev = _self_clean.size | append: "-" | append: _self_head %}
+                        {% endif %}
+                    {% endif %}
+                    {% assign _self_rev = page.revision | default: page.updated | default: _self_auto_rev %}
+                    <footer class="mt-5 pt-3 border-top d-flex flex-wrap justify-content-between align-items-center gap-2 d-print-none">
+                        <div class="d-flex align-items-center gap-2">
+                            <span class="small text-body-secondary">Page status:</span>
+                            <span class="badge rounded-pill text-bg-secondary-subtle text-secondary-emphasis border" id="coursePageStatusBadge">
+                                Not reviewed
+                            </span>
+                        </div>
+                        <button
+                            type="button"
+                            class="btn btn-sm btn-outline-primary"
+                            id="courseReviewToggleBtn"
+                            data-page-rev="{{ _self_rev | escape }}"
+                            aria-pressed="false"
+                        >
+                            Mark as Reviewed
+                        </button>
+                    </footer>
+                {% endunless %}
+                {% if is_course_index %}</div>{% endif %}
+
+                {% if is_course_index and course_has_glossary %}
+                    {% assign glossary_view_url = page.url | relative_url | append: "?view=glossary" %}
+                    <div class="course-view-only-glossary">
+                        <header class="mb-4 pb-3 border-bottom glossary-screen-header">
+                            {% if course_meta %}
+                                <div class="d-flex flex-wrap align-items-center gap-2 mb-2">
+                                    {% if course_meta.course_code %}
+                                        <span class="badge {% if course_meta.deprecated %}text-bg-secondary{% else %}text-bg-primary{% endif %}">
+                                            {{ course_meta.course_code }}
+                                        </span>
+                                    {% endif %}
+                                    <span class="small text-body-secondary">{{ course_meta.title | default: course_slug }}</span>
+                                </div>
+                            {% endif %}
+                            <div class="d-flex justify-content-between align-items-start gap-2">
+                                <div>
+                                    <h1 class="h2 fw-bold mb-1">Glossary</h1>
+                                    <p class="text-body-secondary mb-0">Key terms, abbreviations, and interconnected concepts.</p>
+                                </div>
+                                <a
+                                    href="?view=glossary&amp;print=1"
+                                    id="glossaryPrintPreviewLink"
+                                    class="btn btn-sm btn-outline-secondary d-inline-flex align-items-center gap-1 flex-shrink-0 d-print-none"
+                                    title="Print preview & options"
+                                    aria-label="Open print preview"
+                                >
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" fill="currentColor" viewBox="0 0 16 16" aria-hidden="true">
+                                        <path d="M2.5 8a.5.5 0 1 0 0-1 .5.5 0 0 0 0 1"/>
+                                        <path d="M5 1a2 2 0 0 0-2 2v2H2a2 2 0 0 0-2 2v3a2 2 0 0 0 2 2h1v1a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2v-1h1a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-1V3a2 2 0 0 0-2-2zM4 3a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v2H4zm1 5a2 2 0 0 0-2 2v1H2a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1h-1v-1a2 2 0 0 0-2-2zm7 2v3a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1v-3a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1"/>
+                                    </svg>
+                                    <span class="d-none d-sm-inline">Print</span>
+                                </a>
+                            </div>
+                        </header>
+                        {% include components/course-glossary.html course_slug=course_slug course_meta=course_meta base_glossary_url=glossary_view_url %}
+                    </div>
+                {% endif %}
+
+                {% if is_course_index %}
+                    <div class="course-view-only-quickref">
+                        <header class="mb-4 pb-3 border-bottom">
+                            {% if course_meta %}
+                                <div class="d-flex flex-wrap align-items-center gap-2 mb-2">
+                                    {% if course_meta.course_code %}
+                                        <span class="badge {% if course_meta.deprecated %}text-bg-secondary{% else %}text-bg-primary{% endif %}">
+                                            {{ course_meta.course_code }}
+                                        </span>
+                                    {% endif %}
+                                    <span class="small text-body-secondary">{{ course_meta.title | default: course_slug }}</span>
+                                </div>
+                            {% endif %}
+                            <h1 class="h2 fw-bold mb-1">Quick Reference</h1>
+                            <p class="text-body-secondary mb-0">
+                                Your saved bookmarks, return-to spots, and sections flagged to review later.
+                            </p>
+                        </header>
+                        {% include components/course-quick-reference.html course_slug=course_slug course_meta=course_meta %}
+                    </div>
+                {% endif %}
+            </div>
+        </main>
+
+        {% if page.glossary == true %}
+            {% include components/navigation/glossary-filter-sidebar.html course_slug=course_slug course_meta=course_meta %}
+        {% elsif is_course_index and course_has_glossary %}
+            {% include components/navigation/glossary-filter-sidebar.html course_slug=course_slug course_meta=course_meta extra_class="glossary-view-only" %}
+        {% endif %}
+    </div>
+
+    {% include body/scripts.html %}
+    <script src="{{ '/assets/js/course-progress.js' | relative_url }}"></script>
+    {% if page.quick_reference == true or is_course_index %}
+        <script src="{{ '/assets/js/course-quick-reference.js' | relative_url }}"></script>
+    {% endif %}
+    {% unless is_special_view %}
+        {% assign _lookup_terms = "" | split: "" %}
+        {% if site.data.glossaries %}
+            {% if course_meta and course_meta.glossary_includes %}
+                {% for _inc_slug in course_meta.glossary_includes %}
+                    {% assign _inc_list = site.data.glossaries[_inc_slug] %}
+                    {% if _inc_list %}
+                        {% for _t in _inc_list %}
+                            {% assign _lookup_terms = _lookup_terms | push: _t %}
+                        {% endfor %}
+                    {% endif %}
+                {% endfor %}
+            {% endif %}
+            {% assign _own_list = site.data.glossaries[course_slug] %}
+            {% if _own_list %}
+                {% for _t in _own_list %}
+                    {% assign _lookup_terms = _lookup_terms | push: _t %}
+                {% endfor %}
+            {% endif %}
+        {% endif %}
+        {% if _lookup_terms.size > 0 %}
+            {% assign _empty_arr = "" | split: "" %}
+            <script type="application/json" id="courseGlossaryLookupData">
+            {
+              "glossaryUrl": {{ '/courses/' | append: course_slug | append: '/?view=glossary' | relative_url | jsonify }},
+              "terms": [
+                {% for _t in _lookup_terms %}
+                  {% assign _tid = _t.id | default: _t.term | slugify %}
+                  {
+                    "id": {{ _tid | jsonify }},
+                    "term": {{ _t.term | jsonify }},
+                    "full": {{ _t.full | default: "" | jsonify }},
+                    "category": {{ _t.category | default: "" | jsonify }},
+                    "tags": {{ _t.tags | default: _empty_arr | jsonify }},
+                    "definition": {{ _t.definition | default: "" | jsonify }},
+                    "aliases": {{ _t.aliases | default: _empty_arr | jsonify }}
+                  }{% unless forloop.last %},{% endunless %}
+                {% endfor %}
+              ]
+            }
+            </script>
+        {% endif %}
+        <script src="{{ '/assets/js/course-sections.js' | relative_url }}"></script>
+        <script src="{{ '/assets/js/course-content-print.js' | relative_url }}" defer></script>
+        {% if _lookup_terms.size > 0 %}
+            {% unless page.glossary_autolink == false %}
+                <script src="{{ '/assets/js/course-glossary-lookup.js' | relative_url }}" defer></script>
+            {% endunless %}
+        {% endif %}
+    {% endunless %}
+</body>
+
+</html>
+{% endif %}

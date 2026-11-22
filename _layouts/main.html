@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    {% include head/meta.html %}
+    {% include head/links.html %}
+</head>
+
+<body>
+    {% include components/navigation/navbar.html %}
+
+    <main class="container py-4">
+        {{ content }}
+    </main>
+
+    {% include body/scripts.html %}
+</body>
+
+</html>

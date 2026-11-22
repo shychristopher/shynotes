@@ -1,0 +1,58 @@
+{% assign slug = include.course_slug %}
+{% if site.data.glossaries %}
+  {% assign has_glossary_terms = false %}
+  {% if site.data.glossaries[slug] and site.data.glossaries[slug].size > 0 %}
+    {% assign has_glossary_terms = true %}
+  {% elsif include.course_meta and include.course_meta.glossary_includes %}
+    {% for inc_slug in include.course_meta.glossary_includes %}
+      {% if site.data.glossaries[inc_slug] and site.data.glossaries[inc_slug].size > 0 %}
+        {% assign has_glossary_terms = true %}
+        {% break %}
+      {% endif %}
+    {% endfor %}
+  {% endif %}
+
+  {% if has_glossary_terms %}
+    {% assign glossary_base_url = '/courses/' | append: slug | append: '/?view=glossary' | relative_url %}
+    <section
+      id="sectionKeyTerms"
+      class="card border bg-body-tertiary mt-4 d-none"
+      data-glossary-url="{{ glossary_base_url }}"
+    >
+      <div class="card-header bg-transparent d-flex flex-wrap justify-content-between align-items-center gap-2 py-2 px-3">
+        <button
+          type="button"
+          class="btn btn-link btn-sm p-0 text-decoration-none text-body fw-semibold d-inline-flex align-items-center gap-2 section-terms-toggle"
+          id="sectionKeyTermsToggle"
+          data-bs-toggle="collapse"
+          data-bs-target="#sectionKeyTermsBody"
+          aria-expanded="true"
+          aria-controls="sectionKeyTermsBody"
+        >
+          <span class="nav-chevron text-body-secondary" aria-hidden="true">▸</span>
+          <span>Key Terms</span>
+          <span
+            class="badge rounded-pill text-bg-secondary-subtle text-secondary-emphasis border fw-normal"
+            id="sectionKeyTermsCount"
+          >
+            0
+          </span>
+        </button>
+
+        <a
+          href="{{ glossary_base_url }}"
+          id="sectionKeyTermsGlossaryLink"
+          class="small text-decoration-none d-print-none"
+        >
+          Open in Glossary →
+        </a>
+      </div>
+
+      <div class="collapse show" id="sectionKeyTermsBody">
+        <div class="card-body py-3 px-3 bg-body rounded-bottom">
+          <dl class="mb-0 d-flex flex-column gap-2" id="sectionKeyTermsList"></dl>
+        </div>
+      </div>
+    </section>
+  {% endif %}
+{% endif %}

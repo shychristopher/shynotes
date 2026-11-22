@@ -1,0 +1,145 @@
+{% assign slug = include.course_slug %}
+{% assign course_meta = include.course_meta %}
+
+{% assign raw_terms = "" | split: "" %}
+{% if site.data.glossaries %}
+  {% if course_meta and course_meta.glossary_includes %}
+    {% for inc_slug in course_meta.glossary_includes %}
+      {% assign inc_terms = site.data.glossaries[inc_slug] %}
+      {% if inc_terms %}
+        {% for item in inc_terms %}
+          {% assign raw_terms = raw_terms | push: item %}
+        {% endfor %}
+      {% endif %}
+    {% endfor %}
+  {% endif %}
+  {% assign own_terms = site.data.glossaries[slug] %}
+  {% if own_terms %}
+    {% for item in own_terms %}
+      {% assign raw_terms = raw_terms | push: item %}
+    {% endfor %}
+  {% endif %}
+{% endif %}
+
+{% assign all_categories = "" | split: "" %}
+{% for item in raw_terms %}
+  {% if item.category %}
+    {% assign all_categories = all_categories | push: item.category %}
+  {% endif %}
+{% endfor %}
+
+{% assign unique_categories = "" | split: "" %}
+{% if all_categories.size > 0 %}
+  {% assign unique_categories = all_categories | uniq | sort_natural %}
+{% endif %}
+
+<aside
+  class="offcanvas-xl offcanvas-end glossary-sidebar bg-body-tertiary d-print-none{% if include.extra_class %} {{ include.extra_class }}{% endif %}"
+  tabindex="-1"
+  id="glossaryFilterSidebar"
+  aria-labelledby="glossaryFilterSidebarLabel"
+  style="--bs-offcanvas-width: 260px;"
+>
+  <div class="offcanvas-header border-bottom d-xl-none">
+    <h2 class="offcanvas-title h6 fw-semibold mb-0" id="glossaryFilterSidebarLabel">Glossary Filters</h2>
+    <button
+      type="button"
+      class="btn-close"
+      data-bs-dismiss="offcanvas"
+      data-bs-target="#glossaryFilterSidebar"
+      aria-label="Close"
+    ></button>
+  </div>
+
+  <div class="offcanvas-body d-flex flex-column w-100 p-0">
+    <!-- Pinned Header -->
+    <div class="flex-shrink-0 p-3 border-bottom d-none d-xl-flex justify-content-between align-items-center">
+      <span class="small text-uppercase text-body-secondary fw-semibold">Filters</span>
+      <span class="badge text-bg-primary rounded-pill d-none" id="glossaryFilterCount">0</span>
+    </div>
+
+    <!-- Scrollable Middle: Categories Checkboxes + Recent -->
+    <div class="glossary-sidebar-scroll d-flex flex-column gap-4 p-3">
+      <!-- Category Checkboxes -->
+      <div>
+        <div class="d-flex justify-content-between align-items-center mb-2">
+          <span class="text-uppercase text-body-secondary fw-semibold" style="font-size: 0.72rem; letter-spacing: 0.05em;">
+            Categories
+          </span>
+          <button
+            type="button"
+            class="btn btn-link btn-sm p-0 text-decoration-none d-none"
+            id="glossaryClearCatsBtn"
+            style="font-size: 0.75rem;"
+          >
+            Clear
+          </button>
+        </div>
+
+        {% if unique_categories.size > 0 %}
+          <div class="border rounded bg-body p-2 overflow-y-auto" style="max-height: 240px;">
+            {% for cat in unique_categories %}
+              {% assign cat_id = "glossary-cat-" | append: forloop.index %}
+              {% assign cat_count = 0 %}
+              {% for item in raw_terms %}
+                {% if item.category == cat %}
+                  {% assign cat_count = cat_count | plus: 1 %}
+                {% endif %}
+              {% endfor %}
+              <div class="form-check{% unless forloop.last %} mb-1{% endunless %}">
+                <input
+                  type="checkbox"
+                  class="form-check-input glossary-cat-checkbox"
+                  id="{{ cat_id }}"
+                  value="{{ cat | downcase | escape }}"
+                  autocomplete="off"
+                >
+                <label
+                  class="form-check-label small d-flex justify-content-between align-items-center w-100"
+                  for="{{ cat_id }}"
+                >
+                  <span class="text-truncate">{{ cat }}</span>
+                  <span class="text-body-secondary ms-2">{{ cat_count }}</span>
+                </label>
+              </div>
+            {% endfor %}
+          </div>
+        {% else %}
+          <p class="small text-body-secondary mb-0">No categories yet.</p>
+        {% endif %}
+      </div>
+
+      <!-- Recent Terms & Searches -->
+      <div class="d-none pt-3 border-top" id="glossaryRecentBar">
+        <div class="d-flex justify-content-between align-items-center mb-2">
+          <span class="text-uppercase text-body-secondary fw-semibold" style="font-size: 0.72rem; letter-spacing: 0.05em;">
+            Recent
+          </span>
+          <button
+            type="button"
+            class="btn btn-link btn-sm p-0 text-decoration-none text-body-secondary"
+            id="glossaryClearRecentBtn"
+            style="font-size: 0.72rem;"
+          >
+            Clear
+          </button>
+        </div>
+        <div class="d-flex flex-wrap gap-1" id="glossaryRecentList"></div>
+      </div>
+    </div>
+
+    <!-- Pinned Footer -->
+    <div class="flex-shrink-0 p-3 border-top">
+      <button
+        type="button"
+        class="btn btn-sm btn-outline-secondary w-100 d-none"
+        id="glossarySidebarResetBtn"
+      >
+        Reset filters
+      </button>
+      <p class="text-body-secondary mb-0 mt-2" style="font-size: 0.7rem;">
+        Active filters auto-clear after 30 min of inactivity.
+      </p>
+    </div>
+  </div>
+</aside>
