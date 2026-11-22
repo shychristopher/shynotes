@@ -38,39 +38,43 @@ title: Home
   {% assign featured_keys = sortable_featured | sort_natural %}
 {% endif %}
 
-<!-- Hero -->
-<section class="p-4 p-md-5 mb-5 bg-body-tertiary border rounded-4">
-  <div class="col-lg-9">
-    <h1 class="display-5 fw-bold mb-3">Free study notes, without the clutter.</h1>
-    <p class="lead text-body-secondary mb-3">
-      {{ site.title }} is a simple place to read, search, and print course notes, glossaries, and reference sheets—built to be easy to use whether you're reviewing on a laptop, phone, paper, or offline.
-    </p>
-    <p class="text-body-secondary mb-4">
-      No accounts, no paywalls, and no ads. Your reading progress, bookmarks, and display preferences stay right in your own browser.
-    </p>
-    <div class="d-flex flex-wrap align-items-center gap-2 mb-4">
-      <a href="{{ '/courses/' | relative_url }}" class="btn btn-primary btn-lg px-4">
-        Browse Courses →
-      </a>
-      <button
-        type="button"
-        class="btn btn-outline-secondary btn-lg px-4"
-        data-bs-toggle="modal"
-        data-bs-target="#displaySettingsModal"
-      >
-        Display &amp; Accessibility
-      </button>
-    </div>
+{% assign fb = site.firebase %}
+{% assign fb_enabled = false %}
+{% if fb and fb.api_key and fb.api_key != "" and fb.project_id and fb.project_id != "" %}
+  {% assign fb_enabled = true %}
+{% endif %}
 
-    <div class="d-flex flex-wrap gap-3 pt-3 border-top small text-body-secondary">
-      <span><strong class="text-body">{{ total_courses }}</strong> {% if total_courses == 1 %}course{% else %}courses{% endif %}</span>
-      <span aria-hidden="true">·</span>
-      <span><strong class="text-body">{{ unique_tags.size }}</strong> {% if unique_tags.size == 1 %}topic{% else %}topics{% endif %}</span>
-      <span aria-hidden="true">·</span>
-      <span>Works offline (PWA)</span>
-      <span aria-hidden="true">·</span>
-      <span>No account needed</span>
-    </div>
+<!-- Hero -->
+<section class="w-100 p-4 p-md-5 mb-5 bg-body-tertiary border rounded-4">
+  <h1 class="display-5 fw-bold mb-3">Free study notes, without the clutter.</h1>
+  <p class="lead text-body-secondary mb-3">
+    {{ site.title }} is a simple place to read, search, and print course notes, glossaries, and reference sheets—built to be easy to use whether you're reviewing on a laptop, phone, paper, or offline.
+  </p>
+  <p class="text-body-secondary mb-4">
+    No paywalls, no ads, and no account required. Your reading progress, bookmarks, and display preferences always save locally first{% if fb_enabled %}—with optional cloud sync or JSON backup whenever you want to carry them across devices{% else %}—with built-in JSON export/import if you want to move them between devices{% endif %}.
+  </p>
+  <div class="d-flex flex-wrap align-items-center gap-2 mb-4">
+    <a href="{{ '/courses/' | relative_url }}" class="btn btn-primary btn-lg px-4">
+      Browse Courses →
+    </a>
+    <button
+      type="button"
+      class="btn btn-outline-secondary btn-lg px-4"
+      data-bs-toggle="modal"
+      data-bs-target="#displaySettingsModal"
+    >
+      Display &amp; Accessibility
+    </button>
+  </div>
+
+  <div class="d-flex flex-wrap gap-3 pt-3 border-top small text-body-secondary">
+    <span><strong class="text-body">{{ total_courses }}</strong> {% if total_courses == 1 %}course{% else %}courses{% endif %}</span>
+    <span aria-hidden="true">·</span>
+    <span><strong class="text-body">{{ unique_tags.size }}</strong> {% if unique_tags.size == 1 %}topic{% else %}topics{% endif %}</span>
+    <span aria-hidden="true">·</span>
+    <span>Works offline (PWA)</span>
+    <span aria-hidden="true">·</span>
+    <span>{% if fb_enabled %}Optional cloud sync{% else %}No account needed{% endif %}</span>
   </div>
 </section>
 
@@ -242,9 +246,9 @@ title: Home
     <div class="col">
       <div class="card h-100 border">
         <div class="card-body p-4">
-          <h3 class="h6 fw-bold mb-2">Offline-Ready &amp; Installable</h3>
+          <h3 class="h6 fw-bold mb-2">Offline-Ready &amp; Cross-Device Sync</h3>
           <p class="small text-body-secondary mb-0">
-            Add {{ site.title }} to your phone's home screen or desktop like an app. Courses you open are saved automatically for offline studying and update quietly when you're back online—without filling your storage with courses you never use.
+            Install {{ site.title }} on your phone or desktop like an app—courses you open cache automatically for offline study and refresh when you're back online. Everything stays saved locally, with optional cloud sync and JSON export/import to keep your devices in sync.
           </p>
         </div>
       </div>
@@ -255,7 +259,7 @@ title: Home
 <!-- About & Contributing -->
 <section class="card border bg-body-tertiary">
   <div class="card-body p-4 p-md-5 d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-4">
-    <div style="max-width: 40rem;">
+    <div class="flex-grow-1">
       <h2 class="h5 fw-bold mb-2">Why this site exists</h2>
       <p class="text-body-secondary small mb-2">
         Class notes take a lot of time to put together, and usually end up buried in a random folder once the semester ends. Keeping them here makes them easy to pull up from anywhere—and hopefully helps somebody else taking the same class.

@@ -17,3 +17,15 @@ defaults:
       type: courses
     values:
       layout: course
+
+# Optional: Firebase Auth & Firestore Cloud Sync
+# Leave blank to keep Shy Notes 100% local-only (zero external Firebase requests).
+# Note: Firebase web config values are intentionally public client identifiers—
+# real security is enforced by Firestore Security Rules and Firebase Authorized Domains.
+firebase:
+  api_key: "AIzaSyAwIna0Bl7pcQy1fTqM5g4upYAHAkB7hAk"
+  auth_domain: "shynotes-org.firebaseapp.com"
+  project_id: "shynotes-org"
+  storage_bucket: "shynotes-org.firebasestorage.app"
+  messaging_sender_id: "867481420236"
+  app_id: "1:867481420236:web:929a03dadf8e28a3839d69"

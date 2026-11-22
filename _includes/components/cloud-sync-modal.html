@@ -1,0 +1,139 @@
+{% assign fb = site.firebase %}
+{% assign fb_enabled = false %}
+{% if fb and fb.api_key and fb.api_key != "" and fb.project_id and fb.project_id != "" %}
+  {% assign fb_enabled = true %}
+{% endif %}
+
+<div
+  class="modal fade d-print-none"
+  id="cloudSyncModal"
+  tabindex="-1"
+  aria-labelledby="cloudSyncModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+    <div class="modal-content">
+      <div class="modal-header">
+        <div>
+          <h2 class="modal-title h5 fw-bold mb-0" id="cloudSyncModalLabel">
+            {% if fb_enabled %}Cloud Sync &amp; Backup{% else %}Backup &amp; Restore{% endif %}
+          </h2>
+          <p class="small text-body-secondary mb-0">
+            {% if fb_enabled %}
+              Sync your study progress, bookmarks, and display settings across devices.
+            {% else %}
+              Export or import your local study progress, bookmarks, and settings.
+            {% endif %}
+          </p>
+        </div>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+
+      <div class="modal-body d-flex flex-column gap-4">
+        <div id="cloudSyncMsg" class="alert alert-info py-2 px-3 small mb-0 d-none" role="status"></div>
+
+        {% if fb_enabled %}
+          <!-- Signed-Out View -->
+          <div id="cloudSyncSignedOut">
+            <p class="small text-body-secondary mb-3">
+              Signing in is completely optional—everything always saves locally in your browser first. Sign in to back up and merge your progress between phone, tablet, and desktop.
+            </p>
+
+            <div class="d-grid mb-3">
+              <button type="button" class="btn btn-outline-primary btn-sm fw-semibold py-2" id="cloudGoogleSignInBtn">
+                Continue with Google
+              </button>
+            </div>
+
+            <div class="d-flex align-items-center gap-2 my-3 text-body-secondary small">
+              <hr class="flex-grow-1 my-0">
+              <span style="font-size: 0.74rem;">or with email</span>
+              <hr class="flex-grow-1 my-0">
+            </div>
+
+            <form id="cloudEmailForm" class="d-flex flex-column gap-2" novalidate>
+              <div>
+                <label for="cloudEmailInput" class="form-label small mb-1 text-body-secondary">Email</label>
+                <input type="email" id="cloudEmailInput" class="form-control form-control-sm" autocomplete="email" required>
+              </div>
+              <div>
+                <label for="cloudPasswordInput" class="form-label small mb-1 text-body-secondary">Password</label>
+                <input type="password" id="cloudPasswordInput" class="form-control form-control-sm" autocomplete="current-password" minlength="6" required>
+              </div>
+              <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 mt-1">
+                <button type="submit" class="btn btn-primary btn-sm px-3" id="cloudEmailSubmitBtn">
+                  Sign in
+                </button>
+                <div class="d-flex align-items-center gap-2 small">
+                  <button type="button" class="btn btn-link btn-sm p-0 text-decoration-none" id="cloudAuthModeToggleBtn" style="font-size: 0.78rem;">
+                    Create account
+                  </button>
+                  <span class="text-body-tertiary" aria-hidden="true">·</span>
+                  <button type="button" class="btn btn-link btn-sm p-0 text-decoration-none text-body-secondary" id="cloudResetPwBtn" style="font-size: 0.78rem;">
+                    Forgot password?
+                  </button>
+                </div>
+              </div>
+            </form>
+          </div>
+
+          <!-- Signed-In View -->
+          <div id="cloudSyncSignedIn" class="d-none">
+            <div class="p-3 rounded border bg-body-tertiary mb-3">
+              <div class="d-flex justify-content-between align-items-start gap-2 mb-2">
+                <div style="min-width: 0;">
+                  <div class="small fw-semibold text-truncate" id="cloudUserName">Signed in</div>
+                  <div class="text-body-secondary text-truncate" id="cloudUserEmail" style="font-size: 0.76rem;"></div>
+                </div>
+                <button type="button" class="btn btn-outline-secondary btn-sm flex-shrink-0" id="cloudSignOutBtn">
+                  Sign out
+                </button>
+              </div>
+
+              <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 pt-2 border-top">
+                <div>
+                  <span class="badge rounded-pill text-bg-secondary-subtle text-secondary-emphasis border fw-normal" id="cloudSyncStateBadge">
+                    Ready
+                  </span>
+                  <div class="text-body-secondary mt-1" id="cloudLastSyncedText" style="font-size: 0.74rem;">
+                    Not synced yet
+                  </div>
+                </div>
+                <button type="button" class="btn btn-primary btn-sm fw-semibold" id="cloudSyncNowBtn">
+                  Sync now
+                </button>
+              </div>
+            </div>
+
+            <p class="text-body-secondary mb-0" style="font-size: 0.75rem;">
+              Changes save locally right away. Manual sync has a 45-second cooldown to stay lightweight, and unsaved changes also sync automatically every 5 minutes or when you close the tab.
+            </p>
+          </div>
+        {% endif %}
+
+        <!-- Local File Export / Import (always available, works offline and without accounts) -->
+        <div class="{% if fb_enabled %}pt-3 border-top{% endif %}">
+          <div class="small text-uppercase text-body-secondary fw-semibold mb-2">
+            Local Backup File
+          </div>
+          <p class="small text-body-secondary mb-2">
+            Download a JSON backup of your progress, bookmarks, and display settings—or import one from another device.
+          </p>
+          <div class="d-flex flex-wrap gap-2">
+            <button type="button" class="btn btn-sm btn-outline-secondary" id="cloudExportBtn">
+              Export JSON
+            </button>
+            <button type="button" class="btn btn-sm btn-outline-secondary" id="cloudImportBtn">
+              Import JSON…
+            </button>
+            <input type="file" id="cloudImportFile" accept="application/json,.json" class="d-none">
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-sm btn-primary" data-bs-dismiss="modal">Done</button>
+      </div>
+    </div>
+  </div>
+</div>

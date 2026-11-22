@@ -20,9 +20,15 @@
         return null;
       }
     },
-    save(slug, state) {
+    save(slug, state, { silent = false } = {}) {
       try {
+        if (state && typeof state === "object" && !silent) {
+          state.updatedAt = Date.now();
+        }
         window.localStorage.setItem(this.key(slug), JSON.stringify(state));
+        if (!silent) {
+          window.dispatchEvent(new CustomEvent("shynotes:course-state-saved", { detail: { slug } }));
+        }
       } catch (_) {
         // Ignore storage errors (private mode / quota)
       }
@@ -30,6 +36,7 @@
     reset(slug) {
       try {
         window.localStorage.removeItem(this.key(slug));
+        window.dispatchEvent(new CustomEvent("shynotes:course-state-saved", { detail: { slug } }));
       } catch (_) {
         // Ignore storage errors
       }
@@ -115,7 +122,8 @@
   const isFirstVisit = !state;
   if (!state) {
     state = createFreshState();
-    CourseStateStore.save(courseSlug, state);
+    // Silent initial bootstrap so a fresh device never looks "newer" than existing cloud data
+    CourseStateStore.save(courseSlug, state, { silent: true });
   } else {
     state.folders = state.folders && typeof state.folders === "object" ? state.folders : {};
     state.pages = state.pages && typeof state.pages === "object" ? state.pages : {};
@@ -512,6 +520,9 @@
       });
 
       state.bookmarks = filtered;
+      if (state.deletedBookmarks && state.deletedBookmarks[id]) {
+        delete state.deletedBookmarks[id];
+      }
       CourseStateStore.save(courseSlug, state);
       renderQuickReference();
       window.dispatchEvent(new CustomEvent("shynotes:bookmarks-changed", { detail: { bookmarks: filtered } }));
@@ -521,17 +532,44 @@
       const next = list.filter((item) => item.id !== id);
       if (next.length === list.length) return;
       state.bookmarks = next;
+      state.deletedBookmarks =
+        state.deletedBookmarks && typeof state.deletedBookmarks === "object"
+          ? state.deletedBookmarks
+          : {};
+      state.deletedBookmarks[id] = Date.now();
       CourseStateStore.save(courseSlug, state);
       renderQuickReference();
       window.dispatchEvent(new CustomEvent("shynotes:bookmarks-changed", { detail: { bookmarks: next } }));
     },
     clearBookmarks() {
+      const prev = Array.isArray(state.bookmarks) ? state.bookmarks : [];
+      state.deletedBookmarks =
+        state.deletedBookmarks && typeof state.deletedBookmarks === "object"
+          ? state.deletedBookmarks
+          : {};
+      const now = Date.now();
+      prev.forEach((b) => {
+        if (b && b.id) state.deletedBookmarks[b.id] = now;
+      });
       state.bookmarks = [];
       CourseStateStore.save(courseSlug, state);
       renderQuickReference();
       window.dispatchEvent(new CustomEvent("shynotes:bookmarks-changed", { detail: { bookmarks: [] } }));
     }
   };
+
+  window.addEventListener("shynotes:cloud-applied", () => {
+    const reloaded = CourseStateStore.load(courseSlug);
+    if (!reloaded) return;
+    state = reloaded;
+    state.folders = state.folders && typeof state.folders === "object" ? state.folders : {};
+    state.pages = state.pages && typeof state.pages === "object" ? state.pages : {};
+    state.knownPages = Array.isArray(state.knownPages) ? state.knownPages : [...allPageUrls];
+    state.bookmarks = Array.isArray(state.bookmarks) ? state.bookmarks : [];
+    restoreFolderStates();
+    renderAllStatuses();
+    window.dispatchEvent(new CustomEvent("shynotes:bookmarks-changed", { detail: { bookmarks: state.bookmarks } }));
+  });
 
   restoreFolderStates();
   renderAllStatuses();

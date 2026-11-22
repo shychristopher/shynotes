@@ -17,6 +17,7 @@ const CORE_ASSETS = [
   {{ '/assets/images/icon-512.png' | relative_url | jsonify }},
   {{ '/assets/images/apple-touch-icon.png' | relative_url | jsonify }},
   {{ '/assets/js/display-settings.js' | relative_url | jsonify }},
+  {{ '/assets/js/cloud-sync.js' | relative_url | jsonify }},
   {{ '/assets/js/courses-dashboard.js' | relative_url | jsonify }},
   {{ '/assets/js/course-progress.js' | relative_url | jsonify }},
   {{ '/assets/js/course-sections.js' | relative_url | jsonify }},

@@ -351,9 +351,19 @@
       </div>
 
       <div class="modal-footer justify-content-between">
-        <button type="button" class="btn btn-sm btn-outline-secondary" id="displaySettingsResetBtn">
-          Reset to defaults
-        </button>
+        <div class="d-flex align-items-center gap-2">
+          <button type="button" class="btn btn-sm btn-outline-secondary" id="displaySettingsResetBtn">
+            Reset to defaults
+          </button>
+          <button
+            type="button"
+            class="btn btn-sm btn-link text-decoration-none px-1"
+            data-bs-toggle="modal"
+            data-bs-target="#cloudSyncModal"
+          >
+            Backup / Sync
+          </button>
+        </div>
         <button type="button" class="btn btn-sm btn-primary" data-bs-dismiss="modal">
           Done
         </button>
